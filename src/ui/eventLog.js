@@ -79,6 +79,10 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} a détruit un objet dans sa rage.`);
         });
+        eventBus.on(EVENTS.FURNITURE_BUILT, ({ entityId, label }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} a fabriqué un ${label}.`);
+        });
     }
 
     append(message) {

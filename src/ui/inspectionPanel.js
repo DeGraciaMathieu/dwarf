@@ -15,6 +15,7 @@ const JOB_LABELS = {
     plant: 'semer',
     harvest: 'récolter',
     build: 'bâtir un mur',
+    craft: 'fabriquer un meuble',
 };
 
 export class InspectionPanel {

@@ -1,11 +1,28 @@
+import { spawnFromDefinition } from '../core/spawn.js';
+
 export class DesignationControl {
-    constructor(canvas, toolbar, terrain, jobBoard, stockpiles, farms, tileSize, onDwarfClick) {
+    constructor({
+        canvas,
+        toolbar,
+        world,
+        terrain,
+        jobBoard,
+        stockpiles,
+        farms,
+        tileSize,
+        workshopDefinition,
+        recipes,
+        onDwarfClick,
+    }) {
         this.canvas = canvas;
+        this.world = world;
         this.terrain = terrain;
         this.jobBoard = jobBoard;
         this.stockpiles = stockpiles;
         this.farms = farms;
         this.tileSize = tileSize;
+        this.workshopDefinition = workshopDefinition;
+        this.recipes = recipes;
         this.onDwarfClick = onDwarfClick;
         this.mode = 'designate';
         this.dragging = false;
@@ -19,7 +36,7 @@ export class DesignationControl {
             if (this.onDwarfClick?.(tile.x, tile.y)) {
                 return;
             }
-            this.apply(tile);
+            this.apply(tile, false);
         });
         canvas.addEventListener('mousemove', (event) => {
             if (!this.dragging) {
@@ -27,7 +44,7 @@ export class DesignationControl {
             }
             const tile = this.tileAt(event);
             if (tile) {
-                this.apply(tile);
+                this.apply(tile, true);
             }
         });
         window.addEventListener('mouseup', () => {
@@ -53,7 +70,7 @@ export class DesignationControl {
         return { x, y };
     }
 
-    apply({ x, y }) {
+    apply({ x, y }, isDrag) {
         const tile = this.terrain.get(x, y);
         if (this.mode === 'designate') {
             if (tile === 'wall' && !this.jobBoard.hasJobAt(x, y, 'dig')) {
@@ -68,12 +85,33 @@ export class DesignationControl {
         }
         if (this.mode === 'build') {
             if (!this.jobBoard.hasJobAt(x, y, 'build')) {
-                this.jobBoard.post({ type: 'build', target: { x, y } });
+                this.jobBoard.post({ type: 'build', ghost: '#', target: { x, y } });
             }
         } else if (this.mode === 'stockpile') {
             this.stockpiles.add(x, y);
         } else if (this.mode === 'farm') {
             this.farms.add(x, y);
+        } else if (this.mode === 'workshop') {
+            if (!isDrag && !this.workshopAt(x, y)) {
+                spawnFromDefinition(this.world, this.workshopDefinition, { x, y });
+                this.jobBoard.resetUnreachable();
+            }
+        } else if (this.mode === 'bed') {
+            if (!this.jobBoard.hasJobAt(x, y, 'craft')) {
+                this.jobBoard.post({
+                    type: 'craft',
+                    recipe: 'bed',
+                    ghost: this.recipes.bed.ghost,
+                    target: { x, y },
+                });
+            }
         }
+    }
+
+    workshopAt(x, y) {
+        return this.world.query('workshop', 'position').some((workshopId) => {
+            const position = this.world.getComponent(workshopId, 'position');
+            return position.x === x && position.y === y;
+        });
     }
 }
