@@ -7,6 +7,7 @@
             "fatigue": { "value": 0, "rate": 0.4, "threshold": 80, "max": 120, "recovery": 6 },
             "health": { "value": 30, "max": 30 },
             "combat": { "damage": 4, "cooldown": 5, "courage": 0.5 },
+            "morale": { "value": 70, "max": 100, "baseline": 70, "drift": 0.05, "low": 40, "tantrum": 15 },
             "wander": {},
             "worker": {}
         }

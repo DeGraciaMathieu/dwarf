@@ -15,4 +15,7 @@ export const EVENTS = {
     DWARF_INJURED: 'dwarf.injured',
     DWARF_DIED: 'dwarf.died',
     GOBLIN_SLAIN: 'goblin.slain',
+    DWARF_TANTRUM: 'dwarf.tantrum',
+    DWARF_CALMED: 'dwarf.calmed',
+    ITEM_SMASHED: 'item.smashed',
 };

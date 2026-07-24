@@ -76,7 +76,11 @@ export class CombatSystem {
             }
             spawnFromDefinition(world, this.corpseDefinition, position);
             const identity = world.getComponent(targetId, 'identity');
-            eventBus.emit(EVENTS.DWARF_DIED, { name: identity?.name ?? 'Un nain' });
+            eventBus.emit(EVENTS.DWARF_DIED, {
+                name: identity?.name ?? 'Un nain',
+                x: position.x,
+                y: position.y,
+            });
         } else {
             eventBus.emit(EVENTS.GOBLIN_SLAIN, { killerId });
         }

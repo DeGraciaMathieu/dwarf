@@ -8,6 +8,8 @@ import { spawnFromDefinition } from './core/spawn.js';
 import { EVENTS } from './events/events.js';
 import { MovementSystem } from './systems/movementSystem.js';
 import { NeedsSystem } from './systems/needsSystem.js';
+import { MoraleSystem } from './systems/moraleSystem.js';
+import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
 import { SleepSystem } from './systems/sleepSystem.js';
 import { EatingSystem } from './systems/eatingSystem.js';
@@ -55,6 +57,7 @@ async function main() {
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
         ])
     );
+    world.registerSystem(new MoraleSystem(eventBus));
     world.registerSystem(new GoblinSpawnSystem(terrain, creatures.goblin));
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
@@ -62,6 +65,7 @@ async function main() {
     world.registerSystem(new SleepSystem());
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
+    world.registerSystem(new TantrumSystem(terrain));
     world.registerSystem(new DigSystem(jobBoard, terrain));
     world.registerSystem(new ChopSystem(jobBoard, terrain, items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
