@@ -5,6 +5,8 @@
         "components": {
             "hunger": { "value": 0, "rate": 1, "threshold": 70, "max": 100 },
             "fatigue": { "value": 0, "rate": 0.4, "threshold": 80, "max": 120, "recovery": 6 },
+            "health": { "value": 30, "max": 30 },
+            "combat": { "damage": 4, "cooldown": 5, "courage": 0.5 },
             "wander": {},
             "worker": {}
         }
@@ -14,6 +16,8 @@
         "color": "#d04040",
         "components": {
             "hostile": { "visionRange": 8 },
+            "health": { "value": 16, "max": 16 },
+            "combat": { "damage": 4, "cooldown": 5 },
             "wander": {}
         }
     }

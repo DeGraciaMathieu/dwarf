@@ -15,6 +15,13 @@
             "buildMaterial": {}
         }
     },
+    "corpse": {
+        "glyph": "†",
+        "color": "#909090",
+        "components": {
+            "item": {}
+        }
+    },
     "mushroom": {
         "glyph": "♠",
         "color": "#b070d0",
