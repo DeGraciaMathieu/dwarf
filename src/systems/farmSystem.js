@@ -1,6 +1,7 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 import { spawnFromDefinition } from '../core/spawn.js';
+import { workEffort } from './workEffort.js';
 
 const PLANT_TICKS = 5;
 const HARVEST_TICKS = 5;
@@ -111,7 +112,7 @@ export class FarmSystem {
         if (status !== 'arrived') {
             return 'moving';
         }
-        currentJob.progress++;
+        currentJob.progress += workEffort(world, entityId);
         return currentJob.progress >= requiredTicks ? 'done' : 'working';
     }
 }

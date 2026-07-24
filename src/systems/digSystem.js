@@ -1,5 +1,6 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
+import { workEffort } from './workEffort.js';
 
 const DIG_TICKS = 10;
 
@@ -25,7 +26,7 @@ export class DigSystem {
             if (status !== 'arrived') {
                 continue;
             }
-            currentJob.progress++;
+            currentJob.progress += workEffort(world, entityId);
             if (currentJob.progress >= DIG_TICKS) {
                 this.terrain.set(target.x, target.y, 'floor');
                 this.jobBoard.complete(currentJob.job);

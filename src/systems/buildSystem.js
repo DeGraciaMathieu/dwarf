@@ -1,5 +1,6 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
+import { workEffort } from './workEffort.js';
 
 const BUILD_TICKS = 8;
 
@@ -70,7 +71,7 @@ export class BuildSystem {
         if (status !== 'arrived') {
             return;
         }
-        currentJob.progress++;
+        currentJob.progress += workEffort(world, entityId);
         if (currentJob.progress < BUILD_TICKS || this.tileOccupied(world, target)) {
             return;
         }

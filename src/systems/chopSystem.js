@@ -1,6 +1,7 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 import { spawnFromDefinition } from '../core/spawn.js';
+import { workEffort } from './workEffort.js';
 
 const CHOP_TICKS = 8;
 
@@ -27,7 +28,7 @@ export class ChopSystem {
             if (status !== 'arrived') {
                 continue;
             }
-            currentJob.progress++;
+            currentJob.progress += workEffort(world, entityId);
             if (currentJob.progress >= CHOP_TICKS) {
                 this.terrain.set(target.x, target.y, 'floor');
                 spawnFromDefinition(world, this.logDefinition, target);
