@@ -11,4 +11,8 @@ export const EVENTS = {
     CROP_HARVESTED: 'crop.harvested',
     GOBLIN_ARRIVED: 'goblin.arrived',
     DWARF_FLEES: 'dwarf.flees',
+    DWARF_FIGHTS: 'dwarf.fights',
+    DWARF_INJURED: 'dwarf.injured',
+    DWARF_DIED: 'dwarf.died',
+    GOBLIN_SLAIN: 'goblin.slain',
 };

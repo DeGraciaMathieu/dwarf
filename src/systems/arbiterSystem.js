@@ -26,6 +26,7 @@ export class ArbiterSystem {
 
     pickActivity(world, entityId, foodAvailable, hostilePositions) {
         const scores = [
+            { type: 'fight', score: this.fightScore(world, entityId, hostilePositions) },
             { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
             { type: 'sleep', score: this.sleepScore(world, entityId) },
@@ -36,14 +37,36 @@ export class ArbiterSystem {
         return scores[0].type;
     }
 
+    fightScore(world, entityId, hostilePositions) {
+        if (!this.dangerNear(world, entityId, hostilePositions)) {
+            return 0;
+        }
+        return this.isBrave(world, entityId) ? FLEE_SCORE : 0;
+    }
+
     fleeScore(world, entityId, hostilePositions) {
+        if (!this.dangerNear(world, entityId, hostilePositions)) {
+            return 0;
+        }
+        return this.isBrave(world, entityId) ? 0 : FLEE_SCORE;
+    }
+
+    dangerNear(world, entityId, hostilePositions) {
         const position = world.getComponent(entityId, 'position');
-        const danger = hostilePositions.some(
+        return hostilePositions.some(
             (hostile) =>
                 Math.max(Math.abs(hostile.x - position.x), Math.abs(hostile.y - position.y)) <=
                 FLEE_RANGE
         );
-        return danger ? FLEE_SCORE : 0;
+    }
+
+    isBrave(world, entityId) {
+        const health = world.getComponent(entityId, 'health');
+        const combat = world.getComponent(entityId, 'combat');
+        if (!health || !combat || combat.courage === undefined) {
+            return false;
+        }
+        return health.value / health.max >= combat.courage;
     }
 
     eatScore(world, entityId, foodAvailable) {

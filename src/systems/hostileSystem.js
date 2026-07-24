@@ -27,7 +27,7 @@ export class HostileSystem {
 
             const chasing = nearest !== null && nearestDistance <= hostile.visionRange;
             this.setActivity(world, hostileId, chasing ? 'chase' : 'wander');
-            if (!chasing) {
+            if (!chasing || nearestDistance <= 1) {
                 continue;
             }
             const path = findPath(this.terrain, position, nearest);
