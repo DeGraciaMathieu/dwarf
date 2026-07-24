@@ -10,6 +10,7 @@ export class HaulSystem {
     }
 
     update(world, eventBus) {
+        this.pruneReservations(world);
         this.dropOrphanedItems(world);
         this.postHaulJobs(world);
         for (const entityId of world.query('currentJob', 'position')) {
@@ -22,6 +23,21 @@ export class HaulSystem {
                 this.deliver(world, eventBus, entityId, currentJob, carrying);
             } else {
                 this.fetch(world, entityId, currentJob);
+            }
+        }
+    }
+
+    pruneReservations(world) {
+        const active = new Set();
+        for (const entityId of world.query('carrying')) {
+            const carrying = world.getComponent(entityId, 'carrying');
+            if (carrying.destination) {
+                active.add(`${carrying.destination.x},${carrying.destination.y}`);
+            }
+        }
+        for (const key of this.reservedTiles) {
+            if (!active.has(key)) {
+                this.reservedTiles.delete(key);
             }
         }
     }
