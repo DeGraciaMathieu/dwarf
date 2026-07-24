@@ -1,6 +1,7 @@
 const ACTIVITY_LABELS = {
     fight: 'Combat !',
     flee: 'Fuit !',
+    tantrum: 'Rage !',
     eat: 'Va manger',
     sleep: 'Dort',
     work: 'Travaille',
@@ -51,10 +52,12 @@ export class InspectionPanel {
                 : 'Cherche du travail';
         }
         const health = this.world.getComponent(this.selectedId, 'health');
+        const morale = this.world.getComponent(this.selectedId, 'morale');
         this.element.innerHTML = `
             <h3>${identity.name}</h3>
             <p class="status">${status}</p>
             ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
+            ${this.gauge('Moral', morale && { ...morale, threshold: morale.low }, true)}
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
         `;

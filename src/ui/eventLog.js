@@ -67,6 +67,18 @@ export class EventLog {
             const identity = world.getComponent(killerId, 'identity');
             this.append(`${identity ? identity.name : 'Un nain'} a terrassé un gobelin !`);
         });
+        eventBus.on(EVENTS.DWARF_TANTRUM, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} pète les plombs !`);
+        });
+        eventBus.on(EVENTS.DWARF_CALMED, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} s'est calmé.`);
+        });
+        eventBus.on(EVENTS.ITEM_SMASHED, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} a détruit un objet dans sa rage.`);
+        });
     }
 
     append(message) {
