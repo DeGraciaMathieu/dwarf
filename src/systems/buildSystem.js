@@ -1,6 +1,7 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 import { workEffort } from './workEffort.js';
+import { nearestFreeMaterial } from './materials.js';
 
 const BUILD_TICKS = 8;
 
@@ -32,7 +33,7 @@ export class BuildSystem {
                 : undefined;
         if (!materialPosition) {
             const position = world.getComponent(entityId, 'position');
-            const material = this.nearestMaterial(world, position, currentJob);
+            const material = nearestFreeMaterial(world, position, currentJob);
             if (!material) {
                 this.jobBoard.markUnreachable(currentJob.job);
                 world.removeComponent(entityId, 'currentJob');
@@ -81,33 +82,6 @@ export class BuildSystem {
         this.jobBoard.complete(currentJob.job);
         world.removeComponent(entityId, 'currentJob');
         eventBus.emit(EVENTS.WALL_BUILT, { entityId, x: target.x, y: target.y });
-    }
-
-    nearestMaterial(world, position, currentJob) {
-        const reserved = new Set();
-        for (const otherId of world.query('currentJob')) {
-            const other = world.getComponent(otherId, 'currentJob');
-            if (other !== currentJob && other.materialId !== undefined) {
-                reserved.add(other.materialId);
-            }
-        }
-        let best = null;
-        let bestDistance = Infinity;
-        for (const materialId of world.query('buildMaterial', 'position')) {
-            if (reserved.has(materialId)) {
-                continue;
-            }
-            const materialPosition = world.getComponent(materialId, 'position');
-            const distance = Math.max(
-                Math.abs(materialPosition.x - position.x),
-                Math.abs(materialPosition.y - position.y)
-            );
-            if (distance < bestDistance) {
-                bestDistance = distance;
-                best = { id: materialId, position: materialPosition };
-            }
-        }
-        return best;
     }
 
     tileOccupied(world, target) {
