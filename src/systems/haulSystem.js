@@ -46,8 +46,10 @@ export class HaulSystem {
         for (const entityId of world.query('carrying', 'position')) {
             const carrying = world.getComponent(entityId, 'carrying');
             const currentJob = world.getComponent(entityId, 'currentJob');
-            const usedItemId = currentJob ? currentJob.job.itemId ?? currentJob.materialId : undefined;
-            if (usedItemId === carrying.itemId) {
+            const usedItems = currentJob
+                ? [currentJob.job.itemId, currentJob.job.producedId, currentJob.materialId]
+                : [];
+            if (usedItems.includes(carrying.itemId)) {
                 continue;
             }
             const position = world.getComponent(entityId, 'position');
