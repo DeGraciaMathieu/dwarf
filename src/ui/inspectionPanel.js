@@ -1,4 +1,5 @@
 const ACTIVITY_LABELS = {
+    fight: 'Combat !',
     flee: 'Fuit !',
     eat: 'Va manger',
     sleep: 'Dort',
@@ -49,20 +50,22 @@ export class InspectionPanel {
                 ? `Travaille : ${JOB_LABELS[currentJob.job.type] ?? currentJob.job.type}`
                 : 'Cherche du travail';
         }
+        const health = this.world.getComponent(this.selectedId, 'health');
         this.element.innerHTML = `
             <h3>${identity.name}</h3>
             <p class="status">${status}</p>
+            ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
         `;
     }
 
-    gauge(label, need) {
+    gauge(label, need, lowIsBad = false) {
         if (!need) {
             return '';
         }
         const percent = Math.round((need.value / need.max) * 100);
-        const critical = need.value >= need.threshold;
+        const critical = lowIsBad ? need.value <= need.threshold : need.value >= need.threshold;
         return `
             <div class="gauge">
                 <span>${label}</span>

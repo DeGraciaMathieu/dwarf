@@ -52,6 +52,21 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} détale devant un gobelin !`);
         });
+        eventBus.on(EVENTS.DWARF_FIGHTS, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} charge un gobelin !`);
+        });
+        eventBus.on(EVENTS.DWARF_INJURED, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} est blessé !`);
+        });
+        eventBus.on(EVENTS.DWARF_DIED, ({ name }) => {
+            this.append(`${name} a succombé à ses blessures.`);
+        });
+        eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) => {
+            const identity = world.getComponent(killerId, 'identity');
+            this.append(`${identity ? identity.name : 'Un nain'} a terrassé un gobelin !`);
+        });
     }
 
     append(message) {
