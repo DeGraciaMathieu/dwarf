@@ -1,0 +1,8 @@
+{
+    "bed": {
+        "label": "lit",
+        "ghost": "Ξ",
+        "craftTicks": 12,
+        "produces": "bed"
+    }
+}

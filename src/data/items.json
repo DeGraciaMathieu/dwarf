@@ -15,6 +15,21 @@
             "buildMaterial": {}
         }
     },
+    "workshop": {
+        "glyph": "Π",
+        "color": "#c0a060",
+        "components": {
+            "workshop": {}
+        }
+    },
+    "bed": {
+        "glyph": "Ξ",
+        "color": "#c09050",
+        "components": {
+            "item": {},
+            "bed": { "recoveryMultiplier": 1.5, "heal": 1 }
+        }
+    },
     "corpse": {
         "glyph": "†",
         "color": "#909090",

@@ -20,6 +20,7 @@ import { DigSystem } from './systems/digSystem.js';
 import { ChopSystem } from './systems/chopSystem.js';
 import { HaulSystem } from './systems/haulSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
+import { CraftSystem } from './systems/craftSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
 import { GoblinSpawnSystem } from './systems/goblinSpawnSystem.js';
 import { HostileSystem } from './systems/hostileSystem.js';
@@ -36,11 +37,12 @@ const DWARF_NAMES = ['Urist', 'Bofur', 'Dagna', 'Thorik', 'Vala'];
 const BREAD_COUNT = 8;
 
 async function main() {
-    const [creatures, items, tiles, plants] = await Promise.all([
+    const [creatures, items, tiles, plants, recipes] = await Promise.all([
         fetch('src/data/creatures.json').then((response) => response.json()),
         fetch('src/data/items.json').then((response) => response.json()),
         fetch('src/data/tiles.json').then((response) => response.json()),
         fetch('src/data/plants.json').then((response) => response.json()),
+        fetch('src/data/recipes.json').then((response) => response.json()),
     ]);
 
     const world = new World();
@@ -62,7 +64,7 @@ async function main() {
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
-    world.registerSystem(new SleepSystem());
+    world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));
@@ -70,6 +72,7 @@ async function main() {
     world.registerSystem(new ChopSystem(jobBoard, terrain, items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
     world.registerSystem(new BuildSystem(jobBoard, terrain));
+    world.registerSystem(new CraftSystem(jobBoard, terrain, recipes, items));
     world.registerSystem(new FarmSystem(jobBoard, terrain, farms, plants.mushroom, items.mushroom));
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, items.corpse));
@@ -88,16 +91,19 @@ async function main() {
     const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, TILE_SIZE);
     new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world);
-    new DesignationControl(
+    new DesignationControl({
         canvas,
-        document.getElementById('toolbar'),
+        toolbar: document.getElementById('toolbar'),
+        world,
         terrain,
         jobBoard,
         stockpiles,
         farms,
-        TILE_SIZE,
-        (x, y) => inspection.selectAt(x, y)
-    );
+        tileSize: TILE_SIZE,
+        workshopDefinition: items.workshop,
+        recipes,
+        onDwarfClick: (x, y) => inspection.selectAt(x, y),
+    });
 
     const loop = startLoop({
         ticksPerSecond: TICKS_PER_SECOND,

@@ -18,4 +18,5 @@ export const EVENTS = {
     DWARF_TANTRUM: 'dwarf.tantrum',
     DWARF_CALMED: 'dwarf.calmed',
     ITEM_SMASHED: 'item.smashed',
+    FURNITURE_BUILT: 'furniture.built',
 };
