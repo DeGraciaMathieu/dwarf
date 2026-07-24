@@ -1,0 +1,72 @@
+const FLEE_SCORE = 200;
+const FLEE_RANGE = 6;
+const WORK_SCORE = 10;
+const WANDER_SCORE = 1;
+
+export class ArbiterSystem {
+    constructor(jobBoard) {
+        this.jobBoard = jobBoard;
+    }
+
+    update(world) {
+        const foodAvailable = world.query('food', 'position').length > 0;
+        const hostilePositions = world
+            .query('hostile', 'position')
+            .map((hostileId) => world.getComponent(hostileId, 'position'));
+        for (const entityId of world.query('worker', 'position')) {
+            const best = this.pickActivity(world, entityId, foodAvailable, hostilePositions);
+            const activity = world.getComponent(entityId, 'activity');
+            if (activity) {
+                activity.type = best;
+            } else {
+                world.addComponent(entityId, 'activity', { type: best });
+            }
+        }
+    }
+
+    pickActivity(world, entityId, foodAvailable, hostilePositions) {
+        const scores = [
+            { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
+            { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
+            { type: 'sleep', score: this.sleepScore(world, entityId) },
+            { type: 'work', score: this.workScore(world, entityId) },
+            { type: 'wander', score: WANDER_SCORE },
+        ];
+        scores.sort((a, b) => b.score - a.score);
+        return scores[0].type;
+    }
+
+    fleeScore(world, entityId, hostilePositions) {
+        const position = world.getComponent(entityId, 'position');
+        const danger = hostilePositions.some(
+            (hostile) =>
+                Math.max(Math.abs(hostile.x - position.x), Math.abs(hostile.y - position.y)) <=
+                FLEE_RANGE
+        );
+        return danger ? FLEE_SCORE : 0;
+    }
+
+    eatScore(world, entityId, foodAvailable) {
+        const hunger = world.getComponent(entityId, 'hunger');
+        if (!hunger || !foodAvailable || hunger.value < hunger.threshold) {
+            return 0;
+        }
+        return hunger.value;
+    }
+
+    sleepScore(world, entityId) {
+        const fatigue = world.getComponent(entityId, 'fatigue');
+        if (!fatigue) {
+            return 0;
+        }
+        const sleeping = world.getComponent(entityId, 'sleeping');
+        const wantsSleep =
+            fatigue.value >= fatigue.threshold || (sleeping && fatigue.value > 0);
+        return wantsSleep ? Math.max(fatigue.value, fatigue.threshold) : 0;
+    }
+
+    workScore(world, entityId) {
+        const hasJob = world.getComponent(entityId, 'currentJob') !== undefined;
+        return hasJob || this.jobBoard.hasAvailableJobs() ? WORK_SCORE : 0;
+    }
+}

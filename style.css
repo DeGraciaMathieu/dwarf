@@ -1,0 +1,125 @@
+body {
+    margin: 0;
+    background: #1a1a1a;
+    color: #ccc;
+    font-family: monospace;
+}
+
+main {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+}
+
+canvas {
+    background: #000;
+    border: 1px solid #444;
+}
+
+#toolbar {
+    margin-bottom: 8px;
+    display: flex;
+    gap: 8px;
+}
+
+#toolbar button {
+    background: #2a2a2a;
+    color: #ccc;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    font-family: monospace;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#toolbar button.active {
+    background: #3a3420;
+    color: #e8b830;
+    border-color: #e8b830;
+}
+
+#speed {
+    margin-left: auto;
+    display: flex;
+    gap: 8px;
+}
+
+#inspection {
+    margin-bottom: 16px;
+    padding: 8px;
+    border: 1px solid #444;
+    background: #222;
+}
+
+#inspection .empty {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+}
+
+#inspection h3 {
+    margin: 0 0 4px;
+    font-size: 14px;
+    color: #e0c060;
+}
+
+#inspection .status {
+    margin: 0 0 8px;
+    font-size: 12px;
+}
+
+#inspection .gauge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11px;
+    margin-bottom: 4px;
+}
+
+#inspection .gauge span {
+    width: 52px;
+}
+
+#inspection .gauge-track {
+    flex: 1;
+    height: 8px;
+    background: #1a1a1a;
+    border: 1px solid #444;
+}
+
+#inspection .gauge-fill {
+    height: 100%;
+    background: #4a8a3a;
+}
+
+#inspection .gauge-fill.critical {
+    background: #c05030;
+}
+
+aside {
+    width: 260px;
+}
+
+aside .hint {
+    margin: 0 0 12px;
+    font-size: 12px;
+    color: #888;
+}
+
+aside h2 {
+    margin: 0 0 8px;
+    font-size: 14px;
+    color: #e0c060;
+}
+
+#event-log {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+}
+
+#event-log li {
+    padding: 2px 0;
+    border-bottom: 1px solid #2a2a2a;
+}

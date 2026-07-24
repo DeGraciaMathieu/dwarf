@@ -1,0 +1,5 @@
+{
+    "floor": { "glyph": ".", "color": "#3a3a3a", "walkable": true },
+    "wall": { "glyph": "#", "color": "#8a8a8a", "walkable": false },
+    "tree": { "glyph": "♣", "color": "#4a8a3a", "walkable": false }
+}

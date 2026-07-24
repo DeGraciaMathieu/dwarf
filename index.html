@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Dwarf</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <main>
+        <div>
+            <div id="toolbar">
+                <button data-tool="designate" class="active">⛏ Creuser / Couper</button>
+                <button data-tool="stockpile">▦ Stockage</button>
+                <button data-tool="farm">♠ Champ</button>
+                <button data-tool="build">🧱 Construire</button>
+                <div id="speed">
+                    <button data-speed="0">⏸</button>
+                    <button data-speed="1" class="active">▶</button>
+                    <button data-speed="3">▶▶</button>
+                </div>
+            </div>
+            <canvas id="game"></canvas>
+        </div>
+        <aside>
+            <p class="hint">Creuser / Couper : cliquez-glissez sur les murs (#) et les arbres (♣). Stockage et Champ : peignez des zones au sol. Cliquez sur un nain pour l'inspecter.</p>
+            <div id="inspection"></div>
+            <h2>Journal</h2>
+            <ul id="event-log"></ul>
+        </aside>
+    </main>
+    <script type="module" src="src/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,7 @@
+{
+    "mushroom": {
+        "young": { "glyph": ",", "color": "#7a5a9a" },
+        "mature": { "glyph": "♠", "color": "#b070d0" },
+        "growthTicks": 80
+    }
+}
