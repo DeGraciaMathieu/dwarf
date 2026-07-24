@@ -1,5 +1,7 @@
 const FLEE_SCORE = 200;
 const FLEE_RANGE = 6;
+const TANTRUM_SCORE = 150;
+const TANTRUM_EXIT_MARGIN = 15;
 const WORK_SCORE = 10;
 const WANDER_SCORE = 1;
 
@@ -28,6 +30,7 @@ export class ArbiterSystem {
         const scores = [
             { type: 'fight', score: this.fightScore(world, entityId, hostilePositions) },
             { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
+            { type: 'tantrum', score: this.tantrumScore(world, entityId) },
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
             { type: 'sleep', score: this.sleepScore(world, entityId) },
             { type: 'work', score: this.workScore(world, entityId) },
@@ -49,6 +52,18 @@ export class ArbiterSystem {
             return 0;
         }
         return this.isBrave(world, entityId) ? 0 : FLEE_SCORE;
+    }
+
+    tantrumScore(world, entityId) {
+        const morale = world.getComponent(entityId, 'morale');
+        if (!morale) {
+            return 0;
+        }
+        const tantruming = world.getComponent(entityId, 'tantruming');
+        const raging =
+            morale.value <= morale.tantrum ||
+            (tantruming && morale.value < morale.tantrum + TANTRUM_EXIT_MARGIN);
+        return raging ? TANTRUM_SCORE : 0;
     }
 
     dangerNear(world, entityId, hostilePositions) {
