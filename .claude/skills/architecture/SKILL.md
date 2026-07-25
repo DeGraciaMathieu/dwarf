@@ -18,7 +18,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 | `src/core/terrain.js` | Grille 2D hors ECS (`get/set/isWalkable`), génération (montagne, rivière à gués, lacs, bosquets — avec validation de jouabilité et retirage), `largestWalkableRegion` | `tiles.json` |
 | `src/core/pathfinding.js` | `findPath(terrain, from, to)` — A* 8-directionnel, Chebyshev | terrain |
 | `src/core/jobBoard.js` | File de jobs : `post/claim/release/cancel/markUnreachable/resetUnreachable/complete/hasJobAt/hasAvailableJobs` | aucun |
-| `src/core/zones.js` | `Zone` : ensembles de cases peintes (stockages, champs) | aucun |
+| `src/core/zones.js` | `Zone` : ensembles de cases peintes avec étiquette optionnelle `kind` (stockages typés, champs) | aucun |
 | `src/core/spawn.js` | `spawnFromDefinition(world, def, position)` — instancie une définition JSON | world |
 | `src/systems/*` | Toute la logique de jeu (voir ordre du tick ci-dessous) | core, events, data |
 | `src/events/events.js` | Constantes des types d'événements | aucun |

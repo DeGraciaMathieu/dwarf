@@ -34,7 +34,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 |---|---|---|
 | `dig` | `digSystem.js` | le plus simple : approche adjacente, progression, mutation du terrain, événement |
 | `chop` | `chopSystem.js` | idem + spawn d'un objet produit (`spawnFromDefinition`) |
-| `haul` | `haulSystem.js` | auto-posté avec capacité bornée, deux phases, réservations auto-réparées (`pruneReservations`), lâcher générique (`dropOrphanedItems`) |
+| `haul` | `haulSystem.js` | auto-posté avec capacité bornée par pools de zones, deux phases, réservations auto-réparées (`pruneReservations`), lâcher générique (`dropOrphanedItems`) ; zones de stockage typées via `kind` (`food` : composants `food`/`drink`, `materials` : `buildMaterial`, sans étiquette : tout) — la zone spécifique est préférée, la générale sert de repli |
 | `build` | `buildSystem.js` | matériau requis (`nearestFreeMaterial` de `materials.js`), attente si case cible occupée |
 | `craft` | `craftSystem.js` | quatre phases, état durable sur le job (`producedId`) ; atelier typé (`recipe.workshop`) et ingrédient configurable (`recipe.ingredient`, défaut `buildMaterial`) ; recette `consumable` (bière) : produit posé au sol à l'atelier, pas de phase d'installation |
 | `plant`/`harvest` | `farmSystem.js` | jobs auto-postés par le système lui-même selon l'état des cases de champ |
