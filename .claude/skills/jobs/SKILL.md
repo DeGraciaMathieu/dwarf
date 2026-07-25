@@ -41,6 +41,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 | `craft` | `craftSystem.js` | quatre phases, état durable sur le job (`producedId`) ; atelier typé (`recipe.workshop`) et ingrédient configurable (`recipe.ingredient`, défaut `buildMaterial`) ; recette `consumable` (bière) : produit posé au sol à l'atelier, pas de phase d'installation |
 | `plant`/`harvest` | `farmSystem.js` | jobs auto-postés par le système lui-même selon l'état des cases de champ |
 | `fish` | `fishSystem.js` | auto-posté par case de zone de pêche (revérifie que la case est toujours de l'eau — un pont l'annule), produit un poisson aux pieds du pêcheur |
+| `demolish` | `demolishSystem.js` | posté par l'outil « Démolir » (`designation.js`) ; `targetId` défini → entité (meuble, atelier, objet) détruite ; sinon tuile intégrée (porte → sol, pont → eau) repérée par sa `target`. Disparition pure. Le haul ignore les objets ayant un job `demolish` |
 
 ## Ajouter un nouveau type de job
 
