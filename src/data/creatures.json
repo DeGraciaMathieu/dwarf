@@ -2,6 +2,7 @@
     "dwarf": {
         "glyph": "☺",
         "color": "#e0c060",
+        "names": ["Urist", "Bofur", "Dagna", "Thorik", "Vala", "Dumat", "Kib", "Solon", "Erith", "Fikod", "Zan", "Doren", "Ingiz", "Oddom", "Rith", "Meban"],
         "components": {
             "hunger": { "value": 0, "rate": 1, "threshold": 70, "max": 100 },
             "fatigue": { "value": 0, "rate": 0.4, "threshold": 80, "max": 120, "recovery": 6 },

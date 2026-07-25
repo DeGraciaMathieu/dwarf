@@ -48,6 +48,9 @@ export class EventLog {
         eventBus.on(EVENTS.GOBLIN_ARRIVED, () => {
             this.append('Un gobelin est apparu aux abords de la carte !');
         });
+        eventBus.on(EVENTS.MIGRANT_ARRIVED, ({ name }) => {
+            this.append(`Un migrant est arrivé : ${name} !`);
+        });
         eventBus.on(EVENTS.DWARF_FLEES, ({ entityId }) => {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} détale devant un gobelin !`);

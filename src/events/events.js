@@ -10,6 +10,7 @@ export const EVENTS = {
     ITEM_STORED: 'item.stored',
     CROP_HARVESTED: 'crop.harvested',
     GOBLIN_ARRIVED: 'goblin.arrived',
+    MIGRANT_ARRIVED: 'migrant.arrived',
     DWARF_FLEES: 'dwarf.flees',
     DWARF_FIGHTS: 'dwarf.fights',
     DWARF_INJURED: 'dwarf.injured',

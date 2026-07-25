@@ -24,6 +24,7 @@ import { BuildSystem } from './systems/buildSystem.js';
 import { CraftSystem } from './systems/craftSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
 import { GoblinSpawnSystem } from './systems/goblinSpawnSystem.js';
+import { MigrantSystem } from './systems/migrantSystem.js';
 import { HostileSystem } from './systems/hostileSystem.js';
 import { CombatSystem } from './systems/combatSystem.js';
 import { Renderer } from './ui/renderer.js';
@@ -34,7 +35,7 @@ import { InspectionPanel } from './ui/inspectionPanel.js';
 const GRID = { width: 40, height: 25 };
 const TILE_SIZE = 20;
 const TICKS_PER_SECOND = 5;
-const DWARF_NAMES = ['Urist', 'Bofur', 'Dagna', 'Thorik', 'Vala'];
+const STARTING_DWARVES = 5;
 const BREAD_COUNT = 8;
 
 async function main() {
@@ -62,6 +63,7 @@ async function main() {
     );
     world.registerSystem(new MoraleSystem(eventBus));
     world.registerSystem(new GoblinSpawnSystem(terrain, creatures.goblin));
+    world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
@@ -80,7 +82,7 @@ async function main() {
     world.registerSystem(new MovementSystem(terrain));
 
     const randomTile = () => spawnRegion[Math.floor(Math.random() * spawnRegion.length)];
-    for (const name of DWARF_NAMES) {
+    for (const name of creatures.dwarf.names.slice(0, STARTING_DWARVES)) {
         const dwarfId = spawnFromDefinition(world, creatures.dwarf, randomTile());
         world.addComponent(dwarfId, 'identity', { name });
     }
