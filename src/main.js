@@ -26,6 +26,7 @@ import { GraveSystem } from './systems/graveSystem.js';
 import { EquipSystem } from './systems/equipSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
 import { CraftSystem } from './systems/craftSystem.js';
+import { DemolishSystem } from './systems/demolishSystem.js';
 import { StewardSystem } from './systems/stewardSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
 import { FishSystem } from './systems/fishSystem.js';
@@ -118,6 +119,7 @@ async function main() {
     world.registerSystem(new EquipSystem(jobBoard, terrain));
     world.registerSystem(new BuildSystem(jobBoard, terrain));
     world.registerSystem(new CraftSystem(jobBoard, terrain, recipes, items));
+    world.registerSystem(new DemolishSystem(jobBoard, terrain));
     world.registerSystem(new FarmSystem(jobBoard, terrain, farms, plants.mushroom, items.mushroom));
     world.registerSystem(new FishSystem(jobBoard, terrain, fishingSpots, items.fish));
     world.registerSystem(new HostileSystem(terrain));

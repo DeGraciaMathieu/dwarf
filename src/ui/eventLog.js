@@ -136,6 +136,9 @@ export class EventLog {
         eventBus.on(EVENTS.DWARF_CANNOT_REACH_FOOD, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} ne peut atteindre aucune nourriture !`, true);
         });
+        eventBus.on(EVENTS.DEMOLISHED, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} a démoli quelque chose.`);
+        });
         eventBus.on(EVENTS.JOB_UNREACHABLE, ({ job }) => {
             const label = JOB_LABELS[job.type] ?? job.type;
             this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true);

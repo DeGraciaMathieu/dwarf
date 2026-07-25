@@ -81,6 +81,18 @@ export class Renderer {
         ctx.font = `${tileSize - 4}px monospace`;
 
         this.drawWorkerStatus(world);
+        this.drawDemolitionMarks();
+    }
+
+    drawDemolitionMarks() {
+        const { ctx, tileSize } = this;
+        ctx.fillStyle = '#e04040';
+        for (const job of this.jobBoard.jobs) {
+            if (job.type !== 'demolish') {
+                continue;
+            }
+            ctx.fillText('×', job.target.x * tileSize + tileSize / 2, job.target.y * tileSize + tileSize / 2);
+        }
     }
 
     // repères de danger au-dessus des nains, pour un coup d'œil sans sélection

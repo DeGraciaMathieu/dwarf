@@ -68,6 +68,11 @@ export class HaulSystem {
 
     postHaulJobs(world) {
         const pendingJobs = this.jobBoard.jobs.filter((job) => job.type === 'haul');
+        const demolishing = new Set(
+            this.jobBoard.jobs
+                .filter((job) => job.type === 'demolish' && job.targetId !== undefined)
+                .map((job) => job.targetId)
+        );
         const pools = { food: 0, materials: 0, general: 0 };
         for (const tile of this.freeStockpileTiles(world)) {
             pools[tile.kind ?? 'general']++;
@@ -88,7 +93,7 @@ export class HaulSystem {
             reserveTileFor(job.itemId);
         }
         for (const itemId of world.query('item', 'position')) {
-            if (world.getComponent(itemId, 'corpse')) {
+            if (world.getComponent(itemId, 'corpse') || demolishing.has(itemId)) {
                 continue;
             }
             const position = world.getComponent(itemId, 'position');

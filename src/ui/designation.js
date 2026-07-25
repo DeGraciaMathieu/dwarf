@@ -80,6 +80,10 @@ export class DesignationControl {
             }
             return;
         }
+        if (this.mode === 'demolish') {
+            this.demolish(x, y);
+            return;
+        }
         if (this.mode === 'fishing') {
             if (tile === 'water' && !this.fishingSpots.has(x, y) && this.hasAdjacentBank(x, y)) {
                 this.fishingSpots.add(x, y);
@@ -129,6 +133,75 @@ export class DesignationControl {
             this.farms.add(x, y);
         } else if (this.mode === 'grave') {
             this.graves.add(x, y);
+        }
+    }
+
+    demolish(x, y) {
+        // un chantier non réalisé : simple annulation de la désignation
+        if (this.cancelPendingAt(x, y)) {
+            return;
+        }
+        if (this.jobBoard.hasJobAt(x, y, 'demolish')) {
+            return;
+        }
+        const targetId = this.demolishableEntityAt(x, y);
+        if (targetId !== undefined) {
+            this.cancelHaulFor(targetId);
+            this.jobBoard.post({ type: 'demolish', targetId, target: { x, y } });
+            return;
+        }
+        const tile = this.terrain.get(x, y);
+        if (tile === 'door' || tile === 'bridge') {
+            this.jobBoard.post({ type: 'demolish', target: { x, y } });
+            return;
+        }
+        this.removeZoneAt(x, y);
+    }
+
+    cancelPendingAt(x, y) {
+        const pending = this.jobBoard.jobs.find(
+            (job) =>
+                ['dig', 'chop', 'build', 'craft'].includes(job.type) &&
+                job.claimedBy === null &&
+                job.target.x === x &&
+                job.target.y === y
+        );
+        if (!pending) {
+            return false;
+        }
+        this.jobBoard.cancel(pending);
+        return true;
+    }
+
+    demolishableEntityAt(x, y) {
+        return this.world.query('position').find((id) => {
+            const position = this.world.getComponent(id, 'position');
+            if (position.x !== x || position.y !== y || this.world.getComponent(id, 'corpse')) {
+                return false;
+            }
+            return Boolean(
+                this.world.getComponent(id, 'workshop') ||
+                    this.world.getComponent(id, 'bed') ||
+                    this.world.getComponent(id, 'item')
+            );
+        });
+    }
+
+    cancelHaulFor(itemId) {
+        const haul = this.jobBoard.jobs.find(
+            (job) => job.type === 'haul' && job.itemId === itemId && job.claimedBy === null
+        );
+        if (haul) {
+            this.jobBoard.cancel(haul);
+        }
+    }
+
+    removeZoneAt(x, y) {
+        for (const zone of [this.stockpiles, this.farms, this.fishingSpots, this.graves]) {
+            if (zone.has(x, y)) {
+                zone.remove(x, y);
+                return;
+            }
         }
     }
 

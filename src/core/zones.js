@@ -11,6 +11,10 @@ export class Zone {
         return this.tiles.has(`${x},${y}`);
     }
 
+    remove(x, y) {
+        this.tiles.delete(`${x},${y}`);
+    }
+
     list() {
         return [...this.tiles.values()];
     }
