@@ -33,13 +33,71 @@ const OUTCROP_DENSITY = 1 / 130;
 const OUTCROP_FILL = 0.7;
 const GROVE_DENSITY = 1 / 110;
 const GROVE_FILL = 0.55;
+const LAKE_DENSITY = 1 / 450;
+const LAKE_FILL = 0.8;
+const RIVER_START_RATIO = 0.25;
+const RIVER_WIDTH = 2;
+const FORD_COUNT = 2;
+
+const GENERATION_ATTEMPTS = 20;
+const MIN_CONNECTIVITY = 0.8;
 
 export function generateTerrain(width, height, tileDefinitions) {
+    let terrain;
+    for (let attempt = 0; attempt < GENERATION_ATTEMPTS; attempt++) {
+        terrain = generateCandidate(width, height, tileDefinitions);
+        if (isPlayable(terrain)) {
+            return terrain;
+        }
+    }
+    return terrain;
+}
+
+function isPlayable(terrain) {
+    let floors = 0;
+    for (let y = 0; y < terrain.height; y++) {
+        for (let x = 0; x < terrain.width; x++) {
+            if (terrain.get(x, y) === 'floor') {
+                floors++;
+            }
+        }
+    }
+    const region = largestWalkableRegion(terrain);
+    if (region.length / floors < MIN_CONNECTIVITY) {
+        return false;
+    }
+    const regionSet = new Set(region.map((tile) => tile.y * terrain.width + tile.x));
+    for (let y = 1; y < terrain.height - 1; y++) {
+        for (let x = Math.floor(terrain.width / 2); x < terrain.width - 1; x++) {
+            if (terrain.get(x, y) !== 'wall') {
+                continue;
+            }
+            for (let dy = -1; dy <= 1; dy++) {
+                for (let dx = -1; dx <= 1; dx++) {
+                    if (regionSet.has((y + dy) * terrain.width + (x + dx))) {
+                        return true;
+                    }
+                }
+            }
+        }
+    }
+    return false;
+}
+
+function generateCandidate(width, height, tileDefinitions) {
     const boundary = mountainBoundary(width, height);
     const tiles = Array.from({ length: height }, (_, y) =>
         Array.from({ length: width }, (_, x) => (x >= boundary[y] ? 'wall' : 'floor'))
     );
 
+    const riverColumns = carveRiver(tiles, width, height, boundary);
+    scatterPatches(tiles, width, height, boundary, {
+        count: Math.max(1, Math.floor(width * height * LAKE_DENSITY)),
+        minRadius: 1,
+        maxRadius: 2,
+        fill: LAKE_FILL,
+        type: 'water',
+    });
     scatterPatches(tiles, width, height, boundary, {
         count: Math.floor(width * height * OUTCROP_DENSITY),
         minRadius: 1,
@@ -54,6 +112,7 @@ export function generateTerrain(width, height, tileDefinitions) {
         fill: GROVE_FILL,
         type: 'tree',
     });
+    carveFords(tiles, width, height, riverColumns);
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
@@ -64,6 +123,35 @@ export function generateTerrain(width, height, tileDefinitions) {
     }
 
     return new Terrain(width, height, tiles, tileDefinitions);
+}
+
+function carveRiver(tiles, width, height, boundary) {
+    const columns = [];
+    let x = Math.floor(width * RIVER_START_RATIO);
+    for (let y = 0; y < height; y++) {
+        x = Math.max(2, Math.min(boundary[y] - RIVER_WIDTH - 2, x + Math.floor(Math.random() * 3) - 1));
+        columns.push(x);
+        for (let dx = 0; dx < RIVER_WIDTH; dx++) {
+            tiles[y][x + dx] = 'water';
+        }
+    }
+    return columns;
+}
+
+// Percés en dernier : rien (lac, bosquet, rocher) ne doit pouvoir sceller un gué.
+function carveFords(tiles, width, height, riverColumns) {
+    for (let i = 1; i <= FORD_COUNT; i++) {
+        const y = Math.max(
+            1,
+            Math.min(height - 2, Math.floor((height * i) / (FORD_COUNT + 1)))
+        );
+        for (let dx = -1; dx <= RIVER_WIDTH; dx++) {
+            const x = riverColumns[y] + dx;
+            if (x > 0 && x < width - 1) {
+                tiles[y][x] = 'floor';
+            }
+        }
+    }
 }
 
 function mountainBoundary(width, height) {
