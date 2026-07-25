@@ -35,6 +35,9 @@ export class DrinkSystem {
                     this.reachableBankTarget(world, entityId);
                 if (!drinkTarget) {
                     // renoncement : il continuera à vivre et travailler en se déshydratant
+                    if (!world.getComponent(entityId, 'noWaterAccess')) {
+                        eventBus.emit(EVENTS.DWARF_ISOLATED_FROM_WATER, { entityId });
+                    }
                     world.addComponent(entityId, 'noWaterAccess', { cooldown: NO_WATER_RETRY_DELAY });
                     continue;
                 }

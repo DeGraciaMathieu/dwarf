@@ -10,7 +10,7 @@ export class EatingSystem {
         for (const entityId of world.query('activity', 'position')) {
             const activity = world.getComponent(entityId, 'activity');
             if (activity.type === 'eat' && !world.getComponent(entityId, 'foodTarget')) {
-                this.assignFoodTarget(world, entityId);
+                this.assignFoodTarget(world, eventBus, entityId);
             }
         }
 
@@ -24,7 +24,7 @@ export class EatingSystem {
         }
     }
 
-    assignFoodTarget(world, entityId) {
+    assignFoodTarget(world, eventBus, entityId) {
         const position = world.getComponent(entityId, 'position');
         const candidates = world
             .query('food', 'position')
@@ -42,8 +42,14 @@ export class EatingSystem {
             const path = findPath(this.terrain, position, foodPosition);
             if (path) {
                 world.addComponent(entityId, 'foodTarget', { target: foodId, path });
+                world.removeComponent(entityId, 'noFoodAccess');
                 return;
             }
+        }
+        // aucune nourriture atteignable : il continuera de s'affamer
+        if (!world.getComponent(entityId, 'noFoodAccess')) {
+            eventBus.emit(EVENTS.DWARF_CANNOT_REACH_FOOD, { entityId });
+            world.addComponent(entityId, 'noFoodAccess', {});
         }
     }
 

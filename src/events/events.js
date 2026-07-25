@@ -30,4 +30,7 @@ export const EVENTS = {
     CORPSE_BURIED: 'corpse.buried',
     CORPSE_ROTTED: 'corpse.rotted',
     DWARF_EQUIPPED: 'dwarf.equipped',
+    DWARF_ISOLATED_FROM_WATER: 'dwarf.isolated-from-water',
+    DWARF_CANNOT_REACH_FOOD: 'dwarf.cannot-reach-food',
+    JOB_UNREACHABLE: 'job.unreachable',
 };

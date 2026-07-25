@@ -33,6 +33,7 @@ import { GoblinSpawnSystem } from './systems/goblinSpawnSystem.js';
 import { MigrantSystem } from './systems/migrantSystem.js';
 import { HostileSystem } from './systems/hostileSystem.js';
 import { CombatSystem } from './systems/combatSystem.js';
+import { JobAlertSystem } from './systems/jobAlertSystem.js';
 import { Renderer } from './ui/renderer.js';
 import { EventLog } from './ui/eventLog.js';
 import { DesignationControl } from './ui/designation.js';
@@ -120,6 +121,7 @@ async function main() {
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, items.corpse));
     world.registerSystem(new MovementSystem(terrain));
+    world.registerSystem(new JobAlertSystem(jobBoard));
 
     const randomTile = () => spawnRegion[Math.floor(Math.random() * spawnRegion.length)];
     for (const name of creatures.dwarf.names.slice(0, STARTING_DWARVES)) {

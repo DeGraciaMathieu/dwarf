@@ -31,6 +31,7 @@ import { FishSystem } from '../src/systems/fishSystem.js';
 import { HostileSystem } from '../src/systems/hostileSystem.js';
 import { CombatSystem } from '../src/systems/combatSystem.js';
 import { MovementSystem } from '../src/systems/movementSystem.js';
+import { JobAlertSystem } from '../src/systems/jobAlertSystem.js';
 
 const loadData = (file) =>
     JSON.parse(readFileSync(new URL(`../src/data/${file}`, import.meta.url)));
@@ -120,6 +121,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, data.items.corpse));
     world.registerSystem(new MovementSystem(terrain));
+    world.registerSystem(new JobAlertSystem(jobBoard));
 
     return {
         world,

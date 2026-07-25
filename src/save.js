@@ -7,6 +7,7 @@ const VOLATILE_COMPONENTS = [
     'bedTarget',
     'drinkTarget',
     'noWaterAccess',
+    'noFoodAccess',
     'fleeing',
     'fighting',
     'starving',

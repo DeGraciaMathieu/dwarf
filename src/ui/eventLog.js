@@ -2,6 +2,19 @@ import { EVENTS } from '../events/events.js';
 
 const MAX_LINES = 50;
 
+const JOB_LABELS = {
+    dig: 'creuser',
+    chop: 'abattre',
+    haul: 'transporter',
+    plant: 'semer',
+    harvest: 'récolter',
+    build: 'bâtir',
+    craft: 'atelier',
+    fish: 'pêcher',
+    equip: "s'équiper",
+    bury: 'enterrer',
+};
+
 export class EventLog {
     constructor(element, eventBus, world) {
         this.element = element;
@@ -117,11 +130,24 @@ export class EventLog {
             const gear = slot === 'weapon' ? 's\'arme' : 'enfile une armure';
             this.append(`${dwarfName(entityId)} ${gear}.`);
         });
+        eventBus.on(EVENTS.DWARF_ISOLATED_FROM_WATER, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} n'a plus accès à l'eau !`, true);
+        });
+        eventBus.on(EVENTS.DWARF_CANNOT_REACH_FOOD, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} ne peut atteindre aucune nourriture !`, true);
+        });
+        eventBus.on(EVENTS.JOB_UNREACHABLE, ({ job }) => {
+            const label = JOB_LABELS[job.type] ?? job.type;
+            this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true);
+        });
     }
 
-    append(message) {
+    append(message, alert = false) {
         const line = document.createElement('li');
         line.textContent = message;
+        if (alert) {
+            line.className = 'alert';
+        }
         this.element.prepend(line);
         while (this.element.children.length > MAX_LINES) {
             this.element.lastChild.remove();
