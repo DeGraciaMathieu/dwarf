@@ -45,8 +45,12 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} a fait une récolte.`);
         });
-        eventBus.on(EVENTS.GOBLIN_ARRIVED, () => {
-            this.append('Un gobelin est apparu aux abords de la carte !');
+        eventBus.on(EVENTS.GOBLIN_ARRIVED, ({ count }) => {
+            this.append(
+                count > 1
+                    ? `Une bande de ${count} gobelins déferle sur la région !`
+                    : 'Un gobelin est apparu aux abords de la carte !'
+            );
         });
         eventBus.on(EVENTS.MIGRANT_ARRIVED, ({ name }) => {
             this.append(`Un migrant est arrivé : ${name} !`);

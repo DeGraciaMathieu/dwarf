@@ -2,28 +2,68 @@ import { EVENTS } from '../events/events.js';
 import { spawnFromDefinition } from '../core/spawn.js';
 import { randomEdgeTile } from '../core/terrain.js';
 
-const FIRST_SPAWN_TICK = 500;
-const SPAWN_INTERVAL = 750;
+const FIRST_WAVE_DELAY = 500;
+const BASE_INTERVAL = 750;
+const MIN_INTERVAL = 400;
+const INTERVAL_STEP = 50;
+const MAX_WAVE_SIZE = 6;
+const POPULATION_COMFORT = 5;
 
 export class GoblinSpawnSystem {
     constructor(terrain, goblinDefinition) {
         this.terrain = terrain;
         this.goblinDefinition = goblinDefinition;
-        this.ticks = 0;
-        this.nextSpawn = FIRST_SPAWN_TICK;
     }
 
     update(world, eventBus) {
-        this.ticks++;
-        if (this.ticks < this.nextSpawn) {
+        const invasion = this.invasionState(world);
+        invasion.countdown--;
+        if (invasion.countdown > 0) {
             return;
         }
-        this.nextSpawn = this.ticks + SPAWN_INTERVAL;
-        const tile = randomEdgeTile(this.terrain, { hostile: true });
-        if (!tile) {
+        invasion.wave++;
+        invasion.countdown = Math.max(MIN_INTERVAL, BASE_INTERVAL - invasion.wave * INTERVAL_STEP);
+
+        const population = world.query('worker').length;
+        if (population === 0) {
             return;
         }
-        const goblinId = spawnFromDefinition(world, this.goblinDefinition, tile);
-        eventBus.emit(EVENTS.GOBLIN_ARRIVED, { entityId: goblinId });
+        const anchor = randomEdgeTile(this.terrain, { hostile: true });
+        if (!anchor) {
+            return;
+        }
+        const size = this.waveSize(invasion.wave, population);
+        for (let i = 0; i < size; i++) {
+            spawnFromDefinition(world, this.goblinDefinition, this.nearAnchor(anchor, i));
+        }
+        eventBus.emit(EVENTS.GOBLIN_ARRIVED, { count: size });
+    }
+
+    invasionState(world) {
+        const existing = world.query('invasion')[0];
+        if (existing !== undefined) {
+            return world.getComponent(existing, 'invasion');
+        }
+        const stateId = world.createEntity();
+        const state = { wave: 0, countdown: FIRST_WAVE_DELAY };
+        world.addComponent(stateId, 'invasion', state);
+        return state;
+    }
+
+    waveSize(wave, population) {
+        const fromWave = Math.floor((wave - 1) / 2);
+        const fromPopulation = Math.floor(Math.max(0, population - POPULATION_COMFORT) / 4);
+        return Math.min(MAX_WAVE_SIZE, 1 + fromWave + fromPopulation);
+    }
+
+    nearAnchor(anchor, index) {
+        if (index === 0) {
+            return anchor;
+        }
+        const dx = (index % 3) - 1;
+        const dy = Math.floor(index / 3) - 1;
+        const x = anchor.x + dx;
+        const y = anchor.y + dy;
+        return this.terrain.isWalkable(x, y, { hostile: true }) ? { x, y } : anchor;
     }
 }
