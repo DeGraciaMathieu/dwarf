@@ -1,6 +1,6 @@
 # PRD A05 — Barre de moral/santé sur le canvas
 
-**Lot :** A — Lisibilité · **Point :** 5 · **Statut :** À faire · **Impact / Effort :** Moyen / Faible
+**Lot :** A — Lisibilité · **Point :** 5 · **Statut :** ✅ Fait · **Impact / Effort :** Moyen / Faible
 
 ## Problème
 
