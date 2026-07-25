@@ -12,13 +12,13 @@ Toute la politique comportementale des nains vit dans `src/systems/arbiterSystem
 
 | Activité | Score | Exécutant | Condition |
 |---|---|---|---|
-| `fight` | 200 | `fightSystem.js` (+ frappes dans `combatSystem.js`) | gobelin ≤ 6 cases ET courageux (`health/max >= combat.courage`) |
+| `fight` | 200 | `fightSystem.js` (+ frappes dans `combatSystem.js`, modulées par l'`equipment` : arme = bonus de dégâts, armure = atténuation `max(1, dégâts − défense)`) | gobelin ≤ 6 cases ET courageux (`health/max >= combat.courage`) |
 | `flee` | 200 | `fleeSystem.js` | gobelin ≤ 6 cases ET pas courageux |
 | `tantrum` | 150 | `tantrumSystem.js` | `morale.value <= morale.tantrum` (hystérésis : sort à `tantrum + 15`) |
 | `eat` | valeur de faim (≤ 100) | `eatingSystem.js` | faim ≥ seuil ET nourriture existante (`query('food','position')`) |
 | `drink` | valeur de soif (≤ 100) | `drinkSystem.js` | soif ≥ seuil ET pas de marqueur `noWaterAccess` (renoncement ~50 ticks quand aucune berge n'est atteignable — évite le gel) |
 | `sleep` | `max(fatigue, seuil)` (≤ 120) | `sleepSystem.js` | fatigue ≥ seuil, hystérésis via composant `sleeping` (dort jusqu'à fatigue 0) |
-| `work` | 10 | `jobAssignmentSystem.js` + systèmes de jobs | a un `currentJob` OU `jobBoard.hasAvailableJobs()` |
+| `work` | 10 | `jobAssignmentSystem.js` + systèmes de jobs (dont `equipSystem.js` : s'armer/s'armurer est un job `equip` fait en temps de travail) | a un `currentJob` OU `jobBoard.hasAvailableJobs()` |
 | `wander` | 1 | `movementSystem.js` | toujours (repli) |
 
 Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSystem.js` — mini-arbitre séparé.

@@ -46,6 +46,7 @@ auto_invoke: true
 | `tests/eventLog.test.js` | journal : résilience aux entités détruites avant le flux (mort dans le tick de l'annonce) |
 | `tests/graves.test.js` | tombes : enterrement d'un cadavre, exclusion du haul, putréfaction + moral, apaisement à l'enterrement |
 | `tests/masonry.test.js` | taille de pierre : atelier de taille bâti à la menuiserie, meuble taillé dans la pierre, ingrédient `stone` exigé |
+| `tests/forge.test.js` | forge : épée forgée depuis le minerai, nain qui s'équipe, arme/armure en combat, équipement lâché à la mort |
 
 ## Ajouter un test
 

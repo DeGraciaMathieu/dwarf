@@ -13,10 +13,10 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | Fichier | Contient | Chargé par |
 |---|---|---|
 | `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
-| `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor` | `main.js`, systèmes producteurs |
+| `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `sword`, `mail` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `ore`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
-| `recipes.json` | `workshop`, `brewery`, `masonry`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `beer` — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
+| `recipes.json` | `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `sword`, `mail`, `beer` — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
 
 ## Quel composant déclenche quel système
 
@@ -34,9 +34,11 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `buildMaterial` | consommé par les jobs `build` et `craft` (ingrédient par défaut) |
 | `brewable` | ingrédient des recettes `ingredient: 'brewable'` (bière) |
 | `stone` | pierre lâchée en creusant : à la fois `buildMaterial` (murs) et ingrédient des recettes `ingredient: 'stone'` (atelier de taille) |
-| `ore` | minerai lâché en creusant une tuile `ore` (veine) : rangé au stock, destiné aux recettes `ingredient: 'ore'` (forge, à venir) |
+| `ore` | minerai lâché en creusant une tuile `ore` (veine) : rangé au stock, ingrédient des recettes `ingredient: 'ore'` (forge) |
+| `weapon` / `armor` | équipement forgé (`weapon {damage}`, `armor {defense}`) ; sans `item` (non haulé) ; ramassé par un job `equip` et référencé par `equipment` |
+| `equipment` | slots d'un nain `{weapon, armor}` (ids des objets portés) ; lu par `combatSystem` (bonus d'arme, atténuation d'armure), lâché au sol à la mort |
 | `bed` | dortoir : récupération ×`recoveryMultiplier`, soin `heal`/tick (`sleepSystem`) |
-| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`, `masonry`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery` et `masonry` (`workshop: carpentry` → exigent un atelier de menuiserie) |
+| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`, `masonry`, `forge`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery`/`masonry`/`forge` (`workshop: carpentry` → exigent un atelier de menuiserie) |
 | `corpse` | dépouille qui vieillit (`decay`) : au seuil elle passe `rotten` (malus de moral de proximité) ; un job `bury` vers la zone `graves` la transforme en `buried`. Portée par `item` mais ignorée du haul générique (`graveSystem`) |
 | `crop` | pousse puis se récolte (`farmSystem`) |
 | `identity` | nom affiché (journal, inspection) — nains uniquement |
@@ -56,7 +58,9 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 **Ajouter un consommable fabriqué** (modèle : la bière) :
 1. `items.json` : le produit (`item` + composant consommé, ex. `drink`) et l'atelier typé si nouveau (`workshop: {type}`, sans `item` : il n'est pas rangé au stock). Le poser passe par une recette `craft` (`produces: <atelier>`, sans champ `workshop` s'il se construit sur le chantier) + un bouton `data-tool="craft:<atelier>"`.
 2. `recipes.json` : `{label, craftTicks, produces, ingredient (composant du matériau), workshop, consumable: true}` — pas de phase d'installation : le produit est posé au sol à l'atelier (événement `ITEM_CRAFTED`) puis rangé au stock par le haul.
-3. Le piloter par objectif de stock : ajouter `{recipe, target}` à la liste `objectives` de `main.js` — le `StewardSystem` poste/retire les jobs `craft` pour maintenir la cible, réglable dans le panneau Objectifs (`objectivesPanel.js`). Aucun nouveau code : toute recette `consumable: true` est éligible.
+3. Le piloter par objectif de stock : ajouter `{recipe, target}` à la liste `objectives` de `main.js` — le `StewardSystem` poste/retire les jobs `craft` pour maintenir la cible, réglable dans le panneau Objectifs (`objectivesPanel.js`). Aucun nouveau code : toute recette `consumable: true` est éligible. Le comptage (`countStock`) ignore `position`, donc un objet **porté/équipé** (épée, cotte de mailles) compte dans le stock — l'intendant ne surproduit pas.
+
+Les **armes/armures** suivent ce modèle : recettes `consumable: true` (forgées et déposées à la forge, sans case à désigner), pilotées par un objectif ; un nain oisif les ramasse ensuite via un job `equip`. Elles n'ont pas de bouton d'outil manuel.
 
 **Ajouter un type de tuile** : `tiles.json` (`walkable` correct ; `blocksHostiles: true` pour bloquer les hostiles seulement — `isWalkable(x, y, {hostile})` et `findPath(..., {hostile: true})` en tiennent compte) + le placer dans la génération (`terrain.js`) ou via une recette `installsTile`.
 
