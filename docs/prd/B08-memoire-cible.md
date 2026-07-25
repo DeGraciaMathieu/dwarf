@@ -1,6 +1,6 @@
 # PRD B08 — Mémoire de la cible (IA gobeline)
 
-**Lot :** B — Tension de combat · **Point :** 8 · **Statut :** À faire · **Impact / Effort :** Moyen / Faible
+**Lot :** B — Tension de combat · **Point :** 8 · **Statut :** ✅ Fait · **Impact / Effort :** Moyen / Faible
 
 ## Problème
 

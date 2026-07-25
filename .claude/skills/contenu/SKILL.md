@@ -28,7 +28,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |
 | `worker` | arbitré par l'arbitre, prend des jobs, ciblé par les gobelins |
 | `wander` | erre quand `activity === 'wander'` |
-| `hostile` | poursuit les workers (`hostileSystem`), déclenche fuite/combat |
+| `hostile` | poursuit les workers (`hostileSystem`) ; garde une `chaseMemory` (dernière position vue + TTL) pour poursuivre hors de vue avant d'oublier ; déclenche fuite/combat |
 | `item` | transportable au stock, cassable en crise de nerfs |
 | `food` | mangeable (détruit au repas) |
 | `drink` | buvable : un assoiffé le préfère à la berge, +15 de moral (`drinkSystem`) |
