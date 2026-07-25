@@ -16,8 +16,9 @@ export class Renderer {
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, terrain.width * tileSize, terrain.height * tileSize);
 
-        ctx.fillStyle = '#16283c';
-        for (const { x, y } of this.stockpiles.list()) {
+        const stockpileColors = { food: '#3c2a16', materials: '#28321a' };
+        for (const { x, y, kind } of this.stockpiles.list()) {
+            ctx.fillStyle = stockpileColors[kind] ?? '#16283c';
             ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
         }
         ctx.fillStyle = '#2e2618';

@@ -1,6 +1,11 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 
+const STOCKPILE_KINDS = {
+    food: ['food', 'drink'],
+    materials: ['buildMaterial'],
+};
+
 export class HaulSystem {
     constructor(jobBoard, terrain, stockpiles) {
         this.jobBoard = jobBoard;
@@ -63,11 +68,26 @@ export class HaulSystem {
 
     postHaulJobs(world) {
         const pendingJobs = this.jobBoard.jobs.filter((job) => job.type === 'haul');
-        let capacity = this.freeStockpileTiles(world).length - pendingJobs.length;
-        for (const itemId of world.query('item', 'position')) {
-            if (capacity <= 0) {
-                break;
+        const pools = { food: 0, materials: 0, general: 0 };
+        for (const tile of this.freeStockpileTiles(world)) {
+            pools[tile.kind ?? 'general']++;
+        }
+        const reserveTileFor = (itemId) => {
+            const kind = this.stockpileKindFor(world, itemId);
+            if (kind && pools[kind] > 0) {
+                pools[kind]--;
+                return true;
             }
+            if (pools.general > 0) {
+                pools.general--;
+                return true;
+            }
+            return false;
+        };
+        for (const job of pendingJobs) {
+            reserveTileFor(job.itemId);
+        }
+        for (const itemId of world.query('item', 'position')) {
             const position = world.getComponent(itemId, 'position');
             if (this.stockpiles.has(position.x, position.y)) {
                 continue;
@@ -75,9 +95,27 @@ export class HaulSystem {
             if (pendingJobs.some((job) => job.itemId === itemId)) {
                 continue;
             }
+            if (!reserveTileFor(itemId)) {
+                continue;
+            }
             this.jobBoard.post({ type: 'haul', itemId, target: { x: position.x, y: position.y } });
-            capacity--;
         }
+    }
+
+    stockpileKindFor(world, itemId) {
+        for (const [kind, components] of Object.entries(STOCKPILE_KINDS)) {
+            if (components.some((name) => world.getComponent(itemId, name))) {
+                return kind;
+            }
+        }
+        return null;
+    }
+
+    tileAccepts(world, itemId, kind) {
+        if (!kind) {
+            return true;
+        }
+        return STOCKPILE_KINDS[kind].some((name) => world.getComponent(itemId, name));
     }
 
     freeStockpileTiles(world) {
@@ -113,7 +151,7 @@ export class HaulSystem {
         if (status !== 'arrived') {
             return;
         }
-        const destination = this.nearestFreeTile(world, itemPosition);
+        const destination = this.nearestFreeTile(world, itemPosition, itemId);
         if (!destination) {
             this.jobBoard.complete(currentJob.job);
             world.removeComponent(entityId, 'currentJob');
@@ -161,17 +199,24 @@ export class HaulSystem {
         }
     }
 
-    nearestFreeTile(world, position) {
+    nearestFreeTile(world, position, itemId) {
+        // la zone typée qui accepte l'objet passe avant la générale, même plus proche
         let best = null;
         let bestDistance = Infinity;
+        let bestSpecific = false;
         for (const tile of this.freeStockpileTiles(world)) {
+            if (!this.tileAccepts(world, itemId, tile.kind)) {
+                continue;
+            }
+            const specific = Boolean(tile.kind);
             const distance = Math.max(
                 Math.abs(tile.x - position.x),
                 Math.abs(tile.y - position.y)
             );
-            if (distance < bestDistance) {
+            if (specific !== bestSpecific ? specific : distance < bestDistance) {
                 bestDistance = distance;
                 best = tile;
+                bestSpecific = specific;
             }
         }
         return best;

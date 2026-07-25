@@ -114,8 +114,8 @@ export class DesignationControl {
             if (!this.jobBoard.hasJobAt(x, y, 'build')) {
                 this.jobBoard.post({ type: 'build', ghost: '#', target: { x, y } });
             }
-        } else if (this.mode === 'stockpile') {
-            this.stockpiles.add(x, y);
+        } else if (this.mode === 'stockpile' || this.mode.startsWith('stockpile:')) {
+            this.stockpiles.add(x, y, this.mode.split(':')[1]);
         } else if (this.mode === 'farm') {
             this.farms.add(x, y);
         } else if (this.workshopDefinitions[this.mode]) {

@@ -3,8 +3,8 @@ export class Zone {
         this.tiles = new Map();
     }
 
-    add(x, y) {
-        this.tiles.set(`${x},${y}`, { x, y });
+    add(x, y, kind) {
+        this.tiles.set(`${x},${y}`, { x, y, kind });
     }
 
     has(x, y) {

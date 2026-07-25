@@ -67,6 +67,51 @@ test('haul : la bûche est rangée au stock et les réservations libérées', ()
     assert.equal(colony.jobBoard.jobs.length, 0);
 });
 
+test('haul : chaque objet rejoint la zone de stockage qui l accepte', () => {
+    const colony = setupColony(openTerrain(20, 5));
+    addDwarf(colony.world, 0, 0);
+    colony.stockpiles.add(16, 0, 'food');
+    colony.stockpiles.add(16, 4, 'materials');
+    addBread(colony.world, 8, 2);
+    addLog(colony.world, 10, 2);
+    colony.run(120);
+    assert.equal(entitiesAt(colony.world, 'food', 16, 0).length, 1);
+    assert.equal(entitiesAt(colony.world, 'buildMaterial', 16, 4).length, 1);
+});
+
+test('haul : la zone spécifique passe avant la zone générale plus proche', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    addDwarf(colony.world, 0, 0);
+    colony.stockpiles.add(6, 0);
+    colony.stockpiles.add(18, 2, 'food');
+    addBread(colony.world, 5, 0);
+    colony.run(80);
+    assert.equal(entitiesAt(colony.world, 'food', 18, 2).length, 1);
+});
+
+test('haul : la zone générale sert de repli quand la zone spécifique est pleine', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    addDwarf(colony.world, 0, 0);
+    colony.stockpiles.add(12, 0, 'food');
+    colony.stockpiles.add(18, 2);
+    addBread(colony.world, 12, 0);
+    addBread(colony.world, 6, 0);
+    colony.run(80);
+    assert.equal(entitiesAt(colony.world, 'food', 18, 2).length, 1);
+});
+
+test('haul : un objet sans catégorie n est pas rangé dans une zone filtrée', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    addDwarf(colony.world, 0, 0);
+    colony.stockpiles.add(18, 2, 'materials');
+    const trinket = colony.world.createEntity();
+    colony.world.addComponent(trinket, 'position', { x: 10, y: 0 });
+    colony.world.addComponent(trinket, 'item', {});
+    colony.run(40);
+    assert.equal(entitiesAt(colony.world, 'item', 10, 0).length, 1);
+    assert.equal(colony.jobBoard.jobs.length, 0);
+});
+
 test('haul : le matériau d un craft abandonné en cours de portage finit rangé au stock', () => {
     const colony = setupColony(openTerrain(20, 3));
     addDwarf(colony.world, 0, 0);

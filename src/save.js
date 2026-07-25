@@ -62,7 +62,7 @@ export function restoreGame({ world, terrain, jobBoard, stockpiles, farms, fishi
 
 function restoreZone(zone, savedTiles) {
     zone.tiles.clear();
-    for (const { x, y } of savedTiles) {
-        zone.add(x, y);
+    for (const { x, y, kind } of savedTiles) {
+        zone.add(x, y, kind);
     }
 }
