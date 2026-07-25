@@ -16,7 +16,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `items.json` | `bread`, `log`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `bed`, `door`, `bridge` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
-| `recipes.json` | `bed`, `door`, `bridge`, `beer` — `{label, ghost?, craftTicks, produces, workshop, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
+| `recipes.json` | `workshop`, `brewery`, `bed`, `door`, `bridge`, `beer` — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
 
 ## Quel composant déclenche quel système
 
@@ -34,7 +34,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `buildMaterial` | consommé par les jobs `build` et `craft` (ingrédient par défaut) |
 | `brewable` | ingrédient des recettes `ingredient: 'brewable'` (bière) |
 | `bed` | dortoir : récupération ×`recoveryMultiplier`, soin `heal`/tick (`sleepSystem`) |
-| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes) |
+| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery` (`workshop: carpentry` → exige un atelier de menuiserie) |
 | `crop` | pousse puis se récolte (`farmSystem`) |
 | `identity` | nom affiché (journal, inspection) — nains uniquement |
 
@@ -51,7 +51,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 4. Si le composant fonctionnel est nouveau, écrire le système qui l'exploite (modèle : lits dans `sleepSystem.js`).
 
 **Ajouter un consommable fabriqué** (modèle : la bière) :
-1. `items.json` : le produit (`item` + composant consommé, ex. `drink`) et l'atelier typé si nouveau (`workshop: {type}` — le poser passe par `workshopDefinitions` dans `designation.js` + un bouton `data-tool`).
+1. `items.json` : le produit (`item` + composant consommé, ex. `drink`) et l'atelier typé si nouveau (`workshop: {type}`, sans `item` : il n'est pas rangé au stock). Le poser passe par une recette `craft` (`produces: <atelier>`, sans champ `workshop` s'il se construit sur le chantier) + un bouton `data-tool="craft:<atelier>"`.
 2. `recipes.json` : `{label, craftTicks, produces, ingredient (composant du matériau), workshop, consumable: true}` — pas de phase d'installation : le produit est posé au sol à l'atelier (événement `ITEM_CRAFTED`) puis rangé au stock par le haul.
 3. Le piloter par objectif de stock : ajouter `{recipe, target}` à la liste `objectives` de `main.js` — le `StewardSystem` poste/retire les jobs `craft` pour maintenir la cible, réglable dans le panneau Objectifs (`objectivesPanel.js`). Aucun nouveau code : toute recette `consumable: true` est éligible.
 
