@@ -60,6 +60,15 @@ canvas {
     gap: 8px;
 }
 
+#hud {
+    display: flex;
+    gap: 16px;
+    padding: 6px 10px;
+    background: #222;
+    border: 1px solid #444;
+    font-size: 13px;
+}
+
 #controls {
     display: flex;
     gap: 8px;

@@ -59,6 +59,18 @@ export class JobBoard {
         return this.jobs.some((job) => job.claimedBy === null && !job.unreachable);
     }
 
+    countAvailable() {
+        return this.jobs.filter((job) => job.claimedBy === null && !job.unreachable).length;
+    }
+
+    countClaimed() {
+        return this.jobs.filter((job) => job.claimedBy !== null).length;
+    }
+
+    countUnreachable() {
+        return this.jobs.filter((job) => job.unreachable).length;
+    }
+
     hasJobAt(x, y, type) {
         return this.jobs.some(
             (job) => job.type === type && job.target.x === x && job.target.y === y

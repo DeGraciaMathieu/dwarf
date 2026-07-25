@@ -50,6 +50,19 @@ export class GoblinSpawnSystem {
         return state;
     }
 
+    // lecture seule pour le HUD : nombre de vagues passées et ticks avant la prochaine
+    currentWave(world) {
+        const existing = world.query('invasion')[0];
+        return existing !== undefined ? world.getComponent(existing, 'invasion').wave : 0;
+    }
+
+    nextWaveCountdown(world) {
+        const existing = world.query('invasion')[0];
+        return existing !== undefined
+            ? world.getComponent(existing, 'invasion').countdown
+            : FIRST_WAVE_DELAY;
+    }
+
     waveSize(wave, population) {
         const fromWave = Math.floor((wave - 1) / 2);
         const fromPopulation = Math.floor(Math.max(0, population - POPULATION_COMFORT) / 4);

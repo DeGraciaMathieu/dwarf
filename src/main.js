@@ -39,6 +39,7 @@ import { EventLog } from './ui/eventLog.js';
 import { DesignationControl } from './ui/designation.js';
 import { InspectionPanel } from './ui/inspectionPanel.js';
 import { ObjectivesPanel } from './ui/objectivesPanel.js';
+import { Hud } from './ui/hud.js';
 
 const GRID = { width: 40, height: 25 };
 const TILE_SIZE = 20;
@@ -93,7 +94,8 @@ async function main() {
         ])
     );
     world.registerSystem(new MoraleSystem(eventBus));
-    world.registerSystem(new GoblinSpawnSystem(terrain, creatures.goblin));
+    const goblinSpawn = new GoblinSpawnSystem(terrain, creatures.goblin);
+    world.registerSystem(goblinSpawn);
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     const objectives = [
         { recipe: 'beer', target: 3 },
@@ -137,6 +139,7 @@ async function main() {
     const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world);
     const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
+    const hud = new Hud(document.getElementById('hud'), world, jobBoard, goblinSpawn);
     new DesignationControl({
         canvas,
         toolbar: document.getElementById('toolbar'),
@@ -152,13 +155,18 @@ async function main() {
         onDwarfClick: (x, y) => inspection.selectAt(x, y),
     });
 
+    let tick = 0;
     const loop = startLoop({
         ticksPerSecond: TICKS_PER_SECOND,
-        onTick: () => world.tick(eventBus),
+        onTick: () => {
+            tick++;
+            world.tick(eventBus);
+        },
         onRender: () => {
             renderer.render(world);
             inspection.render();
             objectivesPanel.render();
+            hud.render(tick);
         },
     });
 
