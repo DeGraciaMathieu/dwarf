@@ -38,6 +38,7 @@ Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSy
 ## Besoins et moral
 
 - Besoins (faim, fatigue) : composants data (`creatures.json`) + `needsSystem.js` générique (configuré dans `main.js` : composant → événement de seuil). **Ajouter un besoin = une entrée JSON + une ligne de config**, pas un nouveau système.
+- **Inanition** (`starvationSystem.js`) : faim au maximum → santé −0,15/tick et moral −0,2/tick (marqueur `starving` + événement `dwarf.starving` à l'entrée), mort de faim via `kill()` de `death.js` avec `cause: 'starvation'`. Manger stoppe l'érosion.
 - Moral : `moraleSystem.js` consomme les événements du bus (repas +10, réveil complet +10, victoire +15, blessure −10, faim −5, fuite −5, mort vue à ≤ 8 cases −25 / apprise −8) puis dérive vers `baseline`. Moral < `low` → travail à mi-vitesse (`workEffort.js`). Moral ≤ `tantrum` → crise.
 - **N'ajoute jamais un effet de moral en modifiant un émetteur** : abonne `moraleSystem.js` à l'événement existant.
 

@@ -13,12 +13,12 @@ test('colonie : creuser la montagne et vivre 1200 ticks sur une carte générée
         const id = spawnFromDefinition(colony.world, data.creatures.dwarf, pick(i));
         colony.world.addComponent(id, 'identity', { name: `Nain${i}` });
     }
-    for (let i = 0; i < 8; i++) {
+    for (let i = 0; i < 14; i++) {
         spawnFromDefinition(colony.world, data.items.bread, pick(i + 40));
     }
     region
         .filter(({ x, y }) => terrain.get(x, y) === 'floor')
-        .slice(0, 3)
+        .slice(0, 5)
         .forEach(({ x, y }) => colony.farms.add(x, y));
 
     const regionSet = new Set(region.map((p) => p.y * 40 + p.x));

@@ -99,7 +99,10 @@ test('sauvegarde : la colonie reprend sa vie après restauration', () => {
     addDwarf(colony.world, 4, 2, { hungerRate: 1 });
     addGoblin(colony.world, 18, 4);
     colony.farms.add(10, 2);
+    colony.farms.add(11, 2);
     colony.stockpiles.add(15, 1);
+    addBread(colony.world, 6, 1);
+    addBread(colony.world, 7, 1);
     colony.run(100);
 
     const snapshot = roundTrip(colony);

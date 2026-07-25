@@ -6,6 +6,7 @@ import { JobBoard } from '../src/core/jobBoard.js';
 import { Zone } from '../src/core/zones.js';
 import { EVENTS } from '../src/events/events.js';
 import { NeedsSystem } from '../src/systems/needsSystem.js';
+import { StarvationSystem } from '../src/systems/starvationSystem.js';
 import { MoraleSystem } from '../src/systems/moraleSystem.js';
 import { GoblinSpawnSystem } from '../src/systems/goblinSpawnSystem.js';
 import { MigrantSystem } from '../src/systems/migrantSystem.js';
@@ -61,6 +62,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
         ])
     );
+    world.registerSystem(new StarvationSystem(jobBoard, data.items.corpse));
     world.registerSystem(new MoraleSystem(bus));
     if (goblinSpawner) {
         world.registerSystem(new GoblinSpawnSystem(terrain, data.creatures.goblin));

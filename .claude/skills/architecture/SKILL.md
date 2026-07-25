@@ -29,7 +29,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Needs → Morale → GoblinSpawn → Migrant → Arbiter → JobAssignment → Eating → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Hostile → Combat → Movement`
+`Needs → Starvation → Morale → GoblinSpawn → Migrant → Arbiter → JobAssignment → Eating → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Hostile → Combat → Movement`
 
 Logique : les besoins montent, le moral encaisse, l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
 
@@ -52,3 +52,4 @@ Logique : les besoins montent, le moral encaisse, l'arbitre décide, les exécut
 - **Marqueur + événement de transition** : pour signaler l'entrée/sortie d'un état (fuite, rage, sommeil), poser/retirer un composant-marqueur (`fleeing`, `tantruming`, `sleeping`) et n'émettre l'événement qu'à la transition.
 - **Hystérésis** : un état qui ne doit pas osciller (sommeil, crise) a un seuil d'entrée et un seuil de sortie distincts, arbitrés dans `arbiterSystem.js`.
 - **Objets portés** : composant `carrying {itemId, destination?}` ; l'objet porté perd son composant `position`. Le lâcher générique est géré par `HaulSystem.dropOrphanedItems` — un job qui légitime un port doit exposer l'id via `job.itemId`, `job.producedId` ou `currentJob.materialId`.
+- **La mort passe par `kill()` de `src/systems/death.js`** quelle qu'en soit la cause (combat, inanition, causes futures) : cadavre, job relâché, charge lâchée, événement `dwarf.died {name, x, y, cause}` (ou `goblin.slain`). Ne jamais dupliquer cette logique.

@@ -37,6 +37,7 @@ auto_invoke: true
 | `tests/save.test.js` | sauvegarde : aller-retour, objets portés, volatils vs hystérésis, reprise de simulation |
 | `tests/doors.test.js` | portes : marchabilité selon l'allégeance, fabrication en tuile, forteresse étanche |
 | `tests/migrants.test.js` | migrants : conditions d'attractivité, plafond, colonie morte |
+| `tests/starvation.test.js` | inanition : agonie, sauvetage, érosion du moral, deuil des témoins |
 
 ## Ajouter un test
 
