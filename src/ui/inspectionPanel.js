@@ -6,18 +6,20 @@ const ACTIVITY_LABELS = {
     drink: 'Va boire',
     sleep: 'Dort',
     work: 'Travaille',
-    wander: 'Erre',
+    wander: 'Oisif',
 };
 
 const JOB_LABELS = {
-    dig: 'creuser un mur',
-    chop: 'abattre un arbre',
-    haul: 'transporter un objet',
-    plant: 'semer',
-    harvest: 'récolter',
-    build: 'bâtir un mur',
-    craft: "travailler à l'atelier",
-    fish: 'pêcher',
+    dig: 'creuse un mur',
+    chop: 'abat un arbre',
+    haul: 'transporte un objet',
+    plant: 'sème',
+    harvest: 'récolte',
+    build: 'bâtit un mur',
+    craft: "travaille à l'atelier",
+    fish: 'pêche',
+    equip: "s'équipe",
+    bury: 'enterre un corps',
 };
 
 export class InspectionPanel {
@@ -48,12 +50,7 @@ export class InspectionPanel {
         }
         const activity = this.world.getComponent(this.selectedId, 'activity');
         const currentJob = this.world.getComponent(this.selectedId, 'currentJob');
-        let status = ACTIVITY_LABELS[activity?.type] ?? '—';
-        if (activity?.type === 'work') {
-            status = currentJob
-                ? `Travaille : ${JOB_LABELS[currentJob.job.type] ?? currentJob.job.type}`
-                : 'Cherche du travail';
-        }
+        const status = this.describeActivity(activity, currentJob);
         const health = this.world.getComponent(this.selectedId, 'health');
         const morale = this.world.getComponent(this.selectedId, 'morale');
         this.element.innerHTML = `
@@ -65,6 +62,26 @@ export class InspectionPanel {
             ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
         `;
+    }
+
+    describeActivity(activity, currentJob) {
+        if (activity?.type !== 'work') {
+            return ACTIVITY_LABELS[activity?.type] ?? '—';
+        }
+        if (!currentJob) {
+            return 'Cherche du travail';
+        }
+        const label = JOB_LABELS[currentJob.job.type] ?? currentJob.job.type;
+        const target = currentJob.job.target;
+        const where = target ? ` (${target.x}, ${target.y})` : '';
+        return `Travaille : ${label}${where} — ${this.jobStep(currentJob)}`;
+    }
+
+    jobStep(currentJob) {
+        if (this.world.getComponent(this.selectedId, 'carrying')) {
+            return 'livre';
+        }
+        return currentJob.progress > 0 ? 'en cours' : 'approche';
     }
 
     gauge(label, need, lowIsBad = false) {
