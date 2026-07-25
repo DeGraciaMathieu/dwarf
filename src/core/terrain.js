@@ -100,6 +100,28 @@ function scatterPatches(tiles, width, height, boundary, { count, minRadius, maxR
     }
 }
 
+const EDGE_MARGIN = 3;
+
+export function randomEdgeTile(terrain, movement = {}) {
+    const candidates = [];
+    for (let y = 0; y < terrain.height; y++) {
+        for (let x = 0; x < terrain.width; x++) {
+            const nearEdge =
+                x < EDGE_MARGIN ||
+                y < EDGE_MARGIN ||
+                x >= terrain.width - EDGE_MARGIN ||
+                y >= terrain.height - EDGE_MARGIN;
+            if (nearEdge && terrain.isWalkable(x, y, movement)) {
+                candidates.push({ x, y });
+            }
+        }
+    }
+    if (candidates.length === 0) {
+        return null;
+    }
+    return candidates[Math.floor(Math.random() * candidates.length)];
+}
+
 export function largestWalkableRegion(terrain) {
     const visited = new Set();
     let largest = [];
