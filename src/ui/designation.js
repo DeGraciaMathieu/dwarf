@@ -80,6 +80,25 @@ export class DesignationControl {
             }
             return;
         }
+        if (this.mode.startsWith('craft:')) {
+            const recipeName = this.mode.slice('craft:'.length);
+            const recipe = this.recipes[recipeName];
+            if (!recipe || tile !== (recipe.site ?? 'floor')) {
+                return;
+            }
+            if (tile === 'floor' && (this.stockpiles.has(x, y) || this.farms.has(x, y))) {
+                return;
+            }
+            if (!this.jobBoard.hasJobAt(x, y, 'craft')) {
+                this.jobBoard.post({
+                    type: 'craft',
+                    recipe: recipeName,
+                    ghost: recipe.ghost,
+                    target: { x, y },
+                });
+            }
+            return;
+        }
         if (tile !== 'floor' || this.stockpiles.has(x, y) || this.farms.has(x, y)) {
             return;
         }
@@ -95,17 +114,6 @@ export class DesignationControl {
             if (!isDrag && !this.workshopAt(x, y)) {
                 spawnFromDefinition(this.world, this.workshopDefinition, { x, y });
                 this.jobBoard.resetUnreachable();
-            }
-        } else if (this.mode.startsWith('craft:')) {
-            const recipeName = this.mode.slice('craft:'.length);
-            const recipe = this.recipes[recipeName];
-            if (recipe && !this.jobBoard.hasJobAt(x, y, 'craft')) {
-                this.jobBoard.post({
-                    type: 'craft',
-                    recipe: recipeName,
-                    ghost: recipe.ghost,
-                    target: { x, y },
-                });
             }
         }
     }

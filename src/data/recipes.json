@@ -11,5 +11,13 @@
         "craftTicks": 10,
         "produces": "door",
         "installsTile": "door"
+    },
+    "bridge": {
+        "label": "un pont",
+        "ghost": "≡",
+        "craftTicks": 10,
+        "produces": "bridge",
+        "installsTile": "bridge",
+        "site": "water"
     }
 }

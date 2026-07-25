@@ -30,6 +30,13 @@
             "bed": { "recoveryMultiplier": 1.5, "heal": 1 }
         }
     },
+    "bridge": {
+        "glyph": "≡",
+        "color": "#a07040",
+        "components": {
+            "item": {}
+        }
+    },
     "door": {
         "glyph": "+",
         "color": "#c09050",

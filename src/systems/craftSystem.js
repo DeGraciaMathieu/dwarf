@@ -77,7 +77,10 @@ export class CraftSystem {
             currentJob.path = null;
             return;
         }
-        const status = approach(world, this.terrain, entityId, currentJob, job.target, 'onto');
+        const installMode = this.terrain.isWalkable(job.target.x, job.target.y)
+            ? 'onto'
+            : 'adjacent';
+        const status = approach(world, this.terrain, entityId, currentJob, job.target, installMode);
         if (status === 'unreachable') {
             this.abandon(world, entityId, currentJob);
             return;
@@ -89,6 +92,7 @@ export class CraftSystem {
         if (recipe.installsTile) {
             world.destroyEntity(job.producedId);
             this.terrain.set(job.target.x, job.target.y, recipe.installsTile);
+            this.jobBoard.resetUnreachable();
         } else {
             world.addComponent(job.producedId, 'position', { x: job.target.x, y: job.target.y });
             world.removeComponent(job.producedId, 'item');
