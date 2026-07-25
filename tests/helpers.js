@@ -107,7 +107,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));
-    world.registerSystem(new DigSystem(jobBoard, terrain));
+    world.registerSystem(new DigSystem(jobBoard, terrain, data.items.stone));
     world.registerSystem(new ChopSystem(jobBoard, terrain, data.items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
     world.registerSystem(new GraveSystem(jobBoard, terrain, graves));

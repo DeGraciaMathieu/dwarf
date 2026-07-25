@@ -1,13 +1,15 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
+import { spawnFromDefinition } from '../core/spawn.js';
 import { workEffort } from './workEffort.js';
 
 const DIG_TICKS = 10;
 
 export class DigSystem {
-    constructor(jobBoard, terrain) {
+    constructor(jobBoard, terrain, stoneDefinition) {
         this.jobBoard = jobBoard;
         this.terrain = terrain;
+        this.stoneDefinition = stoneDefinition;
     }
 
     update(world, eventBus) {
@@ -29,6 +31,7 @@ export class DigSystem {
             currentJob.progress += workEffort(world, entityId);
             if (currentJob.progress >= DIG_TICKS) {
                 this.terrain.set(target.x, target.y, 'floor');
+                spawnFromDefinition(world, this.stoneDefinition, target);
                 this.jobBoard.complete(currentJob.job);
                 this.jobBoard.resetUnreachable();
                 world.removeComponent(entityId, 'currentJob');

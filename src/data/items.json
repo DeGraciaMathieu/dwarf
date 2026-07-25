@@ -15,6 +15,14 @@
             "buildMaterial": {}
         }
     },
+    "stone": {
+        "glyph": "*",
+        "color": "#8a8a8a",
+        "components": {
+            "item": {},
+            "buildMaterial": {}
+        }
+    },
     "workshop": {
         "glyph": "Π",
         "color": "#c0a060",

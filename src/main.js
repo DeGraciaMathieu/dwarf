@@ -103,7 +103,7 @@ async function main() {
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));
-    world.registerSystem(new DigSystem(jobBoard, terrain));
+    world.registerSystem(new DigSystem(jobBoard, terrain, items.stone));
     world.registerSystem(new ChopSystem(jobBoard, terrain, items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
     world.registerSystem(new GraveSystem(jobBoard, terrain, graves));
