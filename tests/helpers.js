@@ -23,6 +23,7 @@ import { HaulSystem } from '../src/systems/haulSystem.js';
 import { BuildSystem } from '../src/systems/buildSystem.js';
 import { CraftSystem } from '../src/systems/craftSystem.js';
 import { FarmSystem } from '../src/systems/farmSystem.js';
+import { FishSystem } from '../src/systems/fishSystem.js';
 import { HostileSystem } from '../src/systems/hostileSystem.js';
 import { CombatSystem } from '../src/systems/combatSystem.js';
 import { MovementSystem } from '../src/systems/movementSystem.js';
@@ -56,6 +57,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
     const jobBoard = new JobBoard();
     const stockpiles = new Zone();
     const farms = new Zone();
+    const fishingSpots = new Zone();
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
@@ -83,6 +85,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
     world.registerSystem(new BuildSystem(jobBoard, terrain));
     world.registerSystem(new CraftSystem(jobBoard, terrain, data.recipes, data.items));
     world.registerSystem(new FarmSystem(jobBoard, terrain, farms, data.plants.mushroom, data.items.mushroom));
+    world.registerSystem(new FishSystem(jobBoard, terrain, fishingSpots, data.items.fish));
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, data.items.corpse));
     world.registerSystem(new MovementSystem(terrain));
@@ -93,6 +96,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
         jobBoard,
         stockpiles,
         farms,
+        fishingSpots,
         terrain,
         run(ticks) {
             for (let i = 0; i < ticks; i++) {

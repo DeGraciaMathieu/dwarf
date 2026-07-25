@@ -37,6 +37,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 | `build` | `buildSystem.js` | matériau requis (`nearestFreeMaterial` de `materials.js`), attente si case cible occupée |
 | `craft` | `craftSystem.js` | quatre phases, état durable sur le job (`producedId`) |
 | `plant`/`harvest` | `farmSystem.js` | jobs auto-postés par le système lui-même selon l'état des cases de champ |
+| `fish` | `fishSystem.js` | auto-posté par case de zone de pêche (revérifie que la case est toujours de l'eau — un pont l'annule), produit un poisson aux pieds du pêcheur |
 
 ## Ajouter un nouveau type de job
 

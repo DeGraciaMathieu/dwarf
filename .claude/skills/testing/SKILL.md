@@ -40,6 +40,7 @@ auto_invoke: true
 | `tests/starvation.test.js` | inanition : agonie, sauvetage, érosion du moral, deuil des témoins |
 | `tests/invasions.test.js` | vagues de gobelins : escalade, proportionnalité à la population, persistance en sauvegarde |
 | `tests/bridges.test.js` | ponts : traversée ouverte à tous, réveil des chantiers d'outre-rivière |
+| `tests/fishing.test.js` | pêche : production continue, poisson mangé, annulation par un pont, persistance |
 
 ## Ajouter un test
 
