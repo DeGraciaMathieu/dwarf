@@ -10,6 +10,8 @@ import {
     addDwarf,
     addLog,
     addBread,
+    addMushroom,
+    addBrewery,
     entitiesAt,
 } from './helpers.js';
 
@@ -63,6 +65,23 @@ test('haul : la bûche est rangée au stock et les réservations libérées', ()
     const haulSystem = colony.world.systems.find((system) => system.reservedTiles);
     assert.equal(haulSystem.reservedTiles.size, 0);
     assert.equal(colony.jobBoard.jobs.length, 0);
+});
+
+test('haul : le matériau d un craft abandonné en cours de portage finit rangé au stock', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    addDwarf(colony.world, 0, 0);
+    colony.stockpiles.add(18, 2);
+    addMushroom(colony.world, 10, 0);
+    const brewery = addBrewery(colony.world, 14, 0);
+    colony.jobBoard.post({ type: 'craft', recipe: 'beer', target: { x: 2, y: 0 } });
+    const stored = colony.collect(EVENTS.ITEM_STORED);
+
+    colony.run(15);
+    colony.world.destroyEntity(brewery);
+    colony.run(60);
+
+    assert.equal(entitiesAt(colony.world, 'item', 18, 2).length, 1);
+    assert.equal(stored.length, 1);
 });
 
 test('build : mur bâti avec une bûche, pénurie débloquée par un abattage', () => {

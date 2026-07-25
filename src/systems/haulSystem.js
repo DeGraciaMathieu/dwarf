@@ -126,6 +126,16 @@ export class HaulSystem {
     }
 
     deliver(world, eventBus, entityId, currentJob, carrying) {
+        // un carrying hérité d'un job craft/build n'a pas de destination :
+        // on repose l'objet, un haul normal sera reposté au prochain tick
+        if (!carrying.destination) {
+            const position = world.getComponent(entityId, 'position');
+            world.addComponent(carrying.itemId, 'position', { x: position.x, y: position.y });
+            world.removeComponent(entityId, 'carrying');
+            this.jobBoard.complete(currentJob.job);
+            world.removeComponent(entityId, 'currentJob');
+            return;
+        }
         const status = approach(
             world,
             this.terrain,
