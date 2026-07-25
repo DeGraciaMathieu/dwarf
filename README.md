@@ -1,5 +1,7 @@
 # Dwarf
 
+https://github.com/user-attachments/assets/351cf1ab-29ed-4331-ad60-41c1feef10e6
+
 Une simulation de colonie inspirée de **Dwarf Fortress**, en JavaScript vanilla, rendue en ASCII sur un canvas.
 
 Des nains autonomes creusent la montagne, abattent des arbres, cultivent des champignons, pêchent, fabriquent des meubles, mangent, boivent, dorment — et fuient ou affrontent les gobelins qui attaquent en vagues de plus en plus dures. Vous ne contrôlez personne directement : vous désignez des chantiers et des zones, et la colonie s'organise. Les nains ont un moral, se battent, meurent de faim, de soif ou au combat — et le journal raconte leurs histoires.
