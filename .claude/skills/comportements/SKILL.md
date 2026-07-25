@@ -13,7 +13,7 @@ Toute la politique comportementale des nains vit dans `src/systems/arbiterSystem
 | Activité | Score | Exécutant | Condition |
 |---|---|---|---|
 | `fight` | 200 | `fightSystem.js` (+ frappes dans `combatSystem.js`, modulées par l'`equipment` : arme = bonus de dégâts, armure = atténuation `max(1, dégâts − défense)`) | gobelin ≤ 6 cases ET courageux (`health/max >= combat.courage`) |
-| `flee` | 200 | `fleeSystem.js` | gobelin ≤ 6 cases ET pas courageux |
+| `flee` | 200 | `fleeSystem.js` (fuit vers le refuge sûr le plus proche via une carte de menace BFS — case que les hostiles ne peuvent atteindre, typiquement derrière une porte `blocksHostiles` ; repli sur l'éloignement glouton `stepAway` si aucun refuge) | gobelin ≤ 6 cases ET pas courageux |
 | `tantrum` | 150 | `tantrumSystem.js` | `morale.value <= morale.tantrum` (hystérésis : sort à `tantrum + 15`) |
 | `eat` | valeur de faim (≤ 100) | `eatingSystem.js` | faim ≥ seuil ET nourriture existante (`query('food','position')`) |
 | `drink` | valeur de soif (≤ 100) | `drinkSystem.js` | soif ≥ seuil ET pas de marqueur `noWaterAccess` (renoncement ~50 ticks quand aucune berge n'est atteignable — évite le gel) |

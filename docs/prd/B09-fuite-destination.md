@@ -1,6 +1,6 @@
 # PRD B09 — Fuite avec destination sûre
 
-**Lot :** B — Tension de combat · **Point :** 9 · **Statut :** À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** B — Tension de combat · **Point :** 9 · **Statut :** ✅ Fait · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 
