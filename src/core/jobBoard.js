@@ -48,6 +48,13 @@ export class JobBoard {
         this.jobs = this.jobs.filter((other) => other !== job);
     }
 
+    cancel(job) {
+        if (job.claimedBy !== null) {
+            return;
+        }
+        this.jobs = this.jobs.filter((other) => other !== job);
+    }
+
     hasAvailableJobs() {
         return this.jobs.some((job) => job.claimedBy === null && !job.unreachable);
     }

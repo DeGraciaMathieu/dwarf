@@ -23,6 +23,7 @@ import { ChopSystem } from '../src/systems/chopSystem.js';
 import { HaulSystem } from '../src/systems/haulSystem.js';
 import { BuildSystem } from '../src/systems/buildSystem.js';
 import { CraftSystem } from '../src/systems/craftSystem.js';
+import { StewardSystem } from '../src/systems/stewardSystem.js';
 import { FarmSystem } from '../src/systems/farmSystem.js';
 import { FishSystem } from '../src/systems/fishSystem.js';
 import { HostileSystem } from '../src/systems/hostileSystem.js';
@@ -52,7 +53,7 @@ export function openTerrain(width, height) {
     return makeTerrain(Array.from({ length: height }, () => '.'.repeat(width)));
 }
 
-export function setupColony(terrain, { goblinSpawner = false, migrants = false } = {}) {
+export function setupColony(terrain, { goblinSpawner = false, migrants = false, objectives = null } = {}) {
     const world = new World();
     const bus = new EventBus();
     const jobBoard = new JobBoard();
@@ -92,6 +93,9 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
     }
     if (migrants) {
         world.registerSystem(new MigrantSystem(terrain, data.creatures.dwarf));
+    }
+    if (objectives) {
+        world.registerSystem(new StewardSystem(jobBoard, data.recipes, data.items, objectives));
     }
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));

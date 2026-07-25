@@ -24,6 +24,7 @@ import { ChopSystem } from './systems/chopSystem.js';
 import { HaulSystem } from './systems/haulSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
 import { CraftSystem } from './systems/craftSystem.js';
+import { StewardSystem } from './systems/stewardSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
 import { FishSystem } from './systems/fishSystem.js';
 import { GoblinSpawnSystem } from './systems/goblinSpawnSystem.js';
@@ -89,6 +90,8 @@ async function main() {
     world.registerSystem(new MoraleSystem(eventBus));
     world.registerSystem(new GoblinSpawnSystem(terrain, creatures.goblin));
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
+    const objectives = [{ recipe: 'beer', target: 3 }];
+    world.registerSystem(new StewardSystem(jobBoard, recipes, items, objectives));
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
