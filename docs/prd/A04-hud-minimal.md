@@ -1,6 +1,6 @@
 # PRD A04 — HUD minimal (horloge, population, vague, jobs)
 
-**Lot :** A — Lisibilité · **Point :** 4 · **Statut :** À faire · **Impact / Effort :** Fort / Faible
+**Lot :** A — Lisibilité · **Point :** 4 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Faible
 
 ## Problème
 
