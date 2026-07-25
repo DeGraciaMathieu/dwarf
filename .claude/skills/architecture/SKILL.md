@@ -17,21 +17,21 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 | `src/core/loop.js` | Boucle à pas fixe (5 t/s), retourne `{speed}` pour pause/vitesse | `performance`, `requestAnimationFrame` |
 | `src/core/terrain.js` | Grille 2D hors ECS (`get/set/isWalkable`), génération (montagne, rivière à gués, lacs, bosquets — avec validation de jouabilité et retirage), `largestWalkableRegion` | `tiles.json` |
 | `src/core/pathfinding.js` | `findPath(terrain, from, to)` — A* 8-directionnel, Chebyshev | terrain |
-| `src/core/jobBoard.js` | File de jobs : `post/claim/release/markUnreachable/resetUnreachable/complete/hasJobAt/hasAvailableJobs` | aucun |
+| `src/core/jobBoard.js` | File de jobs : `post/claim/release/cancel/markUnreachable/resetUnreachable/complete/hasJobAt/hasAvailableJobs` | aucun |
 | `src/core/zones.js` | `Zone` : ensembles de cases peintes (stockages, champs) | aucun |
 | `src/core/spawn.js` | `spawnFromDefinition(world, def, position)` — instancie une définition JSON | world |
 | `src/systems/*` | Toute la logique de jeu (voir ordre du tick ci-dessous) | core, events, data |
 | `src/events/events.js` | Constantes des types d'événements | aucun |
 | `src/data/*.json` | Contenu : créatures, objets, tuiles, plantes, recettes | — |
-| `src/ui/*` | Rendu, journal, inspection, désignation, barre d'outils | world (lecture), jobBoard/zones (intentions joueur) |
+| `src/ui/*` | Rendu, journal, inspection, désignation, barre d'outils, objectifs de stock (`objectivesPanel.js` — lit `objective.status`, écrit `objective.target`) | world (lecture), jobBoard/zones/objectifs (intentions joueur) |
 | `src/save.js` | Sauvegarde/chargement : instantané JSON de l'état durable (composants, terrain, zones, jobs) ; purge les composants volatils sauf les hystérésis (`sleeping`, `tantruming`), repose les objets portés au sol, déclaime les jobs | world, terrain, jobBoard, zones |
 | `src/main.js` | Assemblage : fetch des data, ordre des systèmes, spawn initial, UI, boucle, boutons 💾/📂 (localStorage `dwarf.save`) | tout |
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Needs → Attrition → Morale → GoblinSpawn → Migrant → Arbiter → JobAssignment → Eating → Drink → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Fish → Hostile → Combat → Movement`
+`Needs → Attrition → Morale → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Fish → Hostile → Combat → Movement`
 
-Logique : les besoins montent, le moral encaisse, l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
+Logique : les besoins montent, le moral encaisse, l'intendance réconcilie les objectifs de stock (poste/retire les jobs de craft avant l'arbitrage, pour qu'ils soient réclamables au même tick), l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
 
 ## Où placer du nouveau code
 

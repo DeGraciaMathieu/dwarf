@@ -53,7 +53,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 **Ajouter un consommable fabriqué** (modèle : la bière) :
 1. `items.json` : le produit (`item` + composant consommé, ex. `drink`) et l'atelier typé si nouveau (`workshop: {type}` — le poser passe par `workshopDefinitions` dans `designation.js` + un bouton `data-tool`).
 2. `recipes.json` : `{label, craftTicks, produces, ingredient (composant du matériau), workshop, consumable: true}` — pas de phase d'installation : le produit est posé au sol à l'atelier (événement `ITEM_CRAFTED`) puis rangé au stock par le haul.
-3. Poster le job sans désignation : bouton d'action dans `index.html` câblé dans `main.js` qui poste `{type: 'craft', recipe, target: <case de l'atelier>}` (modèle : `#brew-beer`).
+3. Le piloter par objectif de stock : ajouter `{recipe, target}` à la liste `objectives` de `main.js` — le `StewardSystem` poste/retire les jobs `craft` pour maintenir la cible, réglable dans le panneau Objectifs (`objectivesPanel.js`). Aucun nouveau code : toute recette `consumable: true` est éligible.
 
 **Ajouter un type de tuile** : `tiles.json` (`walkable` correct ; `blocksHostiles: true` pour bloquer les hostiles seulement — `isWalkable(x, y, {hostile})` et `findPath(..., {hostile: true})` en tiennent compte) + le placer dans la génération (`terrain.js`) ou via une recette `installsTile`.
 

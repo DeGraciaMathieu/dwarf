@@ -118,6 +118,41 @@ aside h2 {
     color: #e0c060;
 }
 
+#objectives {
+    margin-bottom: 16px;
+    padding: 8px;
+    border: 1px solid #444;
+    background: #222;
+    font-size: 12px;
+}
+
+#objectives .objective {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#objectives .objective-label {
+    flex: 1;
+}
+
+#objectives button {
+    background: #2a2a2a;
+    color: #ccc;
+    border: 1px solid #444;
+    width: 22px;
+    padding: 2px 0;
+    font-family: monospace;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#objectives .objective-blocked {
+    margin: 4px 0 0;
+    font-size: 11px;
+    color: #c05030;
+}
+
 #event-log {
     margin: 0;
     padding: 0;

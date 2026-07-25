@@ -35,6 +35,7 @@ import { Renderer } from './ui/renderer.js';
 import { EventLog } from './ui/eventLog.js';
 import { DesignationControl } from './ui/designation.js';
 import { InspectionPanel } from './ui/inspectionPanel.js';
+import { ObjectivesPanel } from './ui/objectivesPanel.js';
 
 const GRID = { width: 40, height: 25 };
 const TILE_SIZE = 20;
@@ -124,6 +125,7 @@ async function main() {
     const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, TILE_SIZE);
     const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world);
+    const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
     new DesignationControl({
         canvas,
         toolbar: document.getElementById('toolbar'),
@@ -145,6 +147,7 @@ async function main() {
         onRender: () => {
             renderer.render(world);
             inspection.render();
+            objectivesPanel.render();
         },
     });
 
@@ -161,18 +164,6 @@ async function main() {
         }
         restoreGame(game, JSON.parse(raw));
         eventLog.append('Partie chargée.');
-    });
-
-    document.getElementById('brew-beer').addEventListener('click', () => {
-        const breweryId = world
-            .query('workshop', 'position')
-            .find((id) => world.getComponent(id, 'workshop').type === 'brewery');
-        if (breweryId === undefined) {
-            eventLog.append('Aucune brasserie : posez-en une avant de brasser.');
-            return;
-        }
-        const position = world.getComponent(breweryId, 'position');
-        jobBoard.post({ type: 'craft', recipe: 'beer', target: { x: position.x, y: position.y } });
     });
 
     const speedButtons = document.querySelectorAll('#speed button');

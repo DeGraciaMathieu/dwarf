@@ -78,6 +78,35 @@ test('intendance : le surplus non réclamé est retiré, le job réclamé va à 
     assert.equal(brewJobs(colony).length, 0);
 });
 
+test('intendance : le statut de l\'objectif suit les blocages puis la production', () => {
+    const objectives = [{ recipe: 'beer', target: 2 }];
+    const colony = setupColony(openTerrain(12, 5), { objectives });
+    addDwarf(colony.world, 1, 2);
+
+    colony.run(5);
+    assert.equal(objectives[0].status.blocked, 'no-workshop');
+    assert.equal(objectives[0].status.stock, 0);
+
+    addBrewery(colony.world, 9, 2);
+    colony.run(5);
+    assert.equal(objectives[0].status.blocked, 'no-ingredient');
+
+    for (let i = 0; i < 2; i++) {
+        addMushroom(colony.world, 4, 2);
+    }
+    colony.run(1);
+    assert.equal(objectives[0].status.blocked, null);
+
+    const stocksSeen = new Set();
+    for (let tick = 0; tick < 300; tick++) {
+        colony.run(1);
+        stocksSeen.add(objectives[0].status.stock);
+    }
+    assert.ok(stocksSeen.has(1), 'le stock intermédiaire doit apparaître dans le statut');
+    assert.equal(objectives[0].status.stock, 2);
+    assert.equal(objectives[0].status.blocked, null);
+});
+
 test('intendance : sans brassable rien n\'est posté, un brassable relance la production', () => {
     const colony = setupColony(openTerrain(12, 5), {
         objectives: [{ recipe: 'beer', target: 1 }],

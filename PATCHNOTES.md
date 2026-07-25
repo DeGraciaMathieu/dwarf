@@ -2,6 +2,13 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — Les objectifs de stock
+
+- **La colonie brasse toute seule** : fixez une cible dans le nouveau panneau **Objectifs** (« une bière 2 / 3 », boutons − / +) et l'intendance poste ou retire elle-même les ordres de brassage pour maintenir le stock — plus un clic par chope.
+- **Le panneau dit pourquoi ça n'avance pas** : « bloqué : aucun atelier » tant qu'aucune brasserie n'est posée, « bloqué : rien à produire » quand le brassable manque — la production repart d'elle-même dès que le monde change.
+- **Le bouton 🍺 Brasser disparaît** : la cible de stock remplace l'ordre manuel. Baisser la cible retire les ordres en attente ; un nain déjà à l'ouvrage finit sa chope.
+- Technique : la mécanique est générique sur les recettes consommables — un futur consommable pilotable par objectif = une entrée dans la liste des objectifs, aucun code.
+
 ## 2026-07-25 — La bière
 
 - **Nouvel atelier : la brasserie** (🏺) et son bouton **🍺 Brasser** : un clic, et un nain porte un champignon à la brasserie pour en tirer une chope (`δ`) — « Urist a brassé une bière. » La bière est rangée au stock comme le reste.

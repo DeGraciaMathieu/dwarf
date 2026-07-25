@@ -22,11 +22,29 @@ export class StewardSystem {
             (job) => job.type === 'craft' && job.recipe === objective.recipe
         );
         const gap = objective.target - stock - pending.length;
+        // donnée de restitution pour l'UI, réécrite intégralement à chaque tick
+        objective.status = {
+            stock,
+            blocked: this.findBlocker(world, recipe, gap, pending.length),
+        };
         if (gap > 0) {
             this.postMissingJobs(world, objective, recipe, gap, pending.length);
         } else if (gap < 0) {
             this.cancelSurplusJobs(pending, -gap);
         }
+    }
+
+    findBlocker(world, recipe, gap, pendingCount) {
+        if (gap <= 0) {
+            return null;
+        }
+        if (!this.findWorkshopPosition(world, recipe.workshop)) {
+            return 'no-workshop';
+        }
+        if (this.countFreeIngredients(world, recipe.ingredient) - pendingCount <= 0) {
+            return 'no-ingredient';
+        }
+        return null;
     }
 
     postMissingJobs(world, objective, recipe, gap, pendingCount) {

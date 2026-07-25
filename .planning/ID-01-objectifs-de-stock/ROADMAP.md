@@ -17,7 +17,7 @@
 - `phases/01-01-PLAN.md` — exécuté, voir `phases/01-01-SUMMARY.md`
 
 ### Phase 02: Réglage et visibilité joueur
-**Status:** 📋 Planned
+**Status:** ✅ Done
 
 **Goals:**
 - UI de réglage de la cible N (remplace l'ordre manuel « brasser » pour les recettes `consumable`).
@@ -25,7 +25,7 @@
 - Mise à jour des skills concernés et de `PATCHNOTES.md`.
 
 **Plans:**
-- Use `/create-plan` to define detailed implementation plans
+- `phases/02-01-PLAN.md` — exécuté, voir `phases/02-01-SUMMARY.md`
 
 ---
 
