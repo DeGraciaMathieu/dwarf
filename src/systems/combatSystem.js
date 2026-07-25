@@ -1,5 +1,5 @@
 import { EVENTS } from '../events/events.js';
-import { spawnFromDefinition } from '../core/spawn.js';
+import { kill } from './death.js';
 
 export class CombatSystem {
     constructor(jobBoard, corpseDefinition) {
@@ -60,30 +60,9 @@ export class CombatSystem {
             }
             return;
         }
-        this.kill(world, eventBus, attackerId, targetId, isDwarf);
-    }
-
-    kill(world, eventBus, killerId, targetId, isDwarf) {
-        if (isDwarf) {
-            const position = world.getComponent(targetId, 'position');
-            const currentJob = world.getComponent(targetId, 'currentJob');
-            if (currentJob) {
-                this.jobBoard.release(currentJob.job);
-            }
-            const carrying = world.getComponent(targetId, 'carrying');
-            if (carrying) {
-                world.addComponent(carrying.itemId, 'position', { x: position.x, y: position.y });
-            }
-            spawnFromDefinition(world, this.corpseDefinition, position);
-            const identity = world.getComponent(targetId, 'identity');
-            eventBus.emit(EVENTS.DWARF_DIED, {
-                name: identity?.name ?? 'Un nain',
-                x: position.x,
-                y: position.y,
-            });
-        } else {
-            eventBus.emit(EVENTS.GOBLIN_SLAIN, { killerId });
-        }
-        world.destroyEntity(targetId);
+        kill(world, eventBus, this.jobBoard, this.corpseDefinition, targetId, {
+            cause: 'combat',
+            killerId: attackerId,
+        });
     }
 }
