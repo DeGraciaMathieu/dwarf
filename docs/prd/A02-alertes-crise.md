@@ -1,6 +1,6 @@
 # PRD A02 — Alertes de crise (eau, nourriture, job inaccessible)
 
-**Lot :** A — Lisibilité · **Point :** 2 · **Statut :** À faire · **Impact / Effort :** Fort / Faible
+**Lot :** A — Lisibilité · **Point :** 2 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Faible
 
 ## Problème
 
