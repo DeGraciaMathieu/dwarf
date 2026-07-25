@@ -13,10 +13,10 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | Fichier | Contient | Chargé par |
 |---|---|---|
 | `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
-| `items.json` | `bread`, `log`, `stone`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `bed`, `door`, `bridge` | `main.js`, systèmes producteurs |
+| `items.json` | `bread`, `log`, `stone`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
-| `recipes.json` | `workshop`, `brewery`, `bed`, `door`, `bridge`, `beer` — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
+| `recipes.json` | `workshop`, `brewery`, `masonry`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `beer` — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
 
 ## Quel composant déclenche quel système
 
@@ -33,8 +33,9 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `drink` | buvable : un assoiffé le préfère à la berge, +15 de moral (`drinkSystem`) |
 | `buildMaterial` | consommé par les jobs `build` et `craft` (ingrédient par défaut) |
 | `brewable` | ingrédient des recettes `ingredient: 'brewable'` (bière) |
+| `stone` | pierre lâchée en creusant : à la fois `buildMaterial` (murs) et ingrédient des recettes `ingredient: 'stone'` (atelier de taille) |
 | `bed` | dortoir : récupération ×`recoveryMultiplier`, soin `heal`/tick (`sleepSystem`) |
-| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery` (`workshop: carpentry` → exige un atelier de menuiserie) |
+| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`, `masonry`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery` et `masonry` (`workshop: carpentry` → exigent un atelier de menuiserie) |
 | `corpse` | dépouille qui vieillit (`decay`) : au seuil elle passe `rotten` (malus de moral de proximité) ; un job `bury` vers la zone `graves` la transforme en `buried`. Portée par `item` mais ignorée du haul générique (`graveSystem`) |
 | `crop` | pousse puis se récolte (`farmSystem`) |
 | `identity` | nom affiché (journal, inspection) — nains uniquement |
