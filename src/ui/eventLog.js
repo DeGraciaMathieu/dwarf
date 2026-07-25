@@ -5,53 +5,48 @@ const MAX_LINES = 50;
 export class EventLog {
     constructor(element, eventBus, world) {
         this.element = element;
-        eventBus.on(EVENTS.DWARF_HUNGRY, ({ entityId }) => {
+        // l'entité peut avoir été détruite avant le flush de fin de tick
+        // (mort dans le même tick que l'événement) : repli sur un nom générique
+        const dwarfName = (entityId) => {
             const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a faim !`);
+            return identity ? identity.name : 'Un nain';
+        };
+        eventBus.on(EVENTS.DWARF_HUNGRY, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} a faim !`);
         });
         eventBus.on(EVENTS.DWARF_ATE, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a mangé.`);
+            this.append(`${dwarfName(entityId)} a mangé.`);
         });
         eventBus.on(EVENTS.DWARF_TIRED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} est épuisé.`);
+            this.append(`${dwarfName(entityId)} est épuisé.`);
         });
         eventBus.on(EVENTS.DWARF_ASLEEP, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} s'est endormi.`);
+            this.append(`${dwarfName(entityId)} s'est endormi.`);
         });
         eventBus.on(EVENTS.DWARF_WOKE, ({ entityId, rested, inBed }) => {
-            const identity = world.getComponent(entityId, 'identity');
             this.append(
                 rested && !inBed
-                    ? `${identity.name} a mal dormi.`
-                    : `${identity.name} s'est réveillé.`
+                    ? `${dwarfName(entityId)} a mal dormi.`
+                    : `${dwarfName(entityId)} s'est réveillé.`
             );
         });
         eventBus.on(EVENTS.WALL_DUG, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a creusé un mur.`);
+            this.append(`${dwarfName(entityId)} a creusé un mur.`);
         });
         eventBus.on(EVENTS.WALL_BUILT, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a bâti un mur.`);
+            this.append(`${dwarfName(entityId)} a bâti un mur.`);
         });
         eventBus.on(EVENTS.TREE_CHOPPED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a abattu un arbre.`);
+            this.append(`${dwarfName(entityId)} a abattu un arbre.`);
         });
         eventBus.on(EVENTS.ITEM_STORED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a rangé un objet.`);
+            this.append(`${dwarfName(entityId)} a rangé un objet.`);
         });
         eventBus.on(EVENTS.CROP_HARVESTED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a fait une récolte.`);
+            this.append(`${dwarfName(entityId)} a fait une récolte.`);
         });
         eventBus.on(EVENTS.FISH_CAUGHT, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a pêché un poisson.`);
+            this.append(`${dwarfName(entityId)} a pêché un poisson.`);
         });
         eventBus.on(EVENTS.GOBLIN_ARRIVED, ({ count }) => {
             this.append(
@@ -64,36 +59,28 @@ export class EventLog {
             this.append(`Un migrant est arrivé : ${name} !`);
         });
         eventBus.on(EVENTS.DWARF_FLEES, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} détale devant un gobelin !`);
+            this.append(`${dwarfName(entityId)} détale devant un gobelin !`);
         });
         eventBus.on(EVENTS.DWARF_FIGHTS, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} charge un gobelin !`);
+            this.append(`${dwarfName(entityId)} charge un gobelin !`);
         });
         eventBus.on(EVENTS.DWARF_INJURED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} est blessé !`);
+            this.append(`${dwarfName(entityId)} est blessé !`);
         });
         eventBus.on(EVENTS.DWARF_THIRSTY, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a soif !`);
+            this.append(`${dwarfName(entityId)} a soif !`);
         });
         eventBus.on(EVENTS.DWARF_DRANK, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} s'est désaltéré.`);
+            this.append(`${dwarfName(entityId)} s'est désaltéré.`);
         });
         eventBus.on(EVENTS.DWARF_DRANK_BEER, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a vidé une chope de bière !`);
+            this.append(`${dwarfName(entityId)} a vidé une chope de bière !`);
         });
         eventBus.on(EVENTS.DWARF_STARVING, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} meurt de faim !`);
+            this.append(`${dwarfName(entityId)} meurt de faim !`);
         });
         eventBus.on(EVENTS.DWARF_DEHYDRATED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} meurt de soif !`);
+            this.append(`${dwarfName(entityId)} meurt de soif !`);
         });
         eventBus.on(EVENTS.DWARF_DIED, ({ name, cause }) => {
             const messages = {
@@ -103,28 +90,22 @@ export class EventLog {
             this.append(messages[cause] ?? `${name} a succombé à ses blessures.`);
         });
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) => {
-            const identity = world.getComponent(killerId, 'identity');
-            this.append(`${identity ? identity.name : 'Un nain'} a terrassé un gobelin !`);
+            this.append(`${dwarfName(killerId)} a terrassé un gobelin !`);
         });
         eventBus.on(EVENTS.DWARF_TANTRUM, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} pète les plombs !`);
+            this.append(`${dwarfName(entityId)} pète les plombs !`);
         });
         eventBus.on(EVENTS.DWARF_CALMED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} s'est calmé.`);
+            this.append(`${dwarfName(entityId)} s'est calmé.`);
         });
         eventBus.on(EVENTS.ITEM_SMASHED, ({ entityId }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a détruit un objet dans sa rage.`);
+            this.append(`${dwarfName(entityId)} a détruit un objet dans sa rage.`);
         });
         eventBus.on(EVENTS.FURNITURE_BUILT, ({ entityId, label }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a fabriqué ${label}.`);
+            this.append(`${dwarfName(entityId)} a fabriqué ${label}.`);
         });
         eventBus.on(EVENTS.ITEM_CRAFTED, ({ entityId, label }) => {
-            const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} a brassé ${label}.`);
+            this.append(`${dwarfName(entityId)} a brassé ${label}.`);
         });
     }
 

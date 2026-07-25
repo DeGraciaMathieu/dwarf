@@ -43,6 +43,7 @@ auto_invoke: true
 | `tests/fishing.test.js` | pêche : production continue, poisson mangé, annulation par un pont, persistance |
 | `tests/thirst.test.js` | soif : boire à la berge, priorité, renoncement sans eau, mort de soif |
 | `tests/beer.test.js` | bière : brassage à la brasserie, atelier typé, pénurie relancée par la récolte, préférence bière + moral |
+| `tests/eventLog.test.js` | journal : résilience aux entités détruites avant le flux (mort dans le tick de l'annonce) |
 
 ## Ajouter un test
 
