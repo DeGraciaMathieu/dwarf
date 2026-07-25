@@ -2,6 +2,13 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — L'eau : rivières et lacs
+
+- **Une rivière sinueuse** (`≈`) traverse désormais la plaine du nord au sud, accompagnée d'un ou deux lacs. L'eau est infranchissable — pour les nains comme pour les gobelins.
+- **Deux gués** percent la rivière : ce sont les seuls points de passage naturels — des goulets stratégiques à défendre (un gué + une porte = un péage mortel pour les invasions venues de l'autre rive).
+- S'implanter dans un méandre adossé à la montagne devient la position forte de début de partie.
+- Technique : la génération valide chaque carte (connectivité, montagne atteignable) et retire si elle est injouable — plus aucune carte cassée.
+
 ## 2026-07-25 — L'escalade des invasions
 
 - **Les gobelins attaquent en vagues** de plus en plus nombreuses (1, puis 2, jusqu'à 6) et rapprochées (~2 min 30 au début, ~80 s au plus fort). La bande arrive groupée : « Une bande de 3 gobelins déferle sur la région ! »
