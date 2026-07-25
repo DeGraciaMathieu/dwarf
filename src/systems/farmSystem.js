@@ -97,6 +97,8 @@ export class FarmSystem {
             world.destroyEntity(cropId);
             spawnFromDefinition(world, this.produceDefinition, target);
             eventBus.emit(EVENTS.CROP_HARVESTED, { entityId });
+            // une récolte fournit un ingrédient : les crafts en pénurie redeviennent tentables
+            this.jobBoard.resetUnreachable();
         }
         this.jobBoard.complete(currentJob.job);
         world.removeComponent(entityId, 'currentJob');

@@ -11,7 +11,7 @@ export class DesignationControl {
         farms,
         fishingSpots,
         tileSize,
-        workshopDefinition,
+        workshopDefinitions,
         recipes,
         onDwarfClick,
     }) {
@@ -23,7 +23,7 @@ export class DesignationControl {
         this.farms = farms;
         this.fishingSpots = fishingSpots;
         this.tileSize = tileSize;
-        this.workshopDefinition = workshopDefinition;
+        this.workshopDefinitions = workshopDefinitions;
         this.recipes = recipes;
         this.onDwarfClick = onDwarfClick;
         this.mode = 'designate';
@@ -118,9 +118,9 @@ export class DesignationControl {
             this.stockpiles.add(x, y);
         } else if (this.mode === 'farm') {
             this.farms.add(x, y);
-        } else if (this.mode === 'workshop') {
+        } else if (this.workshopDefinitions[this.mode]) {
             if (!isDrag && !this.workshopAt(x, y)) {
-                spawnFromDefinition(this.world, this.workshopDefinition, { x, y });
+                spawnFromDefinition(this.world, this.workshopDefinitions[this.mode], { x, y });
                 this.jobBoard.resetUnreachable();
             }
         }

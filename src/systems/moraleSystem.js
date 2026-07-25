@@ -4,6 +4,7 @@ const WITNESS_RANGE = 8;
 const EFFECTS = {
     ate: 10,
     drank: 5,
+    drankBeer: 15,
     rested: 10,
     restedOnGround: 3,
     victory: 15,
@@ -38,6 +39,9 @@ export class MoraleSystem {
         );
         eventBus.on(EVENTS.DWARF_DRANK, ({ entityId }) =>
             this.pending.push({ type: 'drank', entityId })
+        );
+        eventBus.on(EVENTS.DWARF_DRANK_BEER, ({ entityId }) =>
+            this.pending.push({ type: 'drankBeer', entityId })
         );
         eventBus.on(EVENTS.DWARF_FLEES, ({ entityId }) =>
             this.pending.push({ type: 'fled', entityId })

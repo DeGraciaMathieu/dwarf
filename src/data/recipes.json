@@ -3,14 +3,16 @@
         "label": "un lit",
         "ghost": "Ξ",
         "craftTicks": 12,
-        "produces": "bed"
+        "produces": "bed",
+        "workshop": "carpentry"
     },
     "door": {
         "label": "une porte",
         "ghost": "+",
         "craftTicks": 10,
         "produces": "door",
-        "installsTile": "door"
+        "installsTile": "door",
+        "workshop": "carpentry"
     },
     "bridge": {
         "label": "un pont",
@@ -18,6 +20,15 @@
         "craftTicks": 10,
         "produces": "bridge",
         "installsTile": "bridge",
-        "site": "water"
+        "site": "water",
+        "workshop": "carpentry"
+    },
+    "beer": {
+        "label": "une bière",
+        "craftTicks": 8,
+        "produces": "beer",
+        "ingredient": "brewable",
+        "workshop": "brewery",
+        "consumable": true
     }
 }

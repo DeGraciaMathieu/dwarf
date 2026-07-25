@@ -83,6 +83,10 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} s'est désaltéré.`);
         });
+        eventBus.on(EVENTS.DWARF_DRANK_BEER, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} a vidé une chope de bière !`);
+        });
         eventBus.on(EVENTS.DWARF_STARVING, ({ entityId }) => {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} meurt de faim !`);
@@ -117,6 +121,10 @@ export class EventLog {
         eventBus.on(EVENTS.FURNITURE_BUILT, ({ entityId, label }) => {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} a fabriqué ${label}.`);
+        });
+        eventBus.on(EVENTS.ITEM_CRAFTED, ({ entityId, label }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} a brassé ${label}.`);
         });
     }
 

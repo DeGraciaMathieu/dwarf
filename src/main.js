@@ -131,7 +131,7 @@ async function main() {
         farms,
         fishingSpots,
         tileSize: TILE_SIZE,
-        workshopDefinition: items.workshop,
+        workshopDefinitions: { workshop: items.workshop, brewery: items.brewery },
         recipes,
         onDwarfClick: (x, y) => inspection.selectAt(x, y),
     });
@@ -158,6 +158,18 @@ async function main() {
         }
         restoreGame(game, JSON.parse(raw));
         eventLog.append('Partie chargée.');
+    });
+
+    document.getElementById('brew-beer').addEventListener('click', () => {
+        const breweryId = world
+            .query('workshop', 'position')
+            .find((id) => world.getComponent(id, 'workshop').type === 'brewery');
+        if (breweryId === undefined) {
+            eventLog.append('Aucune brasserie : posez-en une avant de brasser.');
+            return;
+        }
+        const position = world.getComponent(breweryId, 'position');
+        jobBoard.post({ type: 'craft', recipe: 'beer', target: { x: position.x, y: position.y } });
     });
 
     const speedButtons = document.querySelectorAll('#speed button');

@@ -3,6 +3,7 @@ export const EVENTS = {
     DWARF_ATE: 'dwarf.ate',
     DWARF_THIRSTY: 'dwarf.thirsty',
     DWARF_DRANK: 'dwarf.drank',
+    DWARF_DRANK_BEER: 'dwarf.drank-beer',
     DWARF_DEHYDRATED: 'dwarf.dehydrated',
     DWARF_TIRED: 'dwarf.tired',
     DWARF_ASLEEP: 'dwarf.asleep',
@@ -25,4 +26,5 @@ export const EVENTS = {
     DWARF_CALMED: 'dwarf.calmed',
     ITEM_SMASHED: 'item.smashed',
     FURNITURE_BUILT: 'furniture.built',
+    ITEM_CRAFTED: 'item.crafted',
 };

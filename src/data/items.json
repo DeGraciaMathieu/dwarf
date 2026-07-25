@@ -19,7 +19,22 @@
         "glyph": "Π",
         "color": "#c0a060",
         "components": {
-            "workshop": {}
+            "workshop": { "type": "carpentry" }
+        }
+    },
+    "brewery": {
+        "glyph": "Ω",
+        "color": "#c08840",
+        "components": {
+            "workshop": { "type": "brewery" }
+        }
+    },
+    "beer": {
+        "glyph": "δ",
+        "color": "#e0a030",
+        "components": {
+            "item": {},
+            "drink": {}
         }
     },
     "bed": {
@@ -64,7 +79,8 @@
         "color": "#b070d0",
         "components": {
             "food": { "nutrition": 80 },
-            "item": {}
+            "item": {},
+            "brewable": {}
         }
     }
 }

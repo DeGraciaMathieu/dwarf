@@ -1,4 +1,4 @@
-export function nearestFreeMaterial(world, position, currentJob) {
+export function nearestFreeMaterial(world, position, currentJob, componentName = 'buildMaterial') {
     const reserved = new Set();
     for (const otherId of world.query('currentJob')) {
         const other = world.getComponent(otherId, 'currentJob');
@@ -8,7 +8,7 @@ export function nearestFreeMaterial(world, position, currentJob) {
     }
     let best = null;
     let bestDistance = Infinity;
-    for (const materialId of world.query('buildMaterial', 'position')) {
+    for (const materialId of world.query(componentName, 'position')) {
         if (reserved.has(materialId)) {
             continue;
         }

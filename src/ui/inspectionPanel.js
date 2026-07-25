@@ -16,7 +16,7 @@ const JOB_LABELS = {
     plant: 'semer',
     harvest: 'récolter',
     build: 'bâtir un mur',
-    craft: 'fabriquer un meuble',
+    craft: "travailler à l'atelier",
     fish: 'pêcher',
 };
 

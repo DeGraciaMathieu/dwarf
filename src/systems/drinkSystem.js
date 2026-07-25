@@ -25,8 +25,14 @@ export class DrinkSystem {
                 continue;
             }
             let drinkTarget = world.getComponent(entityId, 'drinkTarget');
+            if (drinkTarget?.itemId !== undefined && !this.itemStillAt(world, drinkTarget)) {
+                world.removeComponent(entityId, 'drinkTarget');
+                drinkTarget = null;
+            }
             if (!drinkTarget) {
-                drinkTarget = this.reachableBankTarget(world, entityId);
+                drinkTarget =
+                    this.nearestBeerTarget(world, entityId) ??
+                    this.reachableBankTarget(world, entityId);
                 if (!drinkTarget) {
                     // renoncement : il continuera à vivre et travailler en se déshydratant
                     world.addComponent(entityId, 'noWaterAccess', { cooldown: NO_WATER_RETRY_DELAY });
@@ -45,8 +51,44 @@ export class DrinkSystem {
             const thirst = world.getComponent(entityId, 'thirst');
             thirst.value = 0;
             world.removeComponent(entityId, 'drinkTarget');
-            eventBus.emit(EVENTS.DWARF_DRANK, { entityId });
+            if (drinkTarget.itemId !== undefined) {
+                world.destroyEntity(drinkTarget.itemId);
+                eventBus.emit(EVENTS.DWARF_DRANK_BEER, { entityId });
+            } else {
+                eventBus.emit(EVENTS.DWARF_DRANK, { entityId });
+            }
         }
+    }
+
+    itemStillAt(world, drinkTarget) {
+        const position = world.getComponent(drinkTarget.itemId, 'position');
+        return (
+            position !== undefined &&
+            position.x === drinkTarget.spot.x &&
+            position.y === drinkTarget.spot.y
+        );
+    }
+
+    nearestBeerTarget(world, entityId) {
+        const position = world.getComponent(entityId, 'position');
+        const beers = world
+            .query('drink', 'position')
+            .map((itemId) => {
+                const itemPosition = world.getComponent(itemId, 'position');
+                const distance = Math.max(
+                    Math.abs(itemPosition.x - position.x),
+                    Math.abs(itemPosition.y - position.y)
+                );
+                return { itemId, itemPosition, distance };
+            })
+            .sort((a, b) => a.distance - b.distance);
+        for (const { itemId, itemPosition } of beers) {
+            const path = findPath(this.terrain, position, itemPosition);
+            if (path) {
+                return { itemId, spot: { x: itemPosition.x, y: itemPosition.y }, path };
+            }
+        }
+        return null;
     }
 
     reachableBankTarget(world, entityId) {

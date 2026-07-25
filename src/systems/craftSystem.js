@@ -20,18 +20,19 @@ export class CraftSystem {
             if (currentJob.job.producedId !== undefined) {
                 this.install(world, eventBus, entityId, currentJob);
             } else {
-                this.craft(world, entityId, currentJob);
+                this.craft(world, eventBus, entityId, currentJob);
             }
         }
     }
 
-    craft(world, entityId, currentJob) {
+    craft(world, eventBus, entityId, currentJob) {
+        const recipe = this.recipes[currentJob.job.recipe];
         const carrying = world.getComponent(entityId, 'carrying');
         if (!carrying || carrying.itemId !== currentJob.materialId) {
-            this.fetchMaterial(world, entityId, currentJob);
+            this.fetchMaterial(world, entityId, currentJob, recipe.ingredient);
             return;
         }
-        const workshopPosition = this.nearestWorkshopPosition(world, entityId);
+        const workshopPosition = this.nearestWorkshopPosition(world, entityId, recipe.workshop);
         if (!workshopPosition) {
             this.abandon(world, entityId, currentJob);
             return;
@@ -44,15 +45,25 @@ export class CraftSystem {
         if (status !== 'arrived') {
             return;
         }
-        const recipe = this.recipes[currentJob.job.recipe];
         currentJob.progress += workEffort(world, entityId);
         if (currentJob.progress < recipe.craftTicks) {
             return;
         }
         world.destroyEntity(carrying.itemId);
-        const furnitureId = this.createFurniture(world, this.itemDefinitions[recipe.produces]);
-        world.addComponent(entityId, 'carrying', { itemId: furnitureId });
-        currentJob.job.producedId = furnitureId;
+        const productId = this.createProduct(world, this.itemDefinitions[recipe.produces]);
+        if (recipe.consumable) {
+            world.removeComponent(entityId, 'carrying');
+            world.addComponent(productId, 'position', {
+                x: workshopPosition.x,
+                y: workshopPosition.y,
+            });
+            this.jobBoard.complete(currentJob.job);
+            world.removeComponent(entityId, 'currentJob');
+            eventBus.emit(EVENTS.ITEM_CRAFTED, { entityId, label: recipe.label });
+            return;
+        }
+        world.addComponent(entityId, 'carrying', { itemId: productId });
+        currentJob.job.producedId = productId;
         currentJob.path = null;
     }
 
@@ -103,14 +114,14 @@ export class CraftSystem {
         eventBus.emit(EVENTS.FURNITURE_BUILT, { entityId, label: recipe.label });
     }
 
-    fetchMaterial(world, entityId, currentJob) {
+    fetchMaterial(world, entityId, currentJob, ingredient) {
         let materialPosition =
             currentJob.materialId !== undefined
                 ? world.getComponent(currentJob.materialId, 'position')
                 : undefined;
         if (!materialPosition) {
             const position = world.getComponent(entityId, 'position');
-            const material = nearestFreeMaterial(world, position, currentJob);
+            const material = nearestFreeMaterial(world, position, currentJob, ingredient);
             if (!material) {
                 this.abandon(world, entityId, currentJob);
                 return;
@@ -132,11 +143,16 @@ export class CraftSystem {
         currentJob.path = null;
     }
 
-    nearestWorkshopPosition(world, entityId) {
+    nearestWorkshopPosition(world, entityId, workshopType) {
         const position = world.getComponent(entityId, 'position');
         let best = null;
         let bestDistance = Infinity;
         for (const workshopId of world.query('workshop', 'position')) {
+            const workshop = world.getComponent(workshopId, 'workshop');
+            // un atelier sans type (anciennes sauvegardes) accepte toutes les recettes
+            if (workshopType && workshop.type && workshop.type !== workshopType) {
+                continue;
+            }
             const workshopPosition = world.getComponent(workshopId, 'position');
             const distance = Math.max(
                 Math.abs(workshopPosition.x - position.x),
@@ -150,16 +166,16 @@ export class CraftSystem {
         return best;
     }
 
-    createFurniture(world, definition) {
-        const furnitureId = world.createEntity();
-        world.addComponent(furnitureId, 'renderable', {
+    createProduct(world, definition) {
+        const productId = world.createEntity();
+        world.addComponent(productId, 'renderable', {
             glyph: definition.glyph,
             color: definition.color,
         });
         for (const [componentName, data] of Object.entries(definition.components)) {
-            world.addComponent(furnitureId, componentName, structuredClone(data));
+            world.addComponent(productId, componentName, structuredClone(data));
         }
-        return furnitureId;
+        return productId;
     }
 
     abandon(world, entityId, currentJob) {
