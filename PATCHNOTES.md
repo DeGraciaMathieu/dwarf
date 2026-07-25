@@ -2,6 +2,14 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — La soif
+
+- **Les nains ont soif** : nouvelle jauge, et des allers-retours réguliers à la berge — « Urist a soif ! », « Urist s'est désaltéré. » Un pont fait office d'abreuvoir sécurisé.
+- **La déshydratation tue, et plus vite que la faim** (~24 s d'agonie contre 40) : « Dagna meurt de soif ! » puis « Dagna est morte de soif. » Couper une colonie de son eau est désormais la stratégie de siège la plus expéditive.
+- **Pas d'eau accessible ? Les nains ne se figent pas** : ils renoncent temporairement et continuent de travailler en se déshydratant — le temps de creuser jusqu'à la rivière ou de bâtir un pont salvateur.
+- La génération de carte garantit une berge accessible au départ ; à vous de ne pas vous en couper en construisant.
+- Technique : l'inanition est généralisée en système d'attrition configurable (faim, soif, et les causes futures) — une mort de plus = une entrée de config.
+
 ## 2026-07-25 — La pêche
 
 - **Nouvel outil 🎣 Pêche** : peignez une zone sur l'eau (une berge adjacente est requise), et les nains viendront y pêcher — « Urist a pêché un poisson. » Le poisson (`α`) est rangé au stock et nourrit les affamés comme le reste.
