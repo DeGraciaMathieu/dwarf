@@ -32,7 +32,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 
 | Job | Système | Particularité à imiter |
 |---|---|---|
-| `dig` | `digSystem.js` | approche adjacente, progression, mutation du terrain, événement + spawn d'une pierre (`spawnFromDefinition`) |
+| `dig` | `digSystem.js` | approche adjacente, progression, mutation du terrain, événement + spawn d'une pierre — ou de minerai si la tuile creusée est une veine `ore` (`spawnFromDefinition`) |
 | `chop` | `chopSystem.js` | idem + spawn d'une bûche (`spawnFromDefinition`) |
 | `haul` | `haulSystem.js` | auto-posté avec capacité bornée par pools de zones, deux phases, réservations auto-réparées (`pruneReservations`), lâcher générique (`dropOrphanedItems`) ; zones de stockage typées via `kind` (`food` : composants `food`/`drink`, `materials` : `buildMaterial`, sans étiquette : tout) — la zone spécifique est préférée, la générale sert de repli |
 | `build` | `buildSystem.js` | matériau requis (`nearestFreeMaterial` de `materials.js`), attente si case cible occupée |
