@@ -5,6 +5,7 @@ import { generateTerrain, largestWalkableRegion } from './core/terrain.js';
 import { JobBoard } from './core/jobBoard.js';
 import { Zone } from './core/zones.js';
 import { spawnFromDefinition } from './core/spawn.js';
+import { serializeGame, restoreGame } from './save.js';
 import { EVENTS } from './events/events.js';
 import { MovementSystem } from './systems/movementSystem.js';
 import { NeedsSystem } from './systems/needsSystem.js';
@@ -89,7 +90,7 @@ async function main() {
 
     const canvas = document.getElementById('game');
     const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, TILE_SIZE);
-    new EventLog(document.getElementById('event-log'), eventBus, world);
+    const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world);
     new DesignationControl({
         canvas,
@@ -112,6 +113,21 @@ async function main() {
             renderer.render(world);
             inspection.render();
         },
+    });
+
+    const game = { world, terrain, jobBoard, stockpiles, farms };
+    document.getElementById('save-game').addEventListener('click', () => {
+        localStorage.setItem('dwarf.save', JSON.stringify(serializeGame(game)));
+        eventLog.append('Partie sauvegardée.');
+    });
+    document.getElementById('load-game').addEventListener('click', () => {
+        const raw = localStorage.getItem('dwarf.save');
+        if (!raw) {
+            eventLog.append('Aucune sauvegarde.');
+            return;
+        }
+        restoreGame(game, JSON.parse(raw));
+        eventLog.append('Partie chargée.');
     });
 
     const speedButtons = document.querySelectorAll('#speed button');

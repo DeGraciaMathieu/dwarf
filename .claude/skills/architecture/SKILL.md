@@ -24,7 +24,8 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 | `src/events/events.js` | Constantes des types d'événements | aucun |
 | `src/data/*.json` | Contenu : créatures, objets, tuiles, plantes, recettes | — |
 | `src/ui/*` | Rendu, journal, inspection, désignation, barre d'outils | world (lecture), jobBoard/zones (intentions joueur) |
-| `src/main.js` | Assemblage : fetch des data, ordre des systèmes, spawn initial, UI, boucle | tout |
+| `src/save.js` | Sauvegarde/chargement : instantané JSON de l'état durable (composants, terrain, zones, jobs) ; purge les composants volatils sauf les hystérésis (`sleeping`, `tantruming`), repose les objets portés au sol, déclaime les jobs | world, terrain, jobBoard, zones |
+| `src/main.js` | Assemblage : fetch des data, ordre des systèmes, spawn initial, UI, boucle, boutons 💾/📂 (localStorage `dwarf.save`) | tout |
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 

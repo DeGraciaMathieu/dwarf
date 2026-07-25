@@ -1,0 +1,62 @@
+// 'sleeping' et 'tantruming' ne sont pas purgés : ce sont les états d'hystérésis
+// de l'arbitre — les retirer réveillerait/calmerait le nain au chargement.
+const VOLATILE_COMPONENTS = [
+    'activity',
+    'currentJob',
+    'foodTarget',
+    'bedTarget',
+    'fleeing',
+    'fighting',
+    'carrying',
+];
+
+export function serializeGame({ world, terrain, jobBoard, stockpiles, farms }) {
+    const components = {};
+    for (const [name, store] of world.components) {
+        if (VOLATILE_COMPONENTS.includes(name)) {
+            continue;
+        }
+        components[name] = {};
+        for (const [entityId, data] of store) {
+            components[name][entityId] = data;
+        }
+    }
+    components.position ??= {};
+    for (const carrierId of world.query('carrying', 'position')) {
+        const { itemId } = world.getComponent(carrierId, 'carrying');
+        const position = world.getComponent(carrierId, 'position');
+        components.position[itemId] = { x: position.x, y: position.y };
+    }
+    return {
+        version: 1,
+        nextEntityId: world.nextEntityId,
+        components,
+        terrain: terrain.tiles,
+        stockpiles: stockpiles.list(),
+        farms: farms.list(),
+        jobs: jobBoard.jobs.map((job) => ({ ...job, claimedBy: null })),
+    };
+}
+
+export function restoreGame({ world, terrain, jobBoard, stockpiles, farms }, snapshot) {
+    world.nextEntityId = snapshot.nextEntityId;
+    world.components.clear();
+    for (const [name, entities] of Object.entries(snapshot.components)) {
+        const store = new Map();
+        for (const [entityId, data] of Object.entries(entities)) {
+            store.set(Number(entityId), structuredClone(data));
+        }
+        world.components.set(name, store);
+    }
+    terrain.tiles = snapshot.terrain.map((row) => [...row]);
+    restoreZone(stockpiles, snapshot.stockpiles);
+    restoreZone(farms, snapshot.farms);
+    jobBoard.jobs = snapshot.jobs.map((job) => structuredClone(job));
+}
+
+function restoreZone(zone, savedTiles) {
+    zone.tiles.clear();
+    for (const { x, y } of savedTiles) {
+        zone.add(x, y);
+    }
+}

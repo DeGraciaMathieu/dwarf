@@ -44,6 +44,12 @@ canvas {
     gap: 8px;
 }
 
+#session {
+    margin-left: 16px;
+    display: flex;
+    gap: 8px;
+}
+
 #inspection {
     margin-bottom: 16px;
     padding: 8px;

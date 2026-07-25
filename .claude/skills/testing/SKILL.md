@@ -34,6 +34,7 @@ auto_invoke: true
 | `tests/survival.test.js` | faim/repas, sommeil/lits/soins, priorités de l'arbitre côté besoins |
 | `tests/behaviors.test.js` | poursuite, fuite, combat, mort, moral, crise de nerfs |
 | `tests/colony.test.js` | intégration : colonie complète sur carte générée, bataille, boucle de nourriture |
+| `tests/save.test.js` | sauvegarde : aller-retour, objets portés, volatils vs hystérésis, reprise de simulation |
 
 ## Ajouter un test
 
