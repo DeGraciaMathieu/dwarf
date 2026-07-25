@@ -32,8 +32,8 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 
 | Job | Système | Particularité à imiter |
 |---|---|---|
-| `dig` | `digSystem.js` | le plus simple : approche adjacente, progression, mutation du terrain, événement |
-| `chop` | `chopSystem.js` | idem + spawn d'un objet produit (`spawnFromDefinition`) |
+| `dig` | `digSystem.js` | approche adjacente, progression, mutation du terrain, événement + spawn d'une pierre (`spawnFromDefinition`) |
+| `chop` | `chopSystem.js` | idem + spawn d'une bûche (`spawnFromDefinition`) |
 | `haul` | `haulSystem.js` | auto-posté avec capacité bornée par pools de zones, deux phases, réservations auto-réparées (`pruneReservations`), lâcher générique (`dropOrphanedItems`) ; zones de stockage typées via `kind` (`food` : composants `food`/`drink`, `materials` : `buildMaterial`, sans étiquette : tout) — la zone spécifique est préférée, la générale sert de repli |
 | `build` | `buildSystem.js` | matériau requis (`nearestFreeMaterial` de `materials.js`), attente si case cible occupée |
 | `bury` | `graveSystem.js` | calqué sur `haul` (deux phases, réservations auto-réparées) mais dédié aux `corpse` vers la zone `graves` ; l'arrivée enterre le corps (`buried`) et émet `corpse.buried`. Le système gère aussi la putréfaction (`decay` → `rotten` + `corpse.rotted`) |
