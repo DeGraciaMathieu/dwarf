@@ -71,7 +71,8 @@
         "glyph": "†",
         "color": "#909090",
         "components": {
-            "item": {}
+            "item": {},
+            "corpse": { "decay": 0 }
         }
     },
     "mushroom": {

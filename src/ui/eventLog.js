@@ -107,6 +107,12 @@ export class EventLog {
         eventBus.on(EVENTS.ITEM_CRAFTED, ({ entityId, label }) => {
             this.append(`${dwarfName(entityId)} a brassé ${label}.`);
         });
+        eventBus.on(EVENTS.CORPSE_BURIED, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} a enterré un mort.`);
+        });
+        eventBus.on(EVENTS.CORPSE_ROTTED, () => {
+            this.append('Un cadavre se putréfie à l\'air libre…');
+        });
     }
 
     append(message) {

@@ -27,4 +27,6 @@ export const EVENTS = {
     ITEM_SMASHED: 'item.smashed',
     FURNITURE_BUILT: 'furniture.built',
     ITEM_CRAFTED: 'item.crafted',
+    CORPSE_BURIED: 'corpse.buried',
+    CORPSE_ROTTED: 'corpse.rotted',
 };

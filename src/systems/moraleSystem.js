@@ -1,6 +1,8 @@
 import { EVENTS } from '../events/events.js';
 
 const WITNESS_RANGE = 8;
+const ROT_RANGE = 4;
+const ROT_MALUS = 0.1;
 const EFFECTS = {
     ate: 10,
     drank: 5,
@@ -8,6 +10,7 @@ const EFFECTS = {
     rested: 10,
     restedOnGround: 3,
     victory: 15,
+    buried: 8,
     injured: -10,
     hungry: -5,
     thirsty: -5,
@@ -49,6 +52,9 @@ export class MoraleSystem {
         eventBus.on(EVENTS.DWARF_DIED, ({ x, y }) =>
             this.pending.push({ type: 'death', x, y })
         );
+        eventBus.on(EVENTS.CORPSE_BURIED, ({ x, y }) =>
+            this.pending.push({ type: 'buried', x, y })
+        );
     }
 
     update(world) {
@@ -57,12 +63,31 @@ export class MoraleSystem {
         }
         this.pending = [];
 
+        this.stenchOfDecay(world);
+
         for (const entityId of world.query('morale')) {
             const morale = world.getComponent(entityId, 'morale');
             if (morale.value < morale.baseline) {
                 morale.value = Math.min(morale.baseline, morale.value + morale.drift);
             } else if (morale.value > morale.baseline) {
                 morale.value = Math.max(morale.baseline, morale.value - morale.drift);
+            }
+        }
+    }
+
+    // un cadavre putréfié laissé à l'air libre ronge le moral des nains alentour
+    stenchOfDecay(world) {
+        for (const corpseId of world.query('rotten', 'position')) {
+            const corpsePosition = world.getComponent(corpseId, 'position');
+            for (const entityId of world.query('morale', 'position')) {
+                const position = world.getComponent(entityId, 'position');
+                const distance = Math.max(
+                    Math.abs(position.x - corpsePosition.x),
+                    Math.abs(position.y - corpsePosition.y)
+                );
+                if (distance <= ROT_RANGE) {
+                    this.adjust(world, entityId, -ROT_MALUS);
+                }
             }
         }
     }
@@ -80,6 +105,19 @@ export class MoraleSystem {
                     entityId,
                     distance <= WITNESS_RANGE ? EFFECTS.deathWitnessed : EFFECTS.deathHeard
                 );
+            }
+            return;
+        }
+        if (event.type === 'buried') {
+            for (const entityId of world.query('morale', 'position')) {
+                const position = world.getComponent(entityId, 'position');
+                const distance = Math.max(
+                    Math.abs(position.x - event.x),
+                    Math.abs(position.y - event.y)
+                );
+                if (distance <= WITNESS_RANGE) {
+                    this.adjust(world, entityId, EFFECTS.buried);
+                }
             }
             return;
         }

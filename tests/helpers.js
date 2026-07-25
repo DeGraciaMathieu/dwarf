@@ -21,6 +21,7 @@ import { TantrumSystem } from '../src/systems/tantrumSystem.js';
 import { DigSystem } from '../src/systems/digSystem.js';
 import { ChopSystem } from '../src/systems/chopSystem.js';
 import { HaulSystem } from '../src/systems/haulSystem.js';
+import { GraveSystem } from '../src/systems/graveSystem.js';
 import { BuildSystem } from '../src/systems/buildSystem.js';
 import { CraftSystem } from '../src/systems/craftSystem.js';
 import { StewardSystem } from '../src/systems/stewardSystem.js';
@@ -60,6 +61,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     const stockpiles = new Zone();
     const farms = new Zone();
     const fishingSpots = new Zone();
+    const graves = new Zone();
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
@@ -108,6 +110,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new DigSystem(jobBoard, terrain));
     world.registerSystem(new ChopSystem(jobBoard, terrain, data.items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
+    world.registerSystem(new GraveSystem(jobBoard, terrain, graves));
     world.registerSystem(new BuildSystem(jobBoard, terrain));
     world.registerSystem(new CraftSystem(jobBoard, terrain, data.recipes, data.items));
     world.registerSystem(new FarmSystem(jobBoard, terrain, farms, data.plants.mushroom, data.items.mushroom));
@@ -123,6 +126,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
         stockpiles,
         farms,
         fishingSpots,
+        graves,
         terrain,
         run(ticks) {
             for (let i = 0; i < ticks; i++) {
@@ -200,6 +204,14 @@ export function addLog(world, x, y) {
     world.addComponent(id, 'position', { x, y });
     world.addComponent(id, 'item', {});
     world.addComponent(id, 'buildMaterial', {});
+    return id;
+}
+
+export function addCorpse(world, x, y, { decay = 0 } = {}) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'item', {});
+    world.addComponent(id, 'corpse', { decay });
     return id;
 }
 

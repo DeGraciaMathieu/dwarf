@@ -8,6 +8,7 @@ export class DesignationControl {
         stockpiles,
         farms,
         fishingSpots,
+        graves,
         tileSize,
         recipes,
         onDwarfClick,
@@ -19,6 +20,7 @@ export class DesignationControl {
         this.stockpiles = stockpiles;
         this.farms = farms;
         this.fishingSpots = fishingSpots;
+        this.graves = graves;
         this.tileSize = tileSize;
         this.recipes = recipes;
         this.onDwarfClick = onDwarfClick;
@@ -92,7 +94,10 @@ export class DesignationControl {
             }
             if (
                 tile === 'floor' &&
-                (this.stockpiles.has(x, y) || this.farms.has(x, y) || this.workshopAt(x, y))
+                (this.stockpiles.has(x, y) ||
+                    this.farms.has(x, y) ||
+                    this.graves.has(x, y) ||
+                    this.workshopAt(x, y))
             ) {
                 return;
             }
@@ -106,7 +111,12 @@ export class DesignationControl {
             }
             return;
         }
-        if (tile !== 'floor' || this.stockpiles.has(x, y) || this.farms.has(x, y)) {
+        if (
+            tile !== 'floor' ||
+            this.stockpiles.has(x, y) ||
+            this.farms.has(x, y) ||
+            this.graves.has(x, y)
+        ) {
             return;
         }
         if (this.mode === 'build') {
@@ -117,6 +127,8 @@ export class DesignationControl {
             this.stockpiles.add(x, y, this.mode.split(':')[1]);
         } else if (this.mode === 'farm') {
             this.farms.add(x, y);
+        } else if (this.mode === 'grave') {
+            this.graves.add(x, y);
         }
     }
 

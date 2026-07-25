@@ -88,6 +88,9 @@ export class HaulSystem {
             reserveTileFor(job.itemId);
         }
         for (const itemId of world.query('item', 'position')) {
+            if (world.getComponent(itemId, 'corpse')) {
+                continue;
+            }
             const position = world.getComponent(itemId, 'position');
             if (this.stockpiles.has(position.x, position.y)) {
                 continue;
