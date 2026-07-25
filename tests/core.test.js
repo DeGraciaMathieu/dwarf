@@ -63,13 +63,14 @@ test('génération : massif montagneux creusable et forêts en bosquets', () => 
     let connectivity = 0;
     for (let i = 0; i < 5; i++) {
         const terrain = generateTerrain(40, 25, data.tiles);
-        const counts = { floor: 0, wall: 0, tree: 0 };
+        const counts = { floor: 0, wall: 0, tree: 0, water: 0 };
         for (let y = 0; y < 25; y++) {
             for (let x = 0; x < 40; x++) {
                 counts[terrain.get(x, y)]++;
             }
         }
         assert.ok(counts.wall > 0 && counts.tree > 0 && counts.floor > 0);
+        assert.ok(counts.water >= 20, `rivière et lacs attendus, ${counts.water} cases d'eau`);
         for (let x = 0; x < 40; x++) {
             assert.equal(terrain.get(x, 0), 'wall');
             assert.equal(terrain.get(x, 24), 'wall');
@@ -100,6 +101,18 @@ test('génération : massif montagneux creusable et forêts en bosquets', () => 
         assert.ok(diggableFace, 'le front de montagne doit être atteignable');
     }
     assert.ok(connectivity / 5 > 0.85, `connectivité moyenne: ${connectivity / 5}`);
+});
+
+test('eau : infranchissable pour tous, sauf par le gué', () => {
+    const river = makeTerrain(['....~~....', '....~~....', '..........', '....~~....']);
+    assert.equal(river.isWalkable(4, 0), false);
+    assert.equal(river.isWalkable(4, 0, { hostile: true }), false);
+    const path = findPath(river, { x: 1, y: 0 }, { x: 8, y: 0 });
+    assert.ok(path !== null, 'le gué permet la traversée');
+    assert.ok(path.some((step) => step.y === 2), 'le chemin passe par la ligne du gué');
+
+    const sealed = makeTerrain(['....~~....', '....~~....', '....~~....']);
+    assert.equal(findPath(sealed, { x: 1, y: 1 }, { x: 8, y: 1 }), null, 'sans gué, pas de passage');
 });
 
 test('largestWalkableRegion : ignore les poches isolées', () => {
