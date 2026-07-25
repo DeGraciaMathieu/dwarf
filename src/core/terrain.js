@@ -22,31 +22,78 @@ export class Terrain {
     }
 }
 
-const WALL_CHANCE = 0.38;
-const SMOOTHING_PASSES = 4;
-const TREE_CHANCE = 0.04;
+const MOUNTAIN_MIN_RATIO = 0.5;
+const MOUNTAIN_MAX_RATIO = 0.75;
+const MOUNTAIN_START_RATIO = 0.6;
+const OUTCROP_DENSITY = 1 / 130;
+const OUTCROP_FILL = 0.7;
+const GROVE_DENSITY = 1 / 110;
+const GROVE_FILL = 0.55;
 
 export function generateTerrain(width, height, tileDefinitions) {
-    let tiles = Array.from({ length: height }, () =>
-        Array.from({ length: width }, () => (Math.random() < WALL_CHANCE ? 'wall' : 'floor'))
+    const boundary = mountainBoundary(width, height);
+    const tiles = Array.from({ length: height }, (_, y) =>
+        Array.from({ length: width }, (_, x) => (x >= boundary[y] ? 'wall' : 'floor'))
     );
 
-    for (let pass = 0; pass < SMOOTHING_PASSES; pass++) {
-        tiles = smooth(tiles, width, height);
-    }
+    scatterPatches(tiles, width, height, boundary, {
+        count: Math.floor(width * height * OUTCROP_DENSITY),
+        minRadius: 1,
+        maxRadius: 2,
+        fill: OUTCROP_FILL,
+        type: 'wall',
+    });
+    scatterPatches(tiles, width, height, boundary, {
+        count: Math.floor(width * height * GROVE_DENSITY),
+        minRadius: 1,
+        maxRadius: 2,
+        fill: GROVE_FILL,
+        type: 'tree',
+    });
 
     for (let y = 0; y < height; y++) {
         for (let x = 0; x < width; x++) {
-            const isBorder = x === 0 || y === 0 || x === width - 1 || y === height - 1;
-            if (isBorder) {
+            if (x === 0 || y === 0 || x === width - 1 || y === height - 1) {
                 tiles[y][x] = 'wall';
-            } else if (tiles[y][x] === 'floor' && Math.random() < TREE_CHANCE) {
-                tiles[y][x] = 'tree';
             }
         }
     }
 
     return new Terrain(width, height, tiles, tileDefinitions);
+}
+
+function mountainBoundary(width, height) {
+    const min = Math.floor(width * MOUNTAIN_MIN_RATIO);
+    const max = Math.floor(width * MOUNTAIN_MAX_RATIO);
+    let x = Math.floor(width * MOUNTAIN_START_RATIO);
+    const boundary = [];
+    for (let y = 0; y < height; y++) {
+        boundary.push(x);
+        x = Math.max(min, Math.min(max, x + Math.floor(Math.random() * 3) - 1));
+    }
+    return boundary;
+}
+
+function scatterPatches(tiles, width, height, boundary, { count, minRadius, maxRadius, fill, type }) {
+    for (let i = 0; i < count; i++) {
+        const cy = 1 + Math.floor(Math.random() * (height - 2));
+        const plainWidth = boundary[cy] - 2;
+        if (plainWidth < 1) {
+            continue;
+        }
+        const cx = 1 + Math.floor(Math.random() * plainWidth);
+        const radius = minRadius + Math.floor(Math.random() * (maxRadius - minRadius + 1));
+        for (let dy = -radius; dy <= radius; dy++) {
+            for (let dx = -radius; dx <= radius; dx++) {
+                const x = cx + dx;
+                const y = cy + dy;
+                const inPlain = x > 0 && y > 0 && y < height - 1 && x < boundary[y];
+                if (inPlain && tiles[y][x] === 'floor' && Math.random() < fill) {
+                    tiles[y][x] = type;
+                }
+            }
+        }
+    }
 }
 
 export function largestWalkableRegion(terrain) {
@@ -86,28 +133,4 @@ function floodFill(terrain, startX, startY, visited) {
         }
     }
     return region;
-}
-
-function smooth(tiles, width, height) {
-    return tiles.map((row, y) =>
-        row.map((_, x) => (countWallNeighbors(tiles, width, height, x, y) >= 5 ? 'wall' : 'floor'))
-    );
-}
-
-function countWallNeighbors(tiles, width, height, x, y) {
-    let count = 0;
-    for (let dy = -1; dy <= 1; dy++) {
-        for (let dx = -1; dx <= 1; dx++) {
-            if (dx === 0 && dy === 0) {
-                continue;
-            }
-            const nx = x + dx;
-            const ny = y + dy;
-            const outOfBounds = nx < 0 || nx >= width || ny < 0 || ny >= height;
-            if (outOfBounds || tiles[ny][nx] === 'wall') {
-                count++;
-            }
-        }
-    }
-    return count;
 }
