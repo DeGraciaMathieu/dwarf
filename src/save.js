@@ -5,9 +5,12 @@ const VOLATILE_COMPONENTS = [
     'currentJob',
     'foodTarget',
     'bedTarget',
+    'drinkTarget',
+    'noWaterAccess',
     'fleeing',
     'fighting',
     'starving',
+    'dehydrated',
     'carrying',
 ];
 

@@ -9,7 +9,8 @@ import { serializeGame, restoreGame } from './save.js';
 import { EVENTS } from './events/events.js';
 import { MovementSystem } from './systems/movementSystem.js';
 import { NeedsSystem } from './systems/needsSystem.js';
-import { StarvationSystem } from './systems/starvationSystem.js';
+import { AttritionSystem } from './systems/attritionSystem.js';
+import { DrinkSystem } from './systems/drinkSystem.js';
 import { MoraleSystem } from './systems/moraleSystem.js';
 import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
@@ -61,16 +62,37 @@ async function main() {
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
+            { component: 'thirst', event: EVENTS.DWARF_THIRSTY },
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
         ])
     );
-    world.registerSystem(new StarvationSystem(jobBoard, items.corpse));
+    world.registerSystem(
+        new AttritionSystem(jobBoard, items.corpse, [
+            {
+                component: 'hunger',
+                marker: 'starving',
+                event: EVENTS.DWARF_STARVING,
+                healthDecay: 0.15,
+                moraleDecay: 0.2,
+                cause: 'starvation',
+            },
+            {
+                component: 'thirst',
+                marker: 'dehydrated',
+                event: EVENTS.DWARF_DEHYDRATED,
+                healthDecay: 0.25,
+                moraleDecay: 0.2,
+                cause: 'dehydration',
+            },
+        ])
+    );
     world.registerSystem(new MoraleSystem(eventBus));
     world.registerSystem(new GoblinSpawnSystem(terrain, creatures.goblin));
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
+    world.registerSystem(new DrinkSystem(terrain));
     world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));

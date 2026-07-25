@@ -32,6 +32,7 @@ export class ArbiterSystem {
             { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
             { type: 'tantrum', score: this.tantrumScore(world, entityId) },
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
+            { type: 'drink', score: this.drinkScore(world, entityId) },
             { type: 'sleep', score: this.sleepScore(world, entityId) },
             { type: 'work', score: this.workScore(world, entityId) },
             { type: 'wander', score: WANDER_SCORE },
@@ -90,6 +91,17 @@ export class ArbiterSystem {
             return 0;
         }
         return hunger.value;
+    }
+
+    drinkScore(world, entityId) {
+        const thirst = world.getComponent(entityId, 'thirst');
+        if (!thirst || thirst.value < thirst.threshold) {
+            return 0;
+        }
+        if (world.getComponent(entityId, 'noWaterAccess')) {
+            return 0;
+        }
+        return thirst.value;
     }
 
     sleepScore(world, entityId) {

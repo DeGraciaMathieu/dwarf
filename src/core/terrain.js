@@ -67,6 +67,11 @@ function isPlayable(terrain) {
         return false;
     }
     const regionSet = new Set(region.map((tile) => tile.y * terrain.width + tile.x));
+    // boire est vital : la grande région doit toucher l'eau quelque part
+    const drinkable = region.some(({ x, y }) => touchesTile(terrain, x, y, 'water'));
+    if (!drinkable) {
+        return false;
+    }
     for (let y = 1; y < terrain.height - 1; y++) {
         for (let x = Math.floor(terrain.width / 2); x < terrain.width - 1; x++) {
             if (terrain.get(x, y) !== 'wall') {
@@ -78,6 +83,20 @@ function isPlayable(terrain) {
                         return true;
                     }
                 }
+            }
+        }
+    }
+    return false;
+}
+
+function touchesTile(terrain, x, y, type) {
+    for (let dy = -1; dy <= 1; dy++) {
+        for (let dx = -1; dx <= 1; dx++) {
+            const nx = x + dx;
+            const ny = y + dy;
+            const inBounds = nx >= 0 && nx < terrain.width && ny >= 0 && ny < terrain.height;
+            if (inBounds && (dx !== 0 || dy !== 0) && terrain.get(nx, ny) === type) {
+                return true;
             }
         }
     }

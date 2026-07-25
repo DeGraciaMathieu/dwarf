@@ -3,6 +3,7 @@ const ACTIVITY_LABELS = {
     flee: 'Fuit !',
     tantrum: 'Rage !',
     eat: 'Va manger',
+    drink: 'Va boire',
     sleep: 'Dort',
     work: 'Travaille',
     wander: 'Erre',
@@ -61,6 +62,7 @@ export class InspectionPanel {
             ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
             ${this.gauge('Moral', morale && { ...morale, threshold: morale.low }, true)}
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
+            ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
         `;
     }

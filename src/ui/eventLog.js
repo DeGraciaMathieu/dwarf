@@ -71,16 +71,28 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} est blessé !`);
         });
+        eventBus.on(EVENTS.DWARF_THIRSTY, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} a soif !`);
+        });
+        eventBus.on(EVENTS.DWARF_DRANK, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} s'est désaltéré.`);
+        });
         eventBus.on(EVENTS.DWARF_STARVING, ({ entityId }) => {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} meurt de faim !`);
         });
+        eventBus.on(EVENTS.DWARF_DEHYDRATED, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} meurt de soif !`);
+        });
         eventBus.on(EVENTS.DWARF_DIED, ({ name, cause }) => {
-            this.append(
-                cause === 'starvation'
-                    ? `${name} est mort de faim.`
-                    : `${name} a succombé à ses blessures.`
-            );
+            const messages = {
+                starvation: `${name} est mort de faim.`,
+                dehydration: `${name} est mort de soif.`,
+            };
+            this.append(messages[cause] ?? `${name} a succombé à ses blessures.`);
         });
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) => {
             const identity = world.getComponent(killerId, 'identity');

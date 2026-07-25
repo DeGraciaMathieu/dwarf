@@ -3,10 +3,12 @@ import { EVENTS } from '../events/events.js';
 const WITNESS_RANGE = 8;
 const EFFECTS = {
     ate: 10,
+    drank: 5,
     rested: 10,
     victory: 15,
     injured: -10,
     hungry: -5,
+    thirsty: -5,
     fled: -5,
     deathWitnessed: -25,
     deathHeard: -8,
@@ -29,6 +31,12 @@ export class MoraleSystem {
         );
         eventBus.on(EVENTS.DWARF_HUNGRY, ({ entityId }) =>
             this.pending.push({ type: 'hungry', entityId })
+        );
+        eventBus.on(EVENTS.DWARF_THIRSTY, ({ entityId }) =>
+            this.pending.push({ type: 'thirsty', entityId })
+        );
+        eventBus.on(EVENTS.DWARF_DRANK, ({ entityId }) =>
+            this.pending.push({ type: 'drank', entityId })
         );
         eventBus.on(EVENTS.DWARF_FLEES, ({ entityId }) =>
             this.pending.push({ type: 'fled', entityId })

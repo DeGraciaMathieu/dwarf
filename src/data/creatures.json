@@ -5,6 +5,7 @@
         "names": ["Urist", "Bofur", "Dagna", "Thorik", "Vala", "Dumat", "Kib", "Solon", "Erith", "Fikod", "Zan", "Doren", "Ingiz", "Oddom", "Rith", "Meban"],
         "components": {
             "hunger": { "value": 0, "rate": 1, "threshold": 70, "max": 100 },
+            "thirst": { "value": 0, "rate": 0.6, "threshold": 65, "max": 100 },
             "fatigue": { "value": 0, "rate": 0.4, "threshold": 80, "max": 120, "recovery": 6 },
             "health": { "value": 30, "max": 30 },
             "combat": { "damage": 4, "cooldown": 5, "courage": 0.5 },
