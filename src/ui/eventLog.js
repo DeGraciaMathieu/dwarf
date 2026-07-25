@@ -63,8 +63,16 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} est blessé !`);
         });
-        eventBus.on(EVENTS.DWARF_DIED, ({ name }) => {
-            this.append(`${name} a succombé à ses blessures.`);
+        eventBus.on(EVENTS.DWARF_STARVING, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} meurt de faim !`);
+        });
+        eventBus.on(EVENTS.DWARF_DIED, ({ name, cause }) => {
+            this.append(
+                cause === 'starvation'
+                    ? `${name} est mort de faim.`
+                    : `${name} a succombé à ses blessures.`
+            );
         });
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) => {
             const identity = world.getComponent(killerId, 'identity');

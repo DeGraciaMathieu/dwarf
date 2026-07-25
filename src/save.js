@@ -7,6 +7,7 @@ const VOLATILE_COMPONENTS = [
     'bedTarget',
     'fleeing',
     'fighting',
+    'starving',
     'carrying',
 ];
 

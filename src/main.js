@@ -9,6 +9,7 @@ import { serializeGame, restoreGame } from './save.js';
 import { EVENTS } from './events/events.js';
 import { MovementSystem } from './systems/movementSystem.js';
 import { NeedsSystem } from './systems/needsSystem.js';
+import { StarvationSystem } from './systems/starvationSystem.js';
 import { MoraleSystem } from './systems/moraleSystem.js';
 import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
@@ -61,6 +62,7 @@ async function main() {
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
         ])
     );
+    world.registerSystem(new StarvationSystem(jobBoard, items.corpse));
     world.registerSystem(new MoraleSystem(eventBus));
     world.registerSystem(new GoblinSpawnSystem(terrain, creatures.goblin));
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
