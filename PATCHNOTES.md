@@ -2,6 +2,13 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — L'escalade des invasions
+
+- **Les gobelins attaquent en vagues** de plus en plus nombreuses (1, puis 2, jusqu'à 6) et rapprochées (~2 min 30 au début, ~80 s au plus fort). La bande arrive groupée : « Une bande de 3 gobelins déferle sur la région ! »
+- **La prospérité attire les convoitises** : chaque tranche de 4 habitants au-delà de 5 grossit les bandes — une colonie de 12 nains subit des assauts bien plus durs qu'un avant-poste.
+- La partie devient perdable : murailles, portes et surplus de nourriture sont désormais des décisions de survie.
+- Technique : l'état d'invasion (numéro de vague, compte à rebours) vit dans un composant du monde — recharger une sauvegarde ne remet pas la menace à zéro.
+
 ## 2026-07-25 — L'inanition
 
 - **La famine tue** : un nain dont la jauge de faim est au maximum perd de la santé (~40 s d'agonie à vitesse ×1) — le journal prévient (« Urist meurt de faim ! ») puis acte le décès. Un repas in extremis stoppe l'érosion.
