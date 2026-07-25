@@ -13,7 +13,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 | Étape | Qui | Détail |
 |---|---|---|
 | `post({type, target, ...})` | UI (`designation.js`) ou un système (haul, farm, steward pour les `craft` d'objectif de stock) | le job entre en file, `claimedBy: null` |
-| `claim(entityId, position)` | `JobAssignmentSystem` | le job disponible le plus proche ; devient un composant `currentJob {job, path, progress}` sur le nain |
+| `claim(entityId, position)` | `JobAssignmentSystem` | le job disponible le plus prioritaire, puis le plus proche (`job.priority`, défaut 0 ; l'outil « Urgent » de `designation.js` pose à 1) ; devient un composant `currentJob {job, path, progress}` sur le nain |
 | `release(job)` | `JobAssignmentSystem` (activité ≠ work), `CombatSystem` (mort) | retour en file, un autre nain le reprendra |
 | `cancel(job)` | `StewardSystem` (cible atteinte ou baissée) | retire un job **non réclamé** de la file ; un job réclamé va à son terme |
 | `markUnreachable(job)` | l'exécutant (cible/matériau/atelier inaccessible) | job en pause, ignoré par `claim` |

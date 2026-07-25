@@ -1,6 +1,6 @@
 # PRD C10 — Priorité de jobs
 
-**Lot :** C — Contrôle joueur · **Point :** 10 · **Statut :** À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** C — Contrôle joueur · **Point :** 10 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 
