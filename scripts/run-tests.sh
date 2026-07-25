@@ -9,7 +9,8 @@ cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 log=$(mktemp)
 if ! node --test tests/ >"$log" 2>&1; then
   echo "La suite de tests échoue — corrige avant de terminer la tâche :" >&2
-  tail -20 "$log" >&2
+  grep -A 8 "^not ok" "$log" >&2
+  grep -E "^# (tests|pass|fail)" "$log" >&2
   rm -f "$log"
   exit 2
 fi
