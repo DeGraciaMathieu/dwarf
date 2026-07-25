@@ -22,6 +22,7 @@ import { DigSystem } from '../src/systems/digSystem.js';
 import { ChopSystem } from '../src/systems/chopSystem.js';
 import { HaulSystem } from '../src/systems/haulSystem.js';
 import { GraveSystem } from '../src/systems/graveSystem.js';
+import { EquipSystem } from '../src/systems/equipSystem.js';
 import { BuildSystem } from '../src/systems/buildSystem.js';
 import { CraftSystem } from '../src/systems/craftSystem.js';
 import { StewardSystem } from '../src/systems/stewardSystem.js';
@@ -111,6 +112,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new ChopSystem(jobBoard, terrain, data.items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
     world.registerSystem(new GraveSystem(jobBoard, terrain, graves));
+    world.registerSystem(new EquipSystem(jobBoard, terrain));
     world.registerSystem(new BuildSystem(jobBoard, terrain));
     world.registerSystem(new CraftSystem(jobBoard, terrain, data.recipes, data.items));
     world.registerSystem(new FarmSystem(jobBoard, terrain, farms, data.plants.mushroom, data.items.mushroom));
@@ -178,6 +180,7 @@ export function addDwarf(world, x, y, overrides = {}) {
     });
     world.addComponent(id, 'wander', {});
     world.addComponent(id, 'worker', {});
+    world.addComponent(id, 'equipment', {});
     return id;
 }
 
@@ -213,6 +216,28 @@ export function addStone(world, x, y) {
     world.addComponent(id, 'item', {});
     world.addComponent(id, 'buildMaterial', {});
     world.addComponent(id, 'stone', {});
+    return id;
+}
+
+export function addOre(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'item', {});
+    world.addComponent(id, 'ore', {});
+    return id;
+}
+
+export function addSword(world, x, y, { damage = 6 } = {}) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'weapon', { damage });
+    return id;
+}
+
+export function addMail(world, x, y, { defense = 3 } = {}) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'armor', { defense });
     return id;
 }
 

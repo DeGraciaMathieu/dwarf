@@ -52,7 +52,8 @@ export class CombatSystem {
         }
         combat.cooldownRemaining = combat.cooldown;
         const health = world.getComponent(targetId, 'health');
-        health.value -= combat.damage;
+        const damage = combat.damage + this.weaponDamage(world, attackerId);
+        health.value -= Math.max(1, damage - this.armorDefense(world, targetId));
         const isDwarf = world.getComponent(targetId, 'worker') !== undefined;
         if (health.value > 0) {
             if (isDwarf) {
@@ -64,5 +65,19 @@ export class CombatSystem {
             cause: 'combat',
             killerId: attackerId,
         });
+    }
+
+    weaponDamage(world, entityId) {
+        const equipment = world.getComponent(entityId, 'equipment');
+        const weaponId = equipment?.weapon;
+        const weapon = weaponId != null ? world.getComponent(weaponId, 'weapon') : null;
+        return weapon ? weapon.damage : 0;
+    }
+
+    armorDefense(world, entityId) {
+        const equipment = world.getComponent(entityId, 'equipment');
+        const armorId = equipment?.armor;
+        const armor = armorId != null ? world.getComponent(armorId, 'armor') : null;
+        return armor ? armor.defense : 0;
     }
 }

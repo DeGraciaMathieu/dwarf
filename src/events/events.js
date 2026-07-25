@@ -29,4 +29,5 @@ export const EVENTS = {
     ITEM_CRAFTED: 'item.crafted',
     CORPSE_BURIED: 'corpse.buried',
     CORPSE_ROTTED: 'corpse.rotted',
+    DWARF_EQUIPPED: 'dwarf.equipped',
 };

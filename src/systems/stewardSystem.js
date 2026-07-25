@@ -78,8 +78,9 @@ export class StewardSystem {
     }
 
     countStock(world, recipe) {
+        // sans 'position' : un équipement porté (épée, cotte) compte toujours dans le stock
         const components = Object.keys(this.itemDefinitions[recipe.produces].components);
-        return world.query('position', ...components).length;
+        return world.query(...components).length;
     }
 
     countFreeIngredients(world, ingredient) {

@@ -105,13 +105,17 @@ export class EventLog {
             this.append(`${dwarfName(entityId)} a fabriqué ${label}.`);
         });
         eventBus.on(EVENTS.ITEM_CRAFTED, ({ entityId, label }) => {
-            this.append(`${dwarfName(entityId)} a brassé ${label}.`);
+            this.append(`${dwarfName(entityId)} a fabriqué ${label}.`);
         });
         eventBus.on(EVENTS.CORPSE_BURIED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a enterré un mort.`);
         });
         eventBus.on(EVENTS.CORPSE_ROTTED, () => {
             this.append('Un cadavre se putréfie à l\'air libre…');
+        });
+        eventBus.on(EVENTS.DWARF_EQUIPPED, ({ entityId, slot }) => {
+            const gear = slot === 'weapon' ? 's\'arme' : 'enfile une armure';
+            this.append(`${dwarfName(entityId)} ${gear}.`);
         });
     }
 

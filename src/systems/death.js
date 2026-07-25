@@ -13,6 +13,14 @@ export function kill(world, eventBus, jobBoard, corpseDefinition, targetId, { ca
         if (carrying) {
             world.addComponent(carrying.itemId, 'position', { x: position.x, y: position.y });
         }
+        const equipment = world.getComponent(targetId, 'equipment');
+        if (equipment) {
+            for (const itemId of [equipment.weapon, equipment.armor]) {
+                if (itemId !== undefined && itemId !== null) {
+                    world.addComponent(itemId, 'position', { x: position.x, y: position.y });
+                }
+            }
+        }
         spawnFromDefinition(world, corpseDefinition, position);
         const identity = world.getComponent(targetId, 'identity');
         eventBus.emit(EVENTS.DWARF_DIED, {

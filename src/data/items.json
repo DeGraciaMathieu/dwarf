@@ -53,6 +53,27 @@
             "workshop": { "type": "masonry" }
         }
     },
+    "forge": {
+        "glyph": "θ",
+        "color": "#d06030",
+        "components": {
+            "workshop": { "type": "forge" }
+        }
+    },
+    "sword": {
+        "glyph": "/",
+        "color": "#b0c0d0",
+        "components": {
+            "weapon": { "damage": 6 }
+        }
+    },
+    "mail": {
+        "glyph": "[",
+        "color": "#8090a0",
+        "components": {
+            "armor": { "defense": 3 }
+        }
+    },
     "beer": {
         "glyph": "δ",
         "color": "#e0a030",

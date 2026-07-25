@@ -60,6 +60,29 @@
         "ingredient": "stone",
         "workshop": "masonry"
     },
+    "forge": {
+        "label": "une forge",
+        "ghost": "θ",
+        "craftTicks": 10,
+        "produces": "forge",
+        "workshop": "carpentry"
+    },
+    "sword": {
+        "label": "une épée",
+        "craftTicks": 16,
+        "produces": "sword",
+        "ingredient": "ore",
+        "workshop": "forge",
+        "consumable": true
+    },
+    "mail": {
+        "label": "une cotte de mailles",
+        "craftTicks": 16,
+        "produces": "mail",
+        "ingredient": "ore",
+        "workshop": "forge",
+        "consumable": true
+    },
     "beer": {
         "label": "une bière",
         "craftTicks": 8,
