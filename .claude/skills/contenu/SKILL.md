@@ -14,9 +14,9 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 |---|---|---|
 | `creatures.json` | `dwarf`, `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js` |
 | `items.json` | `bread`, `log`, `mushroom`, `corpse`, `workshop`, `bed` | `main.js`, systèmes producteurs |
-| `tiles.json` | `floor`, `wall`, `tree` — `{glyph, color, walkable}` | `terrain.js`, `renderer.js` |
+| `tiles.json` | `floor`, `wall`, `tree`, `door` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
-| `recipes.json` | `bed` — `{label, ghost, craftTicks, produces}` | `craftSystem.js`, `designation.js` |
+| `recipes.json` | `bed`, `door` — `{label, ghost, craftTicks, produces, installsTile?}` | `craftSystem.js`, `designation.js` |
 
 ## Quel composant déclenche quel système
 
@@ -44,11 +44,11 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 **Ajouter un meuble fabricable** :
 1. `items.json` : le meuble, avec `item` (retiré à l'installation par `craftSystem.js`) + son composant fonctionnel (modèle : `bed`).
-2. `recipes.json` : `{label, ghost, craftTicks, produces}`.
-3. `index.html` : bouton `data-tool` ; `designation.js` : le mode qui poste `{type:'craft', recipe, ghost, target}`.
+2. `recipes.json` : `{label (avec article : « un lit »), ghost, craftTicks, produces}`. Si le produit s'installe comme **tuile** au lieu d'un meuble (modèle : la porte), ajouter `installsTile: '<type de tuile>'` — le kit porté est détruit et `terrain.set()` pose la tuile.
+3. `index.html` : bouton `data-tool="craft:<recette>"` — `designation.js` gère tous les modes `craft:*` génériquement.
 4. Si le composant fonctionnel est nouveau, écrire le système qui l'exploite (modèle : lits dans `sleepSystem.js`).
 
-**Ajouter un type de tuile** : `tiles.json` (`walkable` correct) + le placer dans la génération (`terrain.js`).
+**Ajouter un type de tuile** : `tiles.json` (`walkable` correct ; `blocksHostiles: true` pour bloquer les hostiles seulement — `isWalkable(x, y, {hostile})` et `findPath(..., {hostile: true})` en tiennent compte) + le placer dans la génération (`terrain.js`) ou via une recette `installsTile`.
 
 **Ajouter une culture** : `plants.json` + l'aliment produit dans `items.json`. `farmSystem.js` est mono-culture (champignon) — le paramétrer par champ serait l'extension à faire.
 

@@ -39,9 +39,8 @@ export const data = {
 export { EVENTS };
 
 export function makeTerrain(rows) {
-    const tiles = rows.map((row) =>
-        [...row].map((glyph) => (glyph === '#' ? 'wall' : glyph === 'T' ? 'tree' : 'floor'))
-    );
+    const glyphToTile = { '#': 'wall', T: 'tree', '+': 'door' };
+    const tiles = rows.map((row) => [...row].map((glyph) => glyphToTile[glyph] ?? 'floor'));
     return new Terrain(rows[0].length, rows.length, tiles, data.tiles);
 }
 

@@ -35,6 +35,7 @@ auto_invoke: true
 | `tests/behaviors.test.js` | poursuite, fuite, combat, mort, moral, crise de nerfs |
 | `tests/colony.test.js` | intégration : colonie complète sur carte générée, bataille, boucle de nourriture |
 | `tests/save.test.js` | sauvegarde : aller-retour, objets portés, volatils vs hystérésis, reprise de simulation |
+| `tests/doors.test.js` | portes : marchabilité selon l'allégeance, fabrication en tuile, forteresse étanche |
 
 ## Ajouter un test
 
