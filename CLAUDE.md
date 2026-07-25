@@ -27,7 +27,6 @@ Simulation de colonie à la Dwarf Fortress dans le navigateur : des nains autono
 - Toute nouvelle mécanique validée par des scénarios doit laisser ses scénarios dans `tests/` (tests macro de comportement, pas de tests unitaires d'implémentation).
 - Si une approche échoue après 2 tentatives, reprendre le plan avant de continuer.
 - Si le périmètre d'un skill change (nouveau système, nouveau type de job, nouvelle activité), mettre à jour le skill concerné dans la même passe.
-- **À la fin de chaque chantier, ajouter une entrée en tête de `PATCHNOTES.md`** : `## <date> — <titre>`, 2 à 5 puces orientées joueur (nouvelles features d'abord, équilibrage et corrections ensuite, note technique seulement si structurante).
 
 ## Skills disponibles
 
