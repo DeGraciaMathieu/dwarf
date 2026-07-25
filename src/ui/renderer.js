@@ -79,5 +79,46 @@ export class Renderer {
             ctx.fillText('z', (position.x + 1) * tileSize - 4, position.y * tileSize + 5);
         }
         ctx.font = `${tileSize - 4}px monospace`;
+
+        this.drawWorkerStatus(world);
+    }
+
+    // repères de danger au-dessus des nains, pour un coup d'œil sans sélection
+    drawWorkerStatus(world) {
+        const { tileSize } = this;
+        for (const entityId of world.query('worker', 'position')) {
+            const position = world.getComponent(entityId, 'position');
+            const x = position.x * tileSize;
+            const y = position.y * tileSize;
+            this.drawHealthBar(world, entityId, x, y);
+            this.drawMoraleDot(world, entityId, x, y);
+        }
+    }
+
+    drawHealthBar(world, entityId, x, y) {
+        const health = world.getComponent(entityId, 'health');
+        if (!health || health.value >= health.max) {
+            return;
+        }
+        const { ctx, tileSize } = this;
+        const width = tileSize - 4;
+        const ratio = Math.max(0, health.value / health.max);
+        ctx.fillStyle = '#000';
+        ctx.fillRect(x + 2, y + 1, width, 3);
+        ctx.fillStyle = ratio > 0.5 ? '#5ac05a' : ratio > 0.25 ? '#c0a030' : '#c05030';
+        ctx.fillRect(x + 2, y + 1, width * ratio, 3);
+    }
+
+    drawMoraleDot(world, entityId, x, y) {
+        const morale = world.getComponent(entityId, 'morale');
+        const tantruming = world.getComponent(entityId, 'tantruming');
+        if (!tantruming && !(morale && morale.value <= morale.low)) {
+            return;
+        }
+        const { ctx } = this;
+        ctx.fillStyle = tantruming ? '#e04040' : '#d0a030';
+        ctx.beginPath();
+        ctx.arc(x + 5, y + 8, 3, 0, Math.PI * 2);
+        ctx.fill();
     }
 }
