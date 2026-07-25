@@ -206,6 +206,30 @@ export function addBed(world, x, y) {
     return id;
 }
 
+export function addMushroom(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'food', { nutrition: 80 });
+    world.addComponent(id, 'item', {});
+    world.addComponent(id, 'brewable', {});
+    return id;
+}
+
+export function addBrewery(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'workshop', { type: 'brewery' });
+    return id;
+}
+
+export function addBeer(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'item', {});
+    world.addComponent(id, 'drink', {});
+    return id;
+}
+
 export function entitiesAt(world, componentName, x, y) {
     return world.query(componentName, 'position').filter((id) => {
         const position = world.getComponent(id, 'position');
