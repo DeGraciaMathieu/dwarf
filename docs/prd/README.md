@@ -1,0 +1,54 @@
+# PRD — Dwarf
+
+Index des documents d'exigences produit, issus de l'analyse du jeu. Un PRD par point actionnable. Chaque document est autonome et respecte l'architecture ECS (nouveau système ou data, jamais de refonte du socle).
+
+Convention de nommage : `<Lot><NN>-slug.md`.
+
+## Lot A — Lisibilité (rapide, fort impact)
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 1 | [A01 — Afficher le job et l'intention du nain](A01-inspection-job-intention.md) | Fort / Faible |
+| 2 | [A02 — Alertes de crise (eau, nourriture, job inaccessible)](A02-alertes-crise.md) | Fort / Faible |
+| 3 | [A03 — Détail des blocages d'objectifs](A03-blocages-objectifs.md) | Moyen / Faible |
+| 4 | [A04 — HUD minimal (horloge, population, vague, jobs)](A04-hud-minimal.md) | Fort / Faible |
+| 5 | [A05 — Barre de moral/santé sur le canvas](A05-barres-canvas.md) | Moyen / Faible |
+
+## Lot B — Tension de combat
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 6 | [B06 — Rééquilibrage des vagues](B06-reequilibrage-vagues.md) | Fort / Moyen |
+| 7 | [B07 — Variété d'ennemis](B07-variete-ennemis.md) | Fort / Moyen |
+| 8 | [B08 — Mémoire de la cible (IA gobeline)](B08-memoire-cible.md) | Moyen / Faible |
+| 9 | [B09 — Fuite avec destination sûre](B09-fuite-destination.md) | Moyen / Moyen |
+
+## Lot C — Contrôle joueur
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 10 | [C10 — Priorité de jobs](C10-priorite-jobs.md) | Fort / Moyen |
+| 11 | [C11 — Spécialisation et aptitudes](C11-specialisation-aptitudes.md) | Fort / Moyen |
+| 12 | [C12 — Contrôle de l'immigration](C12-controle-immigration.md) | Moyen / Faible |
+
+## Lot D — Robustesse
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 13 | [D13 — resetUnreachable ciblé](D13-reset-unreachable-cible.md) | Moyen / Moyen |
+| 14 | [D14 — Garde-fou pathfinding besoins](D14-garde-fou-besoins.md) | Fort / Faible |
+| 15 | [D15 — Scénarios de test des lots](D15-scenarios-test.md) | Moyen / Moyen |
+
+## Lot E — Richesse de contenu
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 16 | [E16 — Armes et armures supplémentaires](E16-armes-armures.md) | Moyen / Faible |
+| 17 | [E17 — Deuxième source de moral](E17-source-moral.md) | Moyen / Moyen |
+| 18 | [E18 — Progression par paliers](E18-progression-paliers.md) | Fort / Moyen |
+
+## Ordre recommandé
+
+1. **Lot A** en premier — rend le jeu jouable et débogable.
+2. **Lot B** — transforme l'expérience (tension).
+3. **Lots C → E** — approfondissement une fois la boucle nerveuse en place.
