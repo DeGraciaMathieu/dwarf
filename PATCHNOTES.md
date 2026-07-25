@@ -2,6 +2,11 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — Bien dormir compte
+
+- **Le réveil dépend du couchage** : une nuit complète en lit remonte le moral de +10, contre +3 seulement à même le sol — le journal le raconte : « Urist a mal dormi. »
+- Le lit cumule désormais trois avantages : nuit 50 % plus courte, guérison accélérée, et le vrai bon moral au réveil. Les dortoirs deviennent un investissement, pas un luxe.
+
 ## 2026-07-25 — La soif
 
 - **Les nains ont soif** : nouvelle jauge, et des allers-retours réguliers à la berge — « Urist a soif ! », « Urist s'est désaltéré. » Un pont fait office d'abreuvoir sécurisé.
