@@ -10,9 +10,10 @@ export class MovementSystem {
                 continue;
             }
             const position = world.getComponent(entityId, 'position');
+            const hostile = world.getComponent(entityId, 'hostile') !== undefined;
             const dx = Math.floor(Math.random() * 3) - 1;
             const dy = Math.floor(Math.random() * 3) - 1;
-            if (this.terrain.isWalkable(position.x + dx, position.y + dy)) {
+            if (this.terrain.isWalkable(position.x + dx, position.y + dy, { hostile })) {
                 position.x += dx;
                 position.y += dy;
             }

@@ -30,7 +30,7 @@ export class HostileSystem {
             if (!chasing || nearestDistance <= 1) {
                 continue;
             }
-            const path = findPath(this.terrain, position, nearest);
+            const path = findPath(this.terrain, position, nearest, { hostile: true });
             if (path && path.length > 0) {
                 position.x = path[0].x;
                 position.y = path[0].y;

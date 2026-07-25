@@ -36,7 +36,7 @@ export class GoblinSpawnSystem {
                     y < EDGE_MARGIN ||
                     x >= this.terrain.width - EDGE_MARGIN ||
                     y >= this.terrain.height - EDGE_MARGIN;
-                if (nearEdge && this.terrain.isWalkable(x, y)) {
+                if (nearEdge && this.terrain.isWalkable(x, y, { hostile: true })) {
                     candidates.push({ x, y });
                 }
             }

@@ -4,8 +4,8 @@ const NEIGHBORS = [
     [-1, 1], [0, 1], [1, 1],
 ];
 
-export function findPath(terrain, from, to) {
-    if (!terrain.isWalkable(to.x, to.y)) {
+export function findPath(terrain, from, to, movement = {}) {
+    if (!terrain.isWalkable(to.x, to.y, movement)) {
         return null;
     }
     const key = (x, y) => y * terrain.width + x;
@@ -37,7 +37,7 @@ export function findPath(terrain, from, to) {
         for (const [dx, dy] of NEIGHBORS) {
             const nx = current.x + dx;
             const ny = current.y + dy;
-            if (!terrain.isWalkable(nx, ny)) {
+            if (!terrain.isWalkable(nx, ny, movement)) {
                 continue;
             }
             const neighborKey = key(nx, ny);

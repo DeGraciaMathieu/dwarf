@@ -14,11 +14,15 @@ export class Terrain {
         this.tiles[y][x] = type;
     }
 
-    isWalkable(x, y) {
+    isWalkable(x, y, { hostile = false } = {}) {
         if (x < 0 || x >= this.width || y < 0 || y >= this.height) {
             return false;
         }
-        return this.tileDefinitions[this.get(x, y)].walkable;
+        const tile = this.tileDefinitions[this.get(x, y)];
+        if (hostile && tile.blocksHostiles) {
+            return false;
+        }
+        return tile.walkable;
     }
 }
 
