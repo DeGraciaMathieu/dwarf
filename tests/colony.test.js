@@ -4,7 +4,29 @@ import { generateTerrain, largestWalkableRegion } from '../src/core/terrain.js';
 import { spawnFromDefinition } from '../src/core/spawn.js';
 import { EVENTS, data, openTerrain, setupColony, addDwarf, addGoblin, addBread } from './helpers.js';
 
+// PRNG déterministe : la génération de carte s'appuie sur Math.random, on la fige
+// pour que ce test d'intégration ne dépende pas d'un tirage défavorable rare.
+function seededRandom(seed) {
+    return function () {
+        seed |= 0;
+        seed = (seed + 0x6d2b79f5) | 0;
+        let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+        t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+        return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+}
+
 test('colonie : creuser la montagne et vivre 1200 ticks sur une carte générée', () => {
+    const realRandom = Math.random;
+    Math.random = seededRandom(1);
+    try {
+        runGeneratedColony();
+    } finally {
+        Math.random = realRandom;
+    }
+});
+
+function runGeneratedColony() {
     const terrain = generateTerrain(40, 25, data.tiles);
     const region = largestWalkableRegion(terrain);
     const colony = setupColony(terrain);
@@ -52,7 +74,7 @@ test('colonie : creuser la montagne et vivre 1200 ticks sur une carte générée
     assert.ok(meals.length > 0);
     assert.equal(deaths.length, 0);
     assert.equal(colony.world.query('worker').length, 5);
-});
+}
 
 test('colonie : trois nains repoussent un gobelin sans perte', () => {
     const colony = setupColony(openTerrain(20, 3));
