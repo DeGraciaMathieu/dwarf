@@ -7,21 +7,32 @@
 </head>
 <body>
     <main>
-        <div>
-            <div id="toolbar">
+        <nav id="toolbar">
+            <div class="tool-group">
+                <h3>Désigner</h3>
                 <button data-tool="designate" class="active">⛏ Creuser / Couper</button>
+                <button data-tool="fishing">🎣 Pêche</button>
+            </div>
+            <div class="tool-group">
+                <h3>Zones</h3>
                 <button data-tool="stockpile">▦ Stockage</button>
-                <button data-tool="stockpile:food">🍞 Stock nourriture</button>
-                <button data-tool="stockpile:materials">🪵 Stock matériaux</button>
+                <button data-tool="stockpile:food">🍞 Nourriture</button>
+                <button data-tool="stockpile:materials">🪵 Matériaux</button>
                 <button data-tool="farm">♠ Champ</button>
                 <button data-tool="grave">⚰ Tombe</button>
-                <button data-tool="build">🧱 Construire</button>
+            </div>
+            <div class="tool-group">
+                <h3>Bâtir</h3>
+                <button data-tool="build">🧱 Mur</button>
                 <button data-tool="craft:workshop">⚒ Atelier</button>
                 <button data-tool="craft:brewery">🏺 Brasserie</button>
                 <button data-tool="craft:bed">🛏 Lit</button>
                 <button data-tool="craft:door">🚪 Porte</button>
                 <button data-tool="craft:bridge">🌉 Pont</button>
-                <button data-tool="fishing">🎣 Pêche</button>
+            </div>
+        </nav>
+        <div id="stage">
+            <div id="controls">
                 <div id="speed">
                     <button data-speed="0">⏸</button>
                     <button data-speed="1" class="active">▶</button>

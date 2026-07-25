@@ -17,18 +17,34 @@ canvas {
 }
 
 #toolbar {
-    margin-bottom: 8px;
+    width: 180px;
     display: flex;
-    gap: 8px;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.tool-group {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.tool-group h3 {
+    margin: 0 0 2px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: #e0c060;
 }
 
 #toolbar button {
     background: #2a2a2a;
     color: #ccc;
     border: 1px solid #444;
-    padding: 6px 12px;
+    padding: 6px 10px;
     font-family: monospace;
     font-size: 13px;
+    text-align: left;
     cursor: pointer;
 }
 
@@ -38,14 +54,40 @@ canvas {
     border-color: #e8b830;
 }
 
+#stage {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+#controls {
+    display: flex;
+    gap: 8px;
+}
+
+#controls button {
+    background: #2a2a2a;
+    color: #ccc;
+    border: 1px solid #444;
+    padding: 6px 12px;
+    font-family: monospace;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+#controls button.active {
+    background: #3a3420;
+    color: #e8b830;
+    border-color: #e8b830;
+}
+
 #speed {
-    margin-left: auto;
     display: flex;
     gap: 8px;
 }
 
 #session {
-    margin-left: 16px;
+    margin-left: auto;
     display: flex;
     gap: 8px;
 }
