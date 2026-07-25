@@ -207,6 +207,15 @@ export function addLog(world, x, y) {
     return id;
 }
 
+export function addStone(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'item', {});
+    world.addComponent(id, 'buildMaterial', {});
+    world.addComponent(id, 'stone', {});
+    return id;
+}
+
 export function addCorpse(world, x, y, { decay = 0 } = {}) {
     const id = world.createEntity();
     world.addComponent(id, 'position', { x, y });

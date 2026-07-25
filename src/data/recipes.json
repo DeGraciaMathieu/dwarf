@@ -36,6 +36,30 @@
         "produces": "brewery",
         "workshop": "carpentry"
     },
+    "masonry": {
+        "label": "un atelier de taille",
+        "ghost": "Δ",
+        "craftTicks": 10,
+        "produces": "masonry",
+        "workshop": "carpentry"
+    },
+    "stoneBed": {
+        "label": "un lit de pierre",
+        "ghost": "Ξ",
+        "craftTicks": 14,
+        "produces": "stoneBed",
+        "ingredient": "stone",
+        "workshop": "masonry"
+    },
+    "stoneDoor": {
+        "label": "une porte de pierre",
+        "ghost": "+",
+        "craftTicks": 12,
+        "produces": "stoneDoor",
+        "installsTile": "door",
+        "ingredient": "stone",
+        "workshop": "masonry"
+    },
     "beer": {
         "label": "une bière",
         "craftTicks": 8,

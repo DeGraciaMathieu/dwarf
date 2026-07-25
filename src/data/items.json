@@ -20,7 +20,8 @@
         "color": "#8a8a8a",
         "components": {
             "item": {},
-            "buildMaterial": {}
+            "buildMaterial": {},
+            "stone": {}
         }
     },
     "workshop": {
@@ -35,6 +36,13 @@
         "color": "#c08840",
         "components": {
             "workshop": { "type": "brewery" }
+        }
+    },
+    "masonry": {
+        "glyph": "Δ",
+        "color": "#a0a0a0",
+        "components": {
+            "workshop": { "type": "masonry" }
         }
     },
     "beer": {
@@ -71,6 +79,21 @@
     "door": {
         "glyph": "+",
         "color": "#c09050",
+        "components": {
+            "item": {}
+        }
+    },
+    "stoneBed": {
+        "glyph": "Ξ",
+        "color": "#9a9a9a",
+        "components": {
+            "item": {},
+            "bed": { "recoveryMultiplier": 1.5, "heal": 1 }
+        }
+    },
+    "stoneDoor": {
+        "glyph": "+",
+        "color": "#9a9a9a",
         "components": {
             "item": {}
         }
