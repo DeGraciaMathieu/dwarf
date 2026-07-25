@@ -2,6 +2,12 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — Les ponts
+
+- **Nouveau meuble : le pont** (🌉, une bûche à l'atelier) — se désigne directement sur l'eau, le menuisier le pose depuis la berge. La rivière fait deux cases de large : prévoyez deux ponts côte à côte.
+- **Un pont est une brèche, pas une porte** : les gobelins l'empruntent aussi. À vous de verrouiller le débouché avec une porte.
+- Les chantiers en attente de l'autre côté de la rivière reprennent d'eux-mêmes dès le pont posé.
+
 ## 2026-07-25 — L'eau : rivières et lacs
 
 - **Une rivière sinueuse** (`≈`) traverse désormais la plaine du nord au sud, accompagnée d'un ou deux lacs. L'eau est infranchissable — pour les nains comme pour les gobelins.
