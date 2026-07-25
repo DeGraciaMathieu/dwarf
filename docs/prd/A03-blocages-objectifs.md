@@ -1,6 +1,6 @@
 # PRD A03 — Détail des blocages d'objectifs
 
-**Lot :** A — Lisibilité · **Point :** 3 · **Statut :** À faire · **Impact / Effort :** Moyen / Faible
+**Lot :** A — Lisibilité · **Point :** 3 · **Statut :** ✅ Fait · **Impact / Effort :** Moyen / Faible
 
 ## Problème
 
