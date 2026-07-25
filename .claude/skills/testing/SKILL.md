@@ -41,6 +41,7 @@ auto_invoke: true
 | `tests/invasions.test.js` | vagues de gobelins : escalade, proportionnalité à la population, persistance en sauvegarde |
 | `tests/bridges.test.js` | ponts : traversée ouverte à tous, réveil des chantiers d'outre-rivière |
 | `tests/fishing.test.js` | pêche : production continue, poisson mangé, annulation par un pont, persistance |
+| `tests/thirst.test.js` | soif : boire à la berge, priorité, renoncement sans eau, mort de soif |
 
 ## Ajouter un test
 

@@ -6,7 +6,8 @@ import { JobBoard } from '../src/core/jobBoard.js';
 import { Zone } from '../src/core/zones.js';
 import { EVENTS } from '../src/events/events.js';
 import { NeedsSystem } from '../src/systems/needsSystem.js';
-import { StarvationSystem } from '../src/systems/starvationSystem.js';
+import { AttritionSystem } from '../src/systems/attritionSystem.js';
+import { DrinkSystem } from '../src/systems/drinkSystem.js';
 import { MoraleSystem } from '../src/systems/moraleSystem.js';
 import { GoblinSpawnSystem } from '../src/systems/goblinSpawnSystem.js';
 import { MigrantSystem } from '../src/systems/migrantSystem.js';
@@ -61,10 +62,30 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
+            { component: 'thirst', event: EVENTS.DWARF_THIRSTY },
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
         ])
     );
-    world.registerSystem(new StarvationSystem(jobBoard, data.items.corpse));
+    world.registerSystem(
+        new AttritionSystem(jobBoard, data.items.corpse, [
+            {
+                component: 'hunger',
+                marker: 'starving',
+                event: EVENTS.DWARF_STARVING,
+                healthDecay: 0.15,
+                moraleDecay: 0.2,
+                cause: 'starvation',
+            },
+            {
+                component: 'thirst',
+                marker: 'dehydrated',
+                event: EVENTS.DWARF_DEHYDRATED,
+                healthDecay: 0.25,
+                moraleDecay: 0.2,
+                cause: 'dehydration',
+            },
+        ])
+    );
     world.registerSystem(new MoraleSystem(bus));
     if (goblinSpawner) {
         world.registerSystem(new GoblinSpawnSystem(terrain, data.creatures.goblin));
@@ -75,6 +96,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false }
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
+    world.registerSystem(new DrinkSystem(terrain));
     world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
@@ -116,6 +138,8 @@ export function addDwarf(world, x, y, overrides = {}) {
         name = 'Urist',
         hunger = 0,
         hungerRate = 0,
+        thirst = 0,
+        thirstRate = 0,
         fatigue = 0,
         fatigueRate = 0,
         health = 30,
@@ -126,6 +150,7 @@ export function addDwarf(world, x, y, overrides = {}) {
     world.addComponent(id, 'identity', { name });
     world.addComponent(id, 'position', { x, y });
     world.addComponent(id, 'hunger', { value: hunger, rate: hungerRate, threshold: 70, max: 100 });
+    world.addComponent(id, 'thirst', { value: thirst, rate: thirstRate, threshold: 65, max: 100 });
     world.addComponent(id, 'fatigue', {
         value: fatigue,
         rate: fatigueRate,

@@ -22,7 +22,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 | Composant | Effet |
 |---|---|
-| `hunger`, `fatigue` | besoins qui montent (`needsSystem`), activités eat/sleep |
+| `hunger`, `thirst`, `fatigue` | besoins qui montent (`needsSystem`), activités eat/drink/sleep ; faim et soif au maximum tuent (`attritionSystem`) |
 | `morale` | humeur, ralentissement, crises (`moraleSystem`, `tantrumSystem`) |
 | `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee |
 | `worker` | arbitré par l'arbitre, prend des jobs, ciblé par les gobelins |

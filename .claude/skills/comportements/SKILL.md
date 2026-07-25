@@ -16,6 +16,7 @@ Toute la politique comportementale des nains vit dans `src/systems/arbiterSystem
 | `flee` | 200 | `fleeSystem.js` | gobelin ≤ 6 cases ET pas courageux |
 | `tantrum` | 150 | `tantrumSystem.js` | `morale.value <= morale.tantrum` (hystérésis : sort à `tantrum + 15`) |
 | `eat` | valeur de faim (≤ 100) | `eatingSystem.js` | faim ≥ seuil ET nourriture existante (`query('food','position')`) |
+| `drink` | valeur de soif (≤ 100) | `drinkSystem.js` | soif ≥ seuil ET pas de marqueur `noWaterAccess` (renoncement ~50 ticks quand aucune berge n'est atteignable — évite le gel) |
 | `sleep` | `max(fatigue, seuil)` (≤ 120) | `sleepSystem.js` | fatigue ≥ seuil, hystérésis via composant `sleeping` (dort jusqu'à fatigue 0) |
 | `work` | 10 | `jobAssignmentSystem.js` + systèmes de jobs | a un `currentJob` OU `jobBoard.hasAvailableJobs()` |
 | `wander` | 1 | `movementSystem.js` | toujours (repli) |
@@ -37,8 +38,9 @@ Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSy
 
 ## Besoins et moral
 
-- Besoins (faim, fatigue) : composants data (`creatures.json`) + `needsSystem.js` générique (configuré dans `main.js` : composant → événement de seuil). **Ajouter un besoin = une entrée JSON + une ligne de config**, pas un nouveau système.
-- **Inanition** (`starvationSystem.js`) : faim au maximum → santé −0,15/tick et moral −0,2/tick (marqueur `starving` + événement `dwarf.starving` à l'entrée), mort de faim via `kill()` de `death.js` avec `cause: 'starvation'`. Manger stoppe l'érosion.
+- Besoins (faim, soif, fatigue) : composants data (`creatures.json`) + `needsSystem.js` générique (configuré dans `main.js` : composant → événement de seuil). **Ajouter un besoin = une entrée JSON + une ligne de config**, pas un nouveau système.
+- **Attrition** (`attritionSystem.js`, configuré dans `main.js`) : un besoin au maximum érode santé et moral jusqu'à la mort via `kill()` avec sa cause — faim (`starving`, 0,15/tick, `starvation`) et soif (`dehydrated`, 0,25/tick, `dehydration`). Satisfaire le besoin stoppe l'érosion. Ajouter une cause d'attrition = une entrée de config.
+- **Boire** (`drinkSystem.js`) : cible la berge atteignable la plus proche (tri par distance + `findPath` de vérification — jamais la plus proche aveuglément, ça gèle le nain). Une berge = case praticable touchant l'eau ; un pont compte.
 - Moral : `moraleSystem.js` consomme les événements du bus (repas +10, réveil complet +10, victoire +15, blessure −10, faim −5, fuite −5, mort vue à ≤ 8 cases −25 / apprise −8) puis dérive vers `baseline`. Moral < `low` → travail à mi-vitesse (`workEffort.js`). Moral ≤ `tantrum` → crise.
 - **N'ajoute jamais un effet de moral en modifiant un émetteur** : abonne `moraleSystem.js` à l'événement existant.
 
