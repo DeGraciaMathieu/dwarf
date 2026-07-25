@@ -24,6 +24,7 @@ import { HaulSystem } from './systems/haulSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
 import { CraftSystem } from './systems/craftSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
+import { FishSystem } from './systems/fishSystem.js';
 import { GoblinSpawnSystem } from './systems/goblinSpawnSystem.js';
 import { MigrantSystem } from './systems/migrantSystem.js';
 import { HostileSystem } from './systems/hostileSystem.js';
@@ -55,6 +56,7 @@ async function main() {
     const jobBoard = new JobBoard();
     const stockpiles = new Zone();
     const farms = new Zone();
+    const fishingSpots = new Zone();
 
     world.registerSystem(
         new NeedsSystem([
@@ -79,6 +81,7 @@ async function main() {
     world.registerSystem(new BuildSystem(jobBoard, terrain));
     world.registerSystem(new CraftSystem(jobBoard, terrain, recipes, items));
     world.registerSystem(new FarmSystem(jobBoard, terrain, farms, plants.mushroom, items.mushroom));
+    world.registerSystem(new FishSystem(jobBoard, terrain, fishingSpots, items.fish));
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, items.corpse));
     world.registerSystem(new MovementSystem(terrain));
@@ -93,7 +96,7 @@ async function main() {
     }
 
     const canvas = document.getElementById('game');
-    const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, TILE_SIZE);
+    const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, TILE_SIZE);
     const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world);
     new DesignationControl({
@@ -104,6 +107,7 @@ async function main() {
         jobBoard,
         stockpiles,
         farms,
+        fishingSpots,
         tileSize: TILE_SIZE,
         workshopDefinition: items.workshop,
         recipes,
@@ -119,7 +123,7 @@ async function main() {
         },
     });
 
-    const game = { world, terrain, jobBoard, stockpiles, farms };
+    const game = { world, terrain, jobBoard, stockpiles, farms, fishingSpots };
     document.getElementById('save-game').addEventListener('click', () => {
         localStorage.setItem('dwarf.save', JSON.stringify(serializeGame(game)));
         eventLog.append('Partie sauvegardée.');

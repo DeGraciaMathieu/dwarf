@@ -11,7 +11,7 @@ const VOLATILE_COMPONENTS = [
     'carrying',
 ];
 
-export function serializeGame({ world, terrain, jobBoard, stockpiles, farms }) {
+export function serializeGame({ world, terrain, jobBoard, stockpiles, farms, fishingSpots }) {
     const components = {};
     for (const [name, store] of world.components) {
         if (VOLATILE_COMPONENTS.includes(name)) {
@@ -35,11 +35,12 @@ export function serializeGame({ world, terrain, jobBoard, stockpiles, farms }) {
         terrain: terrain.tiles,
         stockpiles: stockpiles.list(),
         farms: farms.list(),
+        fishing: fishingSpots.list(),
         jobs: jobBoard.jobs.map((job) => ({ ...job, claimedBy: null })),
     };
 }
 
-export function restoreGame({ world, terrain, jobBoard, stockpiles, farms }, snapshot) {
+export function restoreGame({ world, terrain, jobBoard, stockpiles, farms, fishingSpots }, snapshot) {
     world.nextEntityId = snapshot.nextEntityId;
     world.components.clear();
     for (const [name, entities] of Object.entries(snapshot.components)) {
@@ -52,6 +53,7 @@ export function restoreGame({ world, terrain, jobBoard, stockpiles, farms }, sna
     terrain.tiles = snapshot.terrain.map((row) => [...row]);
     restoreZone(stockpiles, snapshot.stockpiles);
     restoreZone(farms, snapshot.farms);
+    restoreZone(fishingSpots, snapshot.fishing ?? []);
     jobBoard.jobs = snapshot.jobs.map((job) => structuredClone(job));
 }
 

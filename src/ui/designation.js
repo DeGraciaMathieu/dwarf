@@ -9,6 +9,7 @@ export class DesignationControl {
         jobBoard,
         stockpiles,
         farms,
+        fishingSpots,
         tileSize,
         workshopDefinition,
         recipes,
@@ -20,6 +21,7 @@ export class DesignationControl {
         this.jobBoard = jobBoard;
         this.stockpiles = stockpiles;
         this.farms = farms;
+        this.fishingSpots = fishingSpots;
         this.tileSize = tileSize;
         this.workshopDefinition = workshopDefinition;
         this.recipes = recipes;
@@ -80,6 +82,12 @@ export class DesignationControl {
             }
             return;
         }
+        if (this.mode === 'fishing') {
+            if (tile === 'water' && !this.fishingSpots.has(x, y) && this.hasAdjacentBank(x, y)) {
+                this.fishingSpots.add(x, y);
+            }
+            return;
+        }
         if (this.mode.startsWith('craft:')) {
             const recipeName = this.mode.slice('craft:'.length);
             const recipe = this.recipes[recipeName];
@@ -116,6 +124,17 @@ export class DesignationControl {
                 this.jobBoard.resetUnreachable();
             }
         }
+    }
+
+    hasAdjacentBank(x, y) {
+        for (let dy = -1; dy <= 1; dy++) {
+            for (let dx = -1; dx <= 1; dx++) {
+                if ((dx !== 0 || dy !== 0) && this.terrain.isWalkable(x + dx, y + dy)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     workshopAt(x, y) {

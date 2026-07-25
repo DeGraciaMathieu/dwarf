@@ -9,6 +9,7 @@ export const EVENTS = {
     TREE_CHOPPED: 'tree.chopped',
     ITEM_STORED: 'item.stored',
     CROP_HARVESTED: 'crop.harvested',
+    FISH_CAUGHT: 'fish.caught',
     GOBLIN_ARRIVED: 'goblin.arrived',
     MIGRANT_ARRIVED: 'migrant.arrived',
     DWARF_FLEES: 'dwarf.flees',

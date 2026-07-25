@@ -1,9 +1,10 @@
 export class Renderer {
-    constructor(canvas, terrain, jobBoard, stockpiles, farms, tileSize) {
+    constructor(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, tileSize) {
         this.terrain = terrain;
         this.jobBoard = jobBoard;
         this.stockpiles = stockpiles;
         this.farms = farms;
+        this.fishingSpots = fishingSpots;
         this.tileSize = tileSize;
         this.ctx = canvas.getContext('2d');
         canvas.width = terrain.width * tileSize;
@@ -21,6 +22,10 @@ export class Renderer {
         }
         ctx.fillStyle = '#2e2618';
         for (const { x, y } of this.farms.list()) {
+            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+        }
+        ctx.fillStyle = '#144048';
+        for (const { x, y } of this.fishingSpots.list()) {
             ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
         }
 

@@ -30,6 +30,14 @@
             "bed": { "recoveryMultiplier": 1.5, "heal": 1 }
         }
     },
+    "fish": {
+        "glyph": "α",
+        "color": "#6ab0d8",
+        "components": {
+            "food": { "nutrition": 60 },
+            "item": {}
+        }
+    },
     "bridge": {
         "glyph": "≡",
         "color": "#a07040",

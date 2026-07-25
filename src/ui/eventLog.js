@@ -45,6 +45,10 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} a fait une récolte.`);
         });
+        eventBus.on(EVENTS.FISH_CAUGHT, ({ entityId }) => {
+            const identity = world.getComponent(entityId, 'identity');
+            this.append(`${identity.name} a pêché un poisson.`);
+        });
         eventBus.on(EVENTS.GOBLIN_ARRIVED, ({ count }) => {
             this.append(
                 count > 1
