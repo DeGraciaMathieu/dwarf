@@ -1,6 +1,6 @@
 # PRD B06 — Rééquilibrage des vagues
 
-**Lot :** B — Tension de combat · **Point :** 6 · **Statut :** À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** B — Tension de combat · **Point :** 6 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 
