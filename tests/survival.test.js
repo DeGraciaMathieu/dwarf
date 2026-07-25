@@ -106,6 +106,23 @@ test('lit : sommeil plus court et soins accélérés', () => {
     assert.ok(ground.health > 20, 'le sol soigne un peu aussi');
 });
 
+test('lit : le réveil en lit remonte le moral bien plus qu au sol', () => {
+    const wakeMorale = (withBed) => {
+        const colony = setupColony(openTerrain(10, 1));
+        const dwarf = addDwarf(colony.world, 0, 0, { fatigue: 100, morale: 50 });
+        if (withBed) {
+            addBed(colony.world, 4, 0);
+        }
+        colony.run(40);
+        assert.equal(colony.world.getComponent(dwarf, 'sleeping'), undefined, 'nuit finie');
+        return colony.world.getComponent(dwarf, 'morale').value;
+    };
+    const groundMorale = wakeMorale(false);
+    const bedMorale = wakeMorale(true);
+    assert.ok(bedMorale - groundMorale > 5, `écart attendu ~7, obtenu ${(bedMorale - groundMorale).toFixed(1)}`);
+    assert.ok(groundMorale > 50, 'dormir au sol rapporte quand même un peu');
+});
+
 test('lit : un seul dormeur par lit', () => {
     const colony = setupColony(openTerrain(10, 1));
     const a = addDwarf(colony.world, 0, 0, { fatigue: 100 });

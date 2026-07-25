@@ -21,9 +21,13 @@ export class EventLog {
             const identity = world.getComponent(entityId, 'identity');
             this.append(`${identity.name} s'est endormi.`);
         });
-        eventBus.on(EVENTS.DWARF_WOKE, ({ entityId }) => {
+        eventBus.on(EVENTS.DWARF_WOKE, ({ entityId, rested, inBed }) => {
             const identity = world.getComponent(entityId, 'identity');
-            this.append(`${identity.name} s'est réveillé.`);
+            this.append(
+                rested && !inBed
+                    ? `${identity.name} a mal dormi.`
+                    : `${identity.name} s'est réveillé.`
+            );
         });
         eventBus.on(EVENTS.WALL_DUG, ({ entityId }) => {
             const identity = world.getComponent(entityId, 'identity');

@@ -15,7 +15,7 @@ export class SleepSystem {
             if (activity.type !== 'sleep') {
                 if (sleeping) {
                     world.removeComponent(entityId, 'sleeping');
-                    eventBus.emit(EVENTS.DWARF_WOKE, { entityId });
+                    eventBus.emit(EVENTS.DWARF_WOKE, { entityId, rested: false });
                 }
                 world.removeComponent(entityId, 'bedTarget');
                 continue;
@@ -30,9 +30,11 @@ export class SleepSystem {
             this.rest(world, entityId);
             const fatigue = world.getComponent(entityId, 'fatigue');
             if (fatigue.value === 0) {
+                const inBed =
+                    this.bedAt(world, world.getComponent(entityId, 'position')) !== null;
                 world.removeComponent(entityId, 'sleeping');
                 world.removeComponent(entityId, 'bedTarget');
-                eventBus.emit(EVENTS.DWARF_WOKE, { entityId });
+                eventBus.emit(EVENTS.DWARF_WOKE, { entityId, rested: true, inBed });
             }
         }
     }

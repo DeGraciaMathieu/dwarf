@@ -5,6 +5,7 @@ const EFFECTS = {
     ate: 10,
     drank: 5,
     rested: 10,
+    restedOnGround: 3,
     victory: 15,
     injured: -10,
     hungry: -5,
@@ -20,8 +21,8 @@ export class MoraleSystem {
         eventBus.on(EVENTS.DWARF_ATE, ({ entityId }) =>
             this.pending.push({ type: 'ate', entityId })
         );
-        eventBus.on(EVENTS.DWARF_WOKE, ({ entityId }) =>
-            this.pending.push({ type: 'woke', entityId })
+        eventBus.on(EVENTS.DWARF_WOKE, ({ entityId, rested, inBed }) =>
+            this.pending.push({ type: 'woke', entityId, rested, inBed })
         );
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) =>
             this.pending.push({ type: 'victory', entityId: killerId })
@@ -79,9 +80,12 @@ export class MoraleSystem {
             return;
         }
         if (event.type === 'woke') {
-            const fatigue = world.getComponent(event.entityId, 'fatigue');
-            if (fatigue && fatigue.value === 0) {
-                this.adjust(world, event.entityId, EFFECTS.rested);
+            if (event.rested) {
+                this.adjust(
+                    world,
+                    event.entityId,
+                    event.inBed ? EFFECTS.rested : EFFECTS.restedOnGround
+                );
             }
             return;
         }

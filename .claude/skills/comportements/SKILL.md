@@ -41,7 +41,7 @@ Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSy
 - Besoins (faim, soif, fatigue) : composants data (`creatures.json`) + `needsSystem.js` générique (configuré dans `main.js` : composant → événement de seuil). **Ajouter un besoin = une entrée JSON + une ligne de config**, pas un nouveau système.
 - **Attrition** (`attritionSystem.js`, configuré dans `main.js`) : un besoin au maximum érode santé et moral jusqu'à la mort via `kill()` avec sa cause — faim (`starving`, 0,15/tick, `starvation`) et soif (`dehydrated`, 0,25/tick, `dehydration`). Satisfaire le besoin stoppe l'érosion. Ajouter une cause d'attrition = une entrée de config.
 - **Boire** (`drinkSystem.js`) : cible la berge atteignable la plus proche (tri par distance + `findPath` de vérification — jamais la plus proche aveuglément, ça gèle le nain). Une berge = case praticable touchant l'eau ; un pont compte.
-- Moral : `moraleSystem.js` consomme les événements du bus (repas +10, réveil complet +10, victoire +15, blessure −10, faim −5, fuite −5, mort vue à ≤ 8 cases −25 / apprise −8) puis dérive vers `baseline`. Moral < `low` → travail à mi-vitesse (`workEffort.js`). Moral ≤ `tantrum` → crise.
+- Moral : `moraleSystem.js` consomme les événements du bus (repas +10, boire +5, réveil complet **+10 en lit / +3 au sol** — l'événement `dwarf.woke` porte `{rested, inBed}`, victoire +15, blessure −10, faim −5, soif −5, fuite −5, mort vue à ≤ 8 cases −25 / apprise −8) puis dérive vers `baseline`. Moral < `low` → travail à mi-vitesse (`workEffort.js`). Moral ≤ `tantrum` → crise.
 - **N'ajoute jamais un effet de moral en modifiant un émetteur** : abonne `moraleSystem.js` à l'événement existant.
 
 ## Ajouter une activité
