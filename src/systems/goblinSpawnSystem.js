@@ -12,9 +12,10 @@ const MAX_WAVE_SIZE = 12;
 const POPULATION_COMFORT = 5;
 
 export class GoblinSpawnSystem {
-    constructor(terrain, goblinDefinition) {
+    // archetypes : { grunt, brute, archer, chief } (définitions de creatures.json)
+    constructor(terrain, archetypes) {
         this.terrain = terrain;
-        this.goblinDefinition = goblinDefinition;
+        this.archetypes = archetypes.grunt ? archetypes : { grunt: archetypes };
     }
 
     update(world, eventBus) {
@@ -35,9 +36,10 @@ export class GoblinSpawnSystem {
             return;
         }
         const size = this.waveSize(invasion.wave, population, this.richness(world));
-        for (let i = 0; i < size; i++) {
-            spawnFromDefinition(world, this.goblinDefinition, this.nearAnchor(anchor, i));
-        }
+        this.waveRoster(invasion.wave, size).forEach((key, i) => {
+            const definition = this.archetypes[key] ?? this.archetypes.grunt;
+            spawnFromDefinition(world, definition, this.nearAnchor(anchor, i));
+        });
         eventBus.emit(EVENTS.GOBLIN_ARRIVED, { count: size });
     }
 
@@ -81,6 +83,26 @@ export class GoblinSpawnSystem {
         // plafond dérivé : une petite colonie est ménagée, une grande peut être submergée
         const cap = Math.min(MAX_WAVE_SIZE, Math.max(4, population));
         return Math.min(cap, 1 + fromWave + fromPopulation + fromRichness);
+    }
+
+    // composition déterministe : les brutes arrivent dès la vague 2, les archers
+    // dès la 3, un chef mène les vagues à partir de la 4
+    waveRoster(wave, size) {
+        const roster = new Array(size).fill('grunt');
+        if (wave >= 4 && size >= 1 && this.archetypes.chief) {
+            roster[0] = 'chief';
+        }
+        for (let i = 0; i < size; i++) {
+            if (roster[i] !== 'grunt') {
+                continue;
+            }
+            if (wave >= 2 && i % 3 === 1 && this.archetypes.brute) {
+                roster[i] = 'brute';
+            } else if (wave >= 3 && i % 3 === 2 && this.archetypes.archer) {
+                roster[i] = 'archer';
+            }
+        }
+        return roster;
     }
 
     nearAnchor(anchor, index) {

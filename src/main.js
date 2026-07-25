@@ -95,7 +95,12 @@ async function main() {
         ])
     );
     world.registerSystem(new MoraleSystem(eventBus));
-    const goblinSpawn = new GoblinSpawnSystem(terrain, creatures.goblin);
+    const goblinSpawn = new GoblinSpawnSystem(terrain, {
+        grunt: creatures.goblin,
+        brute: creatures.brute,
+        archer: creatures.archer,
+        chief: creatures.chief,
+    });
     world.registerSystem(goblinSpawn);
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     const objectives = [

@@ -16,7 +16,7 @@ export class CombatSystem {
         }
 
         for (const hostileId of world.query('hostile', 'combat', 'position')) {
-            const target = this.adjacentTarget(world, hostileId, 'worker');
+            const target = this.targetInRange(world, hostileId, 'worker');
             if (target !== undefined) {
                 this.strike(world, eventBus, hostileId, target);
             }
@@ -26,22 +26,23 @@ export class CombatSystem {
             if (world.getComponent(dwarfId, 'activity')?.type !== 'fight') {
                 continue;
             }
-            const target = this.adjacentTarget(world, dwarfId, 'hostile');
+            const target = this.targetInRange(world, dwarfId, 'hostile');
             if (target !== undefined) {
                 this.strike(world, eventBus, dwarfId, target);
             }
         }
     }
 
-    adjacentTarget(world, attackerId, targetTag) {
+    targetInRange(world, attackerId, targetTag) {
         const position = world.getComponent(attackerId, 'position');
+        const range = world.getComponent(attackerId, 'combat').range ?? 1;
         return world.query(targetTag, 'health', 'position').find((targetId) => {
             const targetPosition = world.getComponent(targetId, 'position');
             const distance = Math.max(
                 Math.abs(targetPosition.x - position.x),
                 Math.abs(targetPosition.y - position.y)
             );
-            return distance <= 1;
+            return distance <= range;
         });
     }
 
@@ -52,7 +53,10 @@ export class CombatSystem {
         }
         combat.cooldownRemaining = combat.cooldown;
         const health = world.getComponent(targetId, 'health');
-        const damage = combat.damage + this.weaponDamage(world, attackerId);
+        const damage =
+            combat.damage +
+            this.weaponDamage(world, attackerId) +
+            this.commandBonus(world, attackerId);
         health.value -= Math.max(1, damage - this.armorDefense(world, targetId));
         const isDwarf = world.getComponent(targetId, 'worker') !== undefined;
         if (health.value > 0) {
@@ -79,5 +83,17 @@ export class CombatSystem {
         const armorId = equipment?.armor;
         const armor = armorId != null ? world.getComponent(armorId, 'armor') : null;
         return armor ? armor.defense : 0;
+    }
+
+    // aura de commandement : un chef vivant renforce les frappes des hostiles
+    commandBonus(world, attackerId) {
+        if (!world.getComponent(attackerId, 'hostile')) {
+            return 0;
+        }
+        let bonus = 0;
+        for (const leaderId of world.query('leader', 'health')) {
+            bonus = Math.max(bonus, world.getComponent(leaderId, 'leader').damage);
+        }
+        return bonus;
     }
 }

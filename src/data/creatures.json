@@ -24,5 +24,36 @@
             "combat": { "damage": 4, "cooldown": 5 },
             "wander": {}
         }
+    },
+    "brute": {
+        "glyph": "B",
+        "color": "#a02020",
+        "components": {
+            "hostile": { "visionRange": 8 },
+            "health": { "value": 34, "max": 34 },
+            "combat": { "damage": 7, "cooldown": 6 },
+            "wander": {}
+        }
+    },
+    "archer": {
+        "glyph": "a",
+        "color": "#c07030",
+        "components": {
+            "hostile": { "visionRange": 8 },
+            "health": { "value": 12, "max": 12 },
+            "combat": { "damage": 3, "cooldown": 5, "range": 4 },
+            "wander": {}
+        }
+    },
+    "chief": {
+        "glyph": "G",
+        "color": "#e0b020",
+        "components": {
+            "hostile": { "visionRange": 8 },
+            "health": { "value": 24, "max": 24 },
+            "combat": { "damage": 5, "cooldown": 5 },
+            "leader": { "damage": 1 },
+            "wander": {}
+        }
     }
 }

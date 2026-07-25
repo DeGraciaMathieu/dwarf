@@ -45,6 +45,13 @@ export const data = {
     creatures: loadData('creatures.json'),
 };
 
+export const goblinArchetypes = () => ({
+    grunt: data.creatures.goblin,
+    brute: data.creatures.brute,
+    archer: data.creatures.archer,
+    chief: data.creatures.chief,
+});
+
 export { EVENTS };
 
 export function makeTerrain(rows) {
@@ -94,7 +101,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     );
     world.registerSystem(new MoraleSystem(bus));
     if (goblinSpawner) {
-        world.registerSystem(new GoblinSpawnSystem(terrain, data.creatures.goblin));
+        world.registerSystem(new GoblinSpawnSystem(terrain, goblinArchetypes()));
     }
     if (migrants) {
         world.registerSystem(new MigrantSystem(terrain, data.creatures.dwarf));
