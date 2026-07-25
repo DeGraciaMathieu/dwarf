@@ -29,7 +29,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Needs → Morale → GoblinSpawn → Arbiter → JobAssignment → Eating → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Hostile → Combat → Movement`
+`Needs → Morale → GoblinSpawn → Migrant → Arbiter → JobAssignment → Eating → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Hostile → Combat → Movement`
 
 Logique : les besoins montent, le moral encaisse, l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
 

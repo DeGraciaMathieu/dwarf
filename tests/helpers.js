@@ -8,6 +8,7 @@ import { EVENTS } from '../src/events/events.js';
 import { NeedsSystem } from '../src/systems/needsSystem.js';
 import { MoraleSystem } from '../src/systems/moraleSystem.js';
 import { GoblinSpawnSystem } from '../src/systems/goblinSpawnSystem.js';
+import { MigrantSystem } from '../src/systems/migrantSystem.js';
 import { ArbiterSystem } from '../src/systems/arbiterSystem.js';
 import { JobAssignmentSystem } from '../src/systems/jobAssignmentSystem.js';
 import { EatingSystem } from '../src/systems/eatingSystem.js';
@@ -48,7 +49,7 @@ export function openTerrain(width, height) {
     return makeTerrain(Array.from({ length: height }, () => '.'.repeat(width)));
 }
 
-export function setupColony(terrain, { goblinSpawner = false } = {}) {
+export function setupColony(terrain, { goblinSpawner = false, migrants = false } = {}) {
     const world = new World();
     const bus = new EventBus();
     const jobBoard = new JobBoard();
@@ -63,6 +64,9 @@ export function setupColony(terrain, { goblinSpawner = false } = {}) {
     world.registerSystem(new MoraleSystem(bus));
     if (goblinSpawner) {
         world.registerSystem(new GoblinSpawnSystem(terrain, data.creatures.goblin));
+    }
+    if (migrants) {
+        world.registerSystem(new MigrantSystem(terrain, data.creatures.dwarf));
     }
     world.registerSystem(new ArbiterSystem(jobBoard));
     world.registerSystem(new JobAssignmentSystem(jobBoard));

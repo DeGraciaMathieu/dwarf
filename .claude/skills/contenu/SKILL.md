@@ -12,7 +12,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 | Fichier | Contient | Chargé par |
 |---|---|---|
-| `creatures.json` | `dwarf`, `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js` |
+| `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
 | `items.json` | `bread`, `log`, `mushroom`, `corpse`, `workshop`, `bed` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `tree`, `door` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |

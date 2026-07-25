@@ -36,6 +36,7 @@ auto_invoke: true
 | `tests/colony.test.js` | intégration : colonie complète sur carte générée, bataille, boucle de nourriture |
 | `tests/save.test.js` | sauvegarde : aller-retour, objets portés, volatils vs hystérésis, reprise de simulation |
 | `tests/doors.test.js` | portes : marchabilité selon l'allégeance, fabrication en tuile, forteresse étanche |
+| `tests/migrants.test.js` | migrants : conditions d'attractivité, plafond, colonie morte |
 
 ## Ajouter un test
 
