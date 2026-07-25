@@ -26,6 +26,7 @@ user_invocable: true
 ## 4. Synchroniser
 
 - Si le périmètre d'un skill change (nouveau job, nouvelle activité, nouveau composant fonctionnel, nouveau système dans le tick) : mettre à jour le skill concerné, `CLAUDE.md` si une convention naît, et **l'ordre des systèmes dans `tests/helpers.js`**.
+- Ajouter l'entrée du chantier en tête de `PATCHNOTES.md` (format et ton : voir les entrées existantes — orienté joueur, court).
 
 ## 5. Résumer
 
