@@ -6,7 +6,7 @@ Simulation de colonie à la Dwarf Fortress dans le navigateur : des nains autono
 
 - JavaScript vanilla (modules ES), HTML, CSS. Aucune dépendance, aucun build.
 - Rendu : Canvas 2D. Boucle à pas fixe (5 ticks/s) découplée du rendu (`src/core/loop.js`).
-- Lancer : `python3 -m http.server 8000` à la racine puis http://localhost:8000 (les modules ES et `fetch` exigent un serveur).
+- Lancer : `python3 scripts/serve.py` à la racine puis http://localhost:8000 (serveur sans cache — les modules ES et `fetch` exigent un serveur, et le cache navigateur sert sinon des modules périmés après modification).
 - Tests : `npm test` (runner natif `node --test`, suite dans `tests/`).
 - Pas de linter ni de formateur configurés : suivre le style en place (indentation 4 espaces, points-virgules).
 
