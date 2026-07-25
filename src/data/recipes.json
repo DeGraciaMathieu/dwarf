@@ -1,8 +1,15 @@
 {
     "bed": {
-        "label": "lit",
+        "label": "un lit",
         "ghost": "Ξ",
         "craftTicks": 12,
         "produces": "bed"
+    },
+    "door": {
+        "label": "une porte",
+        "ghost": "+",
+        "craftTicks": 10,
+        "produces": "door",
+        "installsTile": "door"
     }
 }

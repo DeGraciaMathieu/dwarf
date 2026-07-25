@@ -85,15 +85,18 @@ export class CraftSystem {
         if (status !== 'arrived') {
             return;
         }
-        world.addComponent(job.producedId, 'position', { x: job.target.x, y: job.target.y });
-        world.removeComponent(job.producedId, 'item');
+        const recipe = this.recipes[job.recipe];
+        if (recipe.installsTile) {
+            world.destroyEntity(job.producedId);
+            this.terrain.set(job.target.x, job.target.y, recipe.installsTile);
+        } else {
+            world.addComponent(job.producedId, 'position', { x: job.target.x, y: job.target.y });
+            world.removeComponent(job.producedId, 'item');
+        }
         world.removeComponent(entityId, 'carrying');
         this.jobBoard.complete(job);
         world.removeComponent(entityId, 'currentJob');
-        eventBus.emit(EVENTS.FURNITURE_BUILT, {
-            entityId,
-            label: this.recipes[job.recipe].label,
-        });
+        eventBus.emit(EVENTS.FURNITURE_BUILT, { entityId, label: recipe.label });
     }
 
     fetchMaterial(world, entityId, currentJob) {

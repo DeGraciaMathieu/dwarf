@@ -96,12 +96,14 @@ export class DesignationControl {
                 spawnFromDefinition(this.world, this.workshopDefinition, { x, y });
                 this.jobBoard.resetUnreachable();
             }
-        } else if (this.mode === 'bed') {
-            if (!this.jobBoard.hasJobAt(x, y, 'craft')) {
+        } else if (this.mode.startsWith('craft:')) {
+            const recipeName = this.mode.slice('craft:'.length);
+            const recipe = this.recipes[recipeName];
+            if (recipe && !this.jobBoard.hasJobAt(x, y, 'craft')) {
                 this.jobBoard.post({
                     type: 'craft',
-                    recipe: 'bed',
-                    ghost: this.recipes.bed.ghost,
+                    recipe: recipeName,
+                    ghost: recipe.ghost,
                     target: { x, y },
                 });
             }
