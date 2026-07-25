@@ -1,5 +1,7 @@
 import { findPath } from '../core/pathfinding.js';
 
+const MEMORY_TTL = 12;
+
 export class HostileSystem {
     constructor(terrain) {
         this.terrain = terrain;
@@ -10,31 +12,63 @@ export class HostileSystem {
         for (const hostileId of world.query('hostile', 'position')) {
             const hostile = world.getComponent(hostileId, 'hostile');
             const position = world.getComponent(hostileId, 'position');
+            const { target, distance } = this.nearestTarget(world, targets, position);
 
-            let nearest = null;
-            let nearestDistance = Infinity;
-            for (const targetId of targets) {
-                const targetPosition = world.getComponent(targetId, 'position');
-                const distance = Math.max(
-                    Math.abs(targetPosition.x - position.x),
-                    Math.abs(targetPosition.y - position.y)
-                );
-                if (distance < nearestDistance) {
-                    nearestDistance = distance;
-                    nearest = targetPosition;
+            if (target && distance <= hostile.visionRange) {
+                // cible en vue : on mémorise sa position et on fond dessus
+                world.addComponent(hostileId, 'chaseMemory', {
+                    x: target.x,
+                    y: target.y,
+                    ttl: MEMORY_TTL,
+                });
+                this.setActivity(world, hostileId, 'chase');
+                if (distance > 1) {
+                    this.stepToward(world, position, target);
                 }
-            }
-
-            const chasing = nearest !== null && nearestDistance <= hostile.visionRange;
-            this.setActivity(world, hostileId, chasing ? 'chase' : 'wander');
-            if (!chasing || nearestDistance <= 1) {
                 continue;
             }
-            const path = findPath(this.terrain, position, nearest, { hostile: true });
-            if (path && path.length > 0) {
-                position.x = path[0].x;
-                position.y = path[0].y;
+
+            // hors de vue : on poursuit la dernière position connue tant que le TTL tient
+            const memory = world.getComponent(hostileId, 'chaseMemory');
+            if (memory) {
+                const reached = position.x === memory.x && position.y === memory.y;
+                memory.ttl--;
+                if (reached || memory.ttl <= 0) {
+                    world.removeComponent(hostileId, 'chaseMemory');
+                    this.setActivity(world, hostileId, 'wander');
+                    continue;
+                }
+                this.setActivity(world, hostileId, 'chase');
+                this.stepToward(world, position, memory);
+                continue;
             }
+
+            this.setActivity(world, hostileId, 'wander');
+        }
+    }
+
+    nearestTarget(world, targets, position) {
+        let target = null;
+        let distance = Infinity;
+        for (const targetId of targets) {
+            const targetPosition = world.getComponent(targetId, 'position');
+            const candidateDistance = Math.max(
+                Math.abs(targetPosition.x - position.x),
+                Math.abs(targetPosition.y - position.y)
+            );
+            if (candidateDistance < distance) {
+                distance = candidateDistance;
+                target = targetPosition;
+            }
+        }
+        return { target, distance };
+    }
+
+    stepToward(world, position, destination) {
+        const path = findPath(this.terrain, position, destination, { hostile: true });
+        if (path && path.length > 0) {
+            position.x = path[0].x;
+            position.y = path[0].y;
         }
     }
 
