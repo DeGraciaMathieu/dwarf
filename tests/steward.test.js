@@ -2,6 +2,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import {
     EVENTS,
+    data,
     setupColony,
     openTerrain,
     addDwarf,
@@ -9,6 +10,7 @@ import {
     addBrewery,
     addBeer,
 } from './helpers.js';
+import { spawnFromDefinition } from '../src/core/spawn.js';
 
 const brewJobs = (colony) =>
     colony.jobBoard.jobs.filter((job) => job.type === 'craft' && job.recipe === 'beer');
@@ -84,18 +86,18 @@ test('intendance : le statut de l\'objectif suit les blocages puis la production
     addDwarf(colony.world, 1, 2);
 
     colony.run(5);
-    assert.equal(objectives[0].status.blocked, 'no-workshop');
+    assert.equal(objectives[0].status.blocker, 'no-workshop');
     assert.equal(objectives[0].status.stock, 0);
 
     addBrewery(colony.world, 9, 2);
     colony.run(5);
-    assert.equal(objectives[0].status.blocked, 'no-ingredient');
+    assert.equal(objectives[0].status.blocker, 'no-ingredient');
 
     for (let i = 0; i < 2; i++) {
         addMushroom(colony.world, 4, 2);
     }
     colony.run(1);
-    assert.equal(objectives[0].status.blocked, null);
+    assert.equal(objectives[0].status.blocker, null);
 
     const stocksSeen = new Set();
     for (let tick = 0; tick < 300; tick++) {
@@ -104,7 +106,7 @@ test('intendance : le statut de l\'objectif suit les blocages puis la production
     }
     assert.ok(stocksSeen.has(1), 'le stock intermédiaire doit apparaître dans le statut');
     assert.equal(objectives[0].status.stock, 2);
-    assert.equal(objectives[0].status.blocked, null);
+    assert.equal(objectives[0].status.blocker, null);
 });
 
 test('intendance : sans brassable rien n\'est posté, un brassable relance la production', () => {
@@ -124,4 +126,28 @@ test('intendance : sans brassable rien n\'est posté, un brassable relance la pr
 
     assert.equal(brewed.length, 1);
     assert.equal(colony.world.query('drink', 'position').length, 1);
+});
+
+test('intendance : objectif épée sans forge nomme l\'atelier manquant', () => {
+    const objectives = [{ recipe: 'sword', target: 1 }];
+    const colony = setupColony(openTerrain(12, 5), { objectives });
+    addDwarf(colony.world, 1, 2);
+
+    colony.run(2);
+
+    assert.equal(objectives[0].status.blocker, 'no-workshop');
+    assert.equal(objectives[0].status.detail.workshop, 'forge');
+});
+
+test('intendance : forge sans minerai nomme l\'ingrédient et la quantité libre', () => {
+    const objectives = [{ recipe: 'sword', target: 1 }];
+    const colony = setupColony(openTerrain(12, 5), { objectives });
+    addDwarf(colony.world, 1, 2);
+    spawnFromDefinition(colony.world, data.items.forge, { x: 9, y: 2 });
+
+    colony.run(2);
+
+    assert.equal(objectives[0].status.blocker, 'no-ingredient');
+    assert.equal(objectives[0].status.detail.ingredient, 'ore');
+    assert.equal(objectives[0].status.detail.free, 0);
 });

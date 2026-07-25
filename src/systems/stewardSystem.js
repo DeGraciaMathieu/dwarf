@@ -23,9 +23,12 @@ export class StewardSystem {
         );
         const gap = objective.target - stock - pending.length;
         // donnée de restitution pour l'UI, réécrite intégralement à chaque tick
+        const { blocker, detail } = this.findBlocker(world, recipe, gap, pending.length);
         objective.status = {
             stock,
-            blocked: this.findBlocker(world, recipe, gap, pending.length),
+            pending: pending.length,
+            blocker,
+            detail,
         };
         if (gap > 0) {
             this.postMissingJobs(world, objective, recipe, gap, pending.length);
@@ -36,15 +39,16 @@ export class StewardSystem {
 
     findBlocker(world, recipe, gap, pendingCount) {
         if (gap <= 0) {
-            return null;
+            return { blocker: null, detail: null };
         }
         if (!this.findWorkshopPosition(world, recipe.workshop)) {
-            return 'no-workshop';
+            return { blocker: 'no-workshop', detail: { workshop: recipe.workshop } };
         }
-        if (this.countFreeIngredients(world, recipe.ingredient) - pendingCount <= 0) {
-            return 'no-ingredient';
+        const free = this.countFreeIngredients(world, recipe.ingredient);
+        if (free - pendingCount <= 0) {
+            return { blocker: 'no-ingredient', detail: { ingredient: recipe.ingredient, free } };
         }
-        return null;
+        return { blocker: null, detail: null };
     }
 
     postMissingJobs(world, objective, recipe, gap, pendingCount) {

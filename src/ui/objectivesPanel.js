@@ -1,6 +1,14 @@
-const BLOCKED_LABELS = {
-    'no-workshop': 'bloqué : aucun atelier',
-    'no-ingredient': 'bloqué : rien à produire',
+const WORKSHOP_LABELS = {
+    carpentry: 'menuiserie manquante',
+    brewery: 'brasserie manquante',
+    masonry: 'atelier de taille manquant',
+    forge: 'forge manquante',
+};
+
+const INGREDIENT_LABELS = {
+    ore: 'minerai',
+    stone: 'pierre',
+    brewable: 'ingrédient brassable',
 };
 
 export class ObjectivesPanel {
@@ -40,8 +48,11 @@ export class ObjectivesPanel {
 
     renderObjective(objective, index) {
         const label = this.recipes[objective.recipe].label;
-        const stock = objective.status?.stock ?? 0;
-        const blockedLabel = BLOCKED_LABELS[objective.status?.blocked];
+        const status = objective.status;
+        const stock = status?.stock ?? 0;
+        const blocked = this.blockerNote(status);
+        const note = blocked ?? this.productionNote(status);
+        const noteClass = blocked ? 'objective-blocked' : 'objective-note';
         return `
             <div class="objective">
                 <span class="objective-label">${label}</span>
@@ -49,7 +60,24 @@ export class ObjectivesPanel {
                 <button data-action="decrement" data-index="${index}">−</button>
                 <button data-action="increment" data-index="${index}">+</button>
             </div>
-            ${blockedLabel ? `<p class="objective-blocked">${blockedLabel}</p>` : ''}
+            ${note ? `<p class="${noteClass}">${note}</p>` : ''}
         `;
+    }
+
+    blockerNote(status) {
+        if (status?.blocker === 'no-workshop') {
+            const workshop = status.detail.workshop;
+            return `Bloqué : ${WORKSHOP_LABELS[workshop] ?? `${workshop} manquant`}`;
+        }
+        if (status?.blocker === 'no-ingredient') {
+            const { ingredient, free } = status.detail;
+            const name = INGREDIENT_LABELS[ingredient] ?? ingredient;
+            return `Bloqué : ${name} insuffisant (${free} disponible${free > 1 ? 's' : ''})`;
+        }
+        return null;
+    }
+
+    productionNote(status) {
+        return status?.pending > 0 ? `En production (${status.pending} en file)` : null;
     }
 }
