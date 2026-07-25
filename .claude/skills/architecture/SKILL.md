@@ -18,7 +18,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 | `src/core/terrain.js` | Grille 2D hors ECS (`get/set/isWalkable`), génération (montagne, rivière à gués, lacs, bosquets — avec validation de jouabilité et retirage), `largestWalkableRegion` | `tiles.json` |
 | `src/core/pathfinding.js` | `findPath(terrain, from, to)` — A* 8-directionnel, Chebyshev | terrain |
 | `src/core/jobBoard.js` | File de jobs : `post/claim/release/cancel/markUnreachable/resetUnreachable/complete/hasJobAt/hasAvailableJobs` | aucun |
-| `src/core/zones.js` | `Zone` : ensembles de cases peintes avec étiquette optionnelle `kind` (stockages typés, champs) | aucun |
+| `src/core/zones.js` | `Zone` : ensembles de cases peintes avec étiquette optionnelle `kind` (stockages typés, champs, tombes) | aucun |
 | `src/core/spawn.js` | `spawnFromDefinition(world, def, position)` — instancie une définition JSON | world |
 | `src/systems/*` | Toute la logique de jeu (voir ordre du tick ci-dessous) | core, events, data |
 | `src/events/events.js` | Constantes des types d'événements | aucun |
@@ -29,7 +29,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Needs → Attrition → Morale → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Build → Craft → Farm → Fish → Hostile → Combat → Movement`
+`Needs → Attrition → Morale → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Flee → Fight → Tantrum → Dig → Chop → Haul → Grave → Build → Craft → Farm → Fish → Hostile → Combat → Movement`
 
 Logique : les besoins montent, le moral encaisse, l'intendance réconcilie les objectifs de stock (poste/retire les jobs de craft avant l'arbitrage, pour qu'ils soient réclamables au même tick), l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
 
@@ -52,4 +52,5 @@ Logique : les besoins montent, le moral encaisse, l'intendance réconcilie les o
 - **Marqueur + événement de transition** : pour signaler l'entrée/sortie d'un état (fuite, rage, sommeil), poser/retirer un composant-marqueur (`fleeing`, `tantruming`, `sleeping`) et n'émettre l'événement qu'à la transition.
 - **Hystérésis** : un état qui ne doit pas osciller (sommeil, crise) a un seuil d'entrée et un seuil de sortie distincts, arbitrés dans `arbiterSystem.js`.
 - **Objets portés** : composant `carrying {itemId, destination?}` ; l'objet porté perd son composant `position`. Le lâcher générique est géré par `HaulSystem.dropOrphanedItems` — un job qui légitime un port doit exposer l'id via `job.itemId`, `job.producedId` ou `currentJob.materialId`.
-- **La mort passe par `kill()` de `src/systems/death.js`** quelle qu'en soit la cause (combat, inanition, causes futures) : cadavre, job relâché, charge lâchée, événement `dwarf.died {name, x, y, cause}` (ou `goblin.slain`). Ne jamais dupliquer cette logique.
+- **La mort passe par `kill()` de `src/systems/death.js`** quelle qu'en soit la cause (combat, inanition, causes futures) : cadavre (composant `corpse`), job relâché, charge lâchée, événement `dwarf.died {name, x, y, cause}` (ou `goblin.slain`). Ne jamais dupliquer cette logique.
+- **Les cadavres pourrissent et s'enterrent** (`src/systems/graveSystem.js`) : le composant `corpse` vieillit (`decay`), passe `rotten` au seuil (`corpse.rotted` + malus de moral de proximité dans `moraleSystem`), et un job `bury` vers une case de la zone `graves` le transforme en `buried` (`corpse.buried` + apaisement du moral). Le haul générique ignore les `corpse`.
