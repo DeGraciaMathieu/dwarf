@@ -2,6 +2,14 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — La bière
+
+- **Nouvel atelier : la brasserie** (🏺) et son bouton **🍺 Brasser** : un clic, et un nain porte un champignon à la brasserie pour en tirer une chope (`δ`) — « Urist a brassé une bière. » La bière est rangée au stock comme le reste.
+- **Un nain assoiffé préfère la bière à la rivière** : il la boit sur place — « Urist a vidé une chope de bière ! » — et y gagne un vrai coup de moral (+15, contre +5 pour l'eau de la berge). L'anti-crise de nerfs des mauvais jours.
+- **Brasser consomme la nourriture** : chaque chope coûte un champignon de la ferme — à vous d'arbitrer entre les ventres et les gosiers. Sans champignon, le brassage attend la prochaine récolte et reprend tout seul.
+- Une colonie coupée de l'eau peut désormais survivre sur ses tonnelets — la bière étanche la soif aussi bien que la rivière.
+- Technique : les ateliers sont typés (menuiserie, brasserie) et les recettes déclarent leur atelier, leur ingrédient et leur caractère consommable — un futur consommable fabriqué = une entrée de JSON.
+
 ## 2026-07-25 — Bien dormir compte
 
 - **Le réveil dépend du couchage** : une nuit complète en lit remonte le moral de +10, contre +3 seulement à même le sol — le journal le raconte : « Urist a mal dormi. »

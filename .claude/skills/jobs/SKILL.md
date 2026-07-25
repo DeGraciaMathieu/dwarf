@@ -16,7 +16,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 | `claim(entityId, position)` | `JobAssignmentSystem` | le job disponible le plus proche ; devient un composant `currentJob {job, path, progress}` sur le nain |
 | `release(job)` | `JobAssignmentSystem` (activité ≠ work), `CombatSystem` (mort) | retour en file, un autre nain le reprendra |
 | `markUnreachable(job)` | l'exécutant (cible/matériau/atelier inaccessible) | job en pause, ignoré par `claim` |
-| `resetUnreachable()` | `DigSystem`/`ChopSystem` à chaque complétion, `designation.js` à la pose d'un atelier | le monde a changé : tout redevient tentable |
+| `resetUnreachable()` | `DigSystem`/`ChopSystem`/`FarmSystem` (récolte) à chaque complétion, `designation.js` à la pose d'un atelier | le monde a changé : tout redevient tentable |
 | `complete(job)` | l'exécutant | retiré de la file |
 
 ## Règles non négociables
@@ -35,7 +35,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 | `chop` | `chopSystem.js` | idem + spawn d'un objet produit (`spawnFromDefinition`) |
 | `haul` | `haulSystem.js` | auto-posté avec capacité bornée, deux phases, réservations auto-réparées (`pruneReservations`), lâcher générique (`dropOrphanedItems`) |
 | `build` | `buildSystem.js` | matériau requis (`nearestFreeMaterial` de `materials.js`), attente si case cible occupée |
-| `craft` | `craftSystem.js` | quatre phases, état durable sur le job (`producedId`) |
+| `craft` | `craftSystem.js` | quatre phases, état durable sur le job (`producedId`) ; atelier typé (`recipe.workshop`) et ingrédient configurable (`recipe.ingredient`, défaut `buildMaterial`) ; recette `consumable` (bière) : produit posé au sol à l'atelier, pas de phase d'installation |
 | `plant`/`harvest` | `farmSystem.js` | jobs auto-postés par le système lui-même selon l'état des cases de champ |
 | `fish` | `fishSystem.js` | auto-posté par case de zone de pêche (revérifie que la case est toujours de l'eau — un pont l'annule), produit un poisson aux pieds du pêcheur |
 

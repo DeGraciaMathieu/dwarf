@@ -13,10 +13,10 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | Fichier | Contient | Chargé par |
 |---|---|---|
 | `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
-| `items.json` | `bread`, `log`, `mushroom`, `corpse`, `workshop`, `bed` | `main.js`, systèmes producteurs |
+| `items.json` | `bread`, `log`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `bed`, `door`, `bridge` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
-| `recipes.json` | `bed`, `door`, `bridge` — `{label, ghost, craftTicks, produces, installsTile?, site?}` | `craftSystem.js`, `designation.js` |
+| `recipes.json` | `bed`, `door`, `bridge`, `beer` — `{label, ghost?, craftTicks, produces, workshop, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |
 
 ## Quel composant déclenche quel système
 
@@ -30,9 +30,11 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `hostile` | poursuit les workers (`hostileSystem`), déclenche fuite/combat |
 | `item` | transportable au stock, cassable en crise de nerfs |
 | `food` | mangeable (détruit au repas) |
-| `buildMaterial` | consommé par les jobs `build` et `craft` |
+| `drink` | buvable : un assoiffé le préfère à la berge, +15 de moral (`drinkSystem`) |
+| `buildMaterial` | consommé par les jobs `build` et `craft` (ingrédient par défaut) |
+| `brewable` | ingrédient des recettes `ingredient: 'brewable'` (bière) |
 | `bed` | dortoir : récupération ×`recoveryMultiplier`, soin `heal`/tick (`sleepSystem`) |
-| `workshop` | site de fabrication requis par les jobs `craft` |
+| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes) |
 | `crop` | pousse puis se récolte (`farmSystem`) |
 | `identity` | nom affiché (journal, inspection) — nains uniquement |
 
@@ -47,6 +49,11 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 2. `recipes.json` : `{label (avec article : « un lit »), ghost, craftTicks, produces}`. Si le produit s'installe comme **tuile** au lieu d'un meuble (modèles : porte, pont), ajouter `installsTile: '<type de tuile>'` — le kit porté est détruit, `terrain.set()` pose la tuile et `resetUnreachable()` réveille les chantiers que le nouveau passage ouvre. Si la désignation vise autre chose que du sol (modèle : le pont sur l'eau), ajouter `site: '<type de tuile>'` ; l'installation se fait alors depuis une case adjacente.
 3. `index.html` : bouton `data-tool="craft:<recette>"` — `designation.js` gère tous les modes `craft:*` génériquement.
 4. Si le composant fonctionnel est nouveau, écrire le système qui l'exploite (modèle : lits dans `sleepSystem.js`).
+
+**Ajouter un consommable fabriqué** (modèle : la bière) :
+1. `items.json` : le produit (`item` + composant consommé, ex. `drink`) et l'atelier typé si nouveau (`workshop: {type}` — le poser passe par `workshopDefinitions` dans `designation.js` + un bouton `data-tool`).
+2. `recipes.json` : `{label, craftTicks, produces, ingredient (composant du matériau), workshop, consumable: true}` — pas de phase d'installation : le produit est posé au sol à l'atelier (événement `ITEM_CRAFTED`) puis rangé au stock par le haul.
+3. Poster le job sans désignation : bouton d'action dans `index.html` câblé dans `main.js` qui poste `{type: 'craft', recipe, target: <case de l'atelier>}` (modèle : `#brew-beer`).
 
 **Ajouter un type de tuile** : `tiles.json` (`walkable` correct ; `blocksHostiles: true` pour bloquer les hostiles seulement — `isWalkable(x, y, {hostile})` et `findPath(..., {hostile: true})` en tiennent compte) + le placer dans la génération (`terrain.js`) ou via une recette `installsTile`.
 

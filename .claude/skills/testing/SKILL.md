@@ -18,7 +18,7 @@ auto_invoke: true
 | `makeTerrain(rows)` | terrain depuis un dessin ASCII : `#` mur, `T` arbre, autre sol |
 | `openTerrain(w, h)` | plaine vide |
 | `addDwarf(world, x, y, overrides)` | nain complet ; overrides : `name, hunger, hungerRate, fatigue, fatigueRate, health, morale, courage` (taux à 0 par défaut → besoins figés, scénarios déterministes) |
-| `addGoblin / addBread / addLog / addBed` | entités usuelles |
+| `addGoblin / addBread / addLog / addBed / addMushroom / addBrewery / addBeer` | entités usuelles |
 | `entitiesAt(world, component, x, y)` | requête positionnelle |
 | `data` | les cinq JSON de `src/data/` chargés |
 | `colony.collect(EVENTS.X)` | tableau vivant des payloads reçus — l'outil principal d'assertion |
@@ -42,6 +42,7 @@ auto_invoke: true
 | `tests/bridges.test.js` | ponts : traversée ouverte à tous, réveil des chantiers d'outre-rivière |
 | `tests/fishing.test.js` | pêche : production continue, poisson mangé, annulation par un pont, persistance |
 | `tests/thirst.test.js` | soif : boire à la berge, priorité, renoncement sans eau, mort de soif |
+| `tests/beer.test.js` | bière : brassage à la brasserie, atelier typé, pénurie relancée par la récolte, préférence bière + moral |
 
 ## Ajouter un test
 
