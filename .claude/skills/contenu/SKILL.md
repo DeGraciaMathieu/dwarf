@@ -14,9 +14,9 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 |---|---|---|
 | `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
 | `items.json` | `bread`, `log`, `mushroom`, `corpse`, `workshop`, `bed` | `main.js`, systèmes producteurs |
-| `tiles.json` | `floor`, `wall`, `tree`, `door`, `water` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
+| `tiles.json` | `floor`, `wall`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
-| `recipes.json` | `bed`, `door` — `{label, ghost, craftTicks, produces, installsTile?}` | `craftSystem.js`, `designation.js` |
+| `recipes.json` | `bed`, `door`, `bridge` — `{label, ghost, craftTicks, produces, installsTile?, site?}` | `craftSystem.js`, `designation.js` |
 
 ## Quel composant déclenche quel système
 
@@ -44,7 +44,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 **Ajouter un meuble fabricable** :
 1. `items.json` : le meuble, avec `item` (retiré à l'installation par `craftSystem.js`) + son composant fonctionnel (modèle : `bed`).
-2. `recipes.json` : `{label (avec article : « un lit »), ghost, craftTicks, produces}`. Si le produit s'installe comme **tuile** au lieu d'un meuble (modèle : la porte), ajouter `installsTile: '<type de tuile>'` — le kit porté est détruit et `terrain.set()` pose la tuile.
+2. `recipes.json` : `{label (avec article : « un lit »), ghost, craftTicks, produces}`. Si le produit s'installe comme **tuile** au lieu d'un meuble (modèles : porte, pont), ajouter `installsTile: '<type de tuile>'` — le kit porté est détruit, `terrain.set()` pose la tuile et `resetUnreachable()` réveille les chantiers que le nouveau passage ouvre. Si la désignation vise autre chose que du sol (modèle : le pont sur l'eau), ajouter `site: '<type de tuile>'` ; l'installation se fait alors depuis une case adjacente.
 3. `index.html` : bouton `data-tool="craft:<recette>"` — `designation.js` gère tous les modes `craft:*` génériquement.
 4. Si le composant fonctionnel est nouveau, écrire le système qui l'exploite (modèle : lits dans `sleepSystem.js`).
 

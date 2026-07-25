@@ -39,6 +39,7 @@ auto_invoke: true
 | `tests/migrants.test.js` | migrants : conditions d'attractivité, plafond, colonie morte |
 | `tests/starvation.test.js` | inanition : agonie, sauvetage, érosion du moral, deuil des témoins |
 | `tests/invasions.test.js` | vagues de gobelins : escalade, proportionnalité à la population, persistance en sauvegarde |
+| `tests/bridges.test.js` | ponts : traversée ouverte à tous, réveil des chantiers d'outre-rivière |
 
 ## Ajouter un test
 
