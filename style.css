@@ -54,6 +54,12 @@ canvas {
     border-color: #e8b830;
 }
 
+#toolbar button[data-priority].active {
+    background: #3a2018;
+    color: #e85030;
+    border-color: #e85030;
+}
+
 #stage {
     display: flex;
     flex-direction: column;

@@ -49,14 +49,22 @@ export class Renderer {
                 .filter((job) => job.ghost)
                 .map((job) => [job.target.y * terrain.width + job.target.x, job.ghost])
         );
+        const urgent = new Set(
+            this.jobBoard.jobs
+                .filter((job) => (job.priority ?? 0) > 0 && (job.ghost || job.type === 'dig' || job.type === 'chop'))
+                .map((job) => job.target.y * terrain.width + job.target.x)
+        );
 
         for (let y = 0; y < terrain.height; y++) {
             for (let x = 0; x < terrain.width; x++) {
                 const index = y * terrain.width + x;
                 const tile = terrain.tileDefinitions[terrain.get(x, y)];
                 const glyph = ghosts.get(index) ?? tile.glyph;
-                ctx.fillStyle =
-                    designated.has(index) || ghosts.has(index) ? '#e8b830' : tile.color;
+                ctx.fillStyle = urgent.has(index)
+                    ? '#e85030'
+                    : designated.has(index) || ghosts.has(index)
+                      ? '#e8b830'
+                      : tile.color;
                 ctx.fillText(glyph, x * tileSize + tileSize / 2, y * tileSize + tileSize / 2);
             }
         }

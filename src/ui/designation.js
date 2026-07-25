@@ -25,6 +25,7 @@ export class DesignationControl {
         this.recipes = recipes;
         this.onDwarfClick = onDwarfClick;
         this.mode = 'designate';
+        this.urgent = false;
         this.dragging = false;
 
         canvas.addEventListener('mousedown', (event) => {
@@ -58,6 +59,17 @@ export class DesignationControl {
                 this.mode = button.dataset.tool;
             });
         });
+
+        // bascule indépendante : les prochaines désignations seront prioritaires
+        const urgentButton = toolbar.querySelector?.('button[data-priority]');
+        urgentButton?.addEventListener('click', () => {
+            this.urgent = !this.urgent;
+            urgentButton.classList.toggle('active', this.urgent);
+        });
+    }
+
+    priority() {
+        return this.urgent ? 1 : 0;
     }
 
     tileAt(event) {
@@ -74,9 +86,9 @@ export class DesignationControl {
         const tile = this.terrain.get(x, y);
         if (this.mode === 'designate') {
             if ((tile === 'wall' || tile === 'ore') && !this.jobBoard.hasJobAt(x, y, 'dig')) {
-                this.jobBoard.post({ type: 'dig', target: { x, y } });
+                this.jobBoard.post({ type: 'dig', target: { x, y }, priority: this.priority() });
             } else if (tile === 'tree' && !this.jobBoard.hasJobAt(x, y, 'chop')) {
-                this.jobBoard.post({ type: 'chop', target: { x, y } });
+                this.jobBoard.post({ type: 'chop', target: { x, y }, priority: this.priority() });
             }
             return;
         }
@@ -111,6 +123,7 @@ export class DesignationControl {
                     recipe: recipeName,
                     ghost: recipe.ghost,
                     target: { x, y },
+                    priority: this.priority(),
                 });
             }
             return;
@@ -125,7 +138,7 @@ export class DesignationControl {
         }
         if (this.mode === 'build') {
             if (!this.jobBoard.hasJobAt(x, y, 'build')) {
-                this.jobBoard.post({ type: 'build', ghost: '#', target: { x, y } });
+                this.jobBoard.post({ type: 'build', ghost: '#', target: { x, y }, priority: this.priority() });
             }
         } else if (this.mode === 'stockpile' || this.mode.startsWith('stockpile:')) {
             this.stockpiles.add(x, y, this.mode.split(':')[1]);

@@ -4,21 +4,25 @@ export class JobBoard {
     }
 
     post(job) {
-        this.jobs.push({ ...job, claimedBy: null, unreachable: false });
+        this.jobs.push({ priority: 0, ...job, claimedBy: null, unreachable: false });
     }
 
     claim(entityId, position) {
         let best = null;
+        let bestPriority = -Infinity;
         let bestDistance = Infinity;
         for (const job of this.jobs) {
             if (job.claimedBy !== null || job.unreachable) {
                 continue;
             }
+            const priority = job.priority ?? 0;
             const distance = Math.max(
                 Math.abs(job.target.x - position.x),
                 Math.abs(job.target.y - position.y)
             );
-            if (distance < bestDistance) {
+            // priorité d'abord, distance ensuite
+            if (priority > bestPriority || (priority === bestPriority && distance < bestDistance)) {
+                bestPriority = priority;
                 bestDistance = distance;
                 best = job;
             }
