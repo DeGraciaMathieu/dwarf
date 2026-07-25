@@ -136,7 +136,6 @@ async function main() {
         farms,
         fishingSpots,
         tileSize: TILE_SIZE,
-        workshopDefinitions: { workshop: items.workshop, brewery: items.brewery },
         recipes,
         onDwarfClick: (x, y) => inspection.selectAt(x, y),
     });

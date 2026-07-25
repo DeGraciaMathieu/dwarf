@@ -1,5 +1,3 @@
-import { spawnFromDefinition } from '../core/spawn.js';
-
 export class DesignationControl {
     constructor({
         canvas,
@@ -11,7 +9,6 @@ export class DesignationControl {
         farms,
         fishingSpots,
         tileSize,
-        workshopDefinitions,
         recipes,
         onDwarfClick,
     }) {
@@ -23,7 +20,6 @@ export class DesignationControl {
         this.farms = farms;
         this.fishingSpots = fishingSpots;
         this.tileSize = tileSize;
-        this.workshopDefinitions = workshopDefinitions;
         this.recipes = recipes;
         this.onDwarfClick = onDwarfClick;
         this.mode = 'designate';
@@ -38,7 +34,7 @@ export class DesignationControl {
             if (this.onDwarfClick?.(tile.x, tile.y)) {
                 return;
             }
-            this.apply(tile, false);
+            this.apply(tile);
         });
         canvas.addEventListener('mousemove', (event) => {
             if (!this.dragging) {
@@ -46,7 +42,7 @@ export class DesignationControl {
             }
             const tile = this.tileAt(event);
             if (tile) {
-                this.apply(tile, true);
+                this.apply(tile);
             }
         });
         window.addEventListener('mouseup', () => {
@@ -72,7 +68,7 @@ export class DesignationControl {
         return { x, y };
     }
 
-    apply({ x, y }, isDrag) {
+    apply({ x, y }) {
         const tile = this.terrain.get(x, y);
         if (this.mode === 'designate') {
             if (tile === 'wall' && !this.jobBoard.hasJobAt(x, y, 'dig')) {
@@ -94,7 +90,10 @@ export class DesignationControl {
             if (!recipe || tile !== (recipe.site ?? 'floor')) {
                 return;
             }
-            if (tile === 'floor' && (this.stockpiles.has(x, y) || this.farms.has(x, y))) {
+            if (
+                tile === 'floor' &&
+                (this.stockpiles.has(x, y) || this.farms.has(x, y) || this.workshopAt(x, y))
+            ) {
                 return;
             }
             if (!this.jobBoard.hasJobAt(x, y, 'craft')) {
@@ -118,11 +117,6 @@ export class DesignationControl {
             this.stockpiles.add(x, y, this.mode.split(':')[1]);
         } else if (this.mode === 'farm') {
             this.farms.add(x, y);
-        } else if (this.workshopDefinitions[this.mode]) {
-            if (!isDrag && !this.workshopAt(x, y)) {
-                spawnFromDefinition(this.world, this.workshopDefinitions[this.mode], { x, y });
-                this.jobBoard.resetUnreachable();
-            }
         }
     }
 

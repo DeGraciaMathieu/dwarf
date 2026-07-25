@@ -32,7 +32,10 @@ export class CraftSystem {
             this.fetchMaterial(world, entityId, currentJob, recipe.ingredient);
             return;
         }
-        const workshopPosition = this.nearestWorkshopPosition(world, entityId, recipe.workshop);
+        // recette sans atelier (les ateliers eux-mêmes) : fabriquée sur le chantier
+        const workshopPosition = recipe.workshop
+            ? this.nearestWorkshopPosition(world, entityId, recipe.workshop)
+            : currentJob.job.target;
         if (!workshopPosition) {
             this.abandon(world, entityId, currentJob);
             return;
@@ -107,6 +110,9 @@ export class CraftSystem {
         } else {
             world.addComponent(job.producedId, 'position', { x: job.target.x, y: job.target.y });
             world.removeComponent(job.producedId, 'item');
+            if (world.getComponent(job.producedId, 'workshop')) {
+                this.jobBoard.resetUnreachable();
+            }
         }
         world.removeComponent(entityId, 'carrying');
         this.jobBoard.complete(job);

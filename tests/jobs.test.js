@@ -187,6 +187,33 @@ test('craft : sans atelier le job attend, la pose le débloque', () => {
     assert.equal(entitiesAt(colony.world, 'bed', 15, 1).length, 1);
 });
 
+test('craft : l atelier se construit sur place avec une bûche', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    addDwarf(colony.world, 0, 0);
+    addLog(colony.world, 5, 0);
+    colony.jobBoard.post({ type: 'craft', recipe: 'workshop', ghost: 'Π', target: { x: 12, y: 1 } });
+    colony.run(80);
+    assert.equal(entitiesAt(colony.world, 'workshop', 12, 1).length, 1);
+    assert.equal(colony.world.query('buildMaterial').length, 0);
+    assert.equal(colony.jobBoard.jobs.length, 0);
+});
+
+test('craft : la brasserie exige un atelier, sa construction la débloque', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    addDwarf(colony.world, 0, 0);
+    addLog(colony.world, 3, 0);
+    addLog(colony.world, 5, 0);
+    colony.jobBoard.post({ type: 'craft', recipe: 'brewery', ghost: 'Ω', target: { x: 15, y: 1 } });
+    colony.run(30);
+    assert.equal(colony.jobBoard.jobs[0].unreachable, true);
+
+    colony.jobBoard.post({ type: 'craft', recipe: 'workshop', ghost: 'Π', target: { x: 8, y: 1 } });
+    colony.run(250);
+    assert.equal(entitiesAt(colony.world, 'workshop', 8, 1).length, 1);
+    assert.equal(entitiesAt(colony.world, 'workshop', 15, 1).length, 1);
+    assert.equal(colony.world.query('buildMaterial').length, 0);
+});
+
 test('interruption : le porteur affamé lâche sa charge, le job survit', () => {
     const colony = setupColony(openTerrain(40, 3));
     addDwarf(colony.world, 0, 0, { hunger: 60, hungerRate: 1 });

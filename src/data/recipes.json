@@ -23,6 +23,19 @@
         "site": "water",
         "workshop": "carpentry"
     },
+    "workshop": {
+        "label": "un atelier",
+        "ghost": "Π",
+        "craftTicks": 10,
+        "produces": "workshop"
+    },
+    "brewery": {
+        "label": "une brasserie",
+        "ghost": "Ω",
+        "craftTicks": 10,
+        "produces": "brewery",
+        "workshop": "carpentry"
+    },
     "beer": {
         "label": "une bière",
         "craftTicks": 8,
