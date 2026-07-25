@@ -2,6 +2,12 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — La pêche
+
+- **Nouvel outil 🎣 Pêche** : peignez une zone sur l'eau (une berge adjacente est requise), et les nains viendront y pêcher — « Urist a pêché un poisson. » Le poisson (`α`) est rangé au stock et nourrit les affamés comme le reste.
+- **La nourriture de siège** : moins nourrissante et plus lente que la ferme, la pêche ne demande ni semis ni récolte à défendre — une muraille englobant un bout de berge rend la colonie autosuffisante.
+- Un pont posé sur un coin de pêche l'annule (la case n'est plus de l'eau).
+
 ## 2026-07-25 — Les ponts
 
 - **Nouveau meuble : le pont** (🌉, une bûche à l'atelier) — se désigne directement sur l'eau, le menuisier le pose depuis la berge. La rivière fait deux cases de large : prévoyez deux ponts côte à côte.
