@@ -1,6 +1,6 @@
 # PRD B07 — Variété d'ennemis
 
-**Lot :** B — Tension de combat · **Point :** 7 · **Statut :** À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** B — Tension de combat · **Point :** 7 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 

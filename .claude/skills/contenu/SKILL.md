@@ -12,7 +12,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 | Fichier | Contient | Chargé par |
 |---|---|---|
-| `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), `goblin` | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
+| `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), archétypes hostiles `goblin`, `brute` (coriace), `archer` (`combat.range`), `chief` (`leader`, aura de dégâts) | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
 | `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `sword`, `mail` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `ore`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
@@ -24,7 +24,8 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 |---|---|
 | `hunger`, `thirst`, `fatigue` | besoins qui montent (`needsSystem`), activités eat/drink/sleep ; faim et soif au maximum tuent (`attritionSystem`) |
 | `morale` | humeur, ralentissement, crises (`moraleSystem`, `tantrumSystem`) |
-| `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee |
+| `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee ; `combat.range` (défaut 1) porte l'attaque à distance (archer) |
+| `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |
 | `worker` | arbitré par l'arbitre, prend des jobs, ciblé par les gobelins |
 | `wander` | erre quand `activity === 'wander'` |
 | `hostile` | poursuit les workers (`hostileSystem`), déclenche fuite/combat |
