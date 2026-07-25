@@ -6,10 +6,11 @@ import { workEffort } from './workEffort.js';
 const DIG_TICKS = 10;
 
 export class DigSystem {
-    constructor(jobBoard, terrain, stoneDefinition) {
+    constructor(jobBoard, terrain, stoneDefinition, oreDefinition) {
         this.jobBoard = jobBoard;
         this.terrain = terrain;
         this.stoneDefinition = stoneDefinition;
+        this.oreDefinition = oreDefinition;
     }
 
     update(world, eventBus) {
@@ -30,8 +31,10 @@ export class DigSystem {
             }
             currentJob.progress += workEffort(world, entityId);
             if (currentJob.progress >= DIG_TICKS) {
+                const dug = this.terrain.get(target.x, target.y);
                 this.terrain.set(target.x, target.y, 'floor');
-                spawnFromDefinition(world, this.stoneDefinition, target);
+                const dropped = dug === 'ore' ? this.oreDefinition : this.stoneDefinition;
+                spawnFromDefinition(world, dropped, target);
                 this.jobBoard.complete(currentJob.job);
                 this.jobBoard.resetUnreachable();
                 world.removeComponent(entityId, 'currentJob');

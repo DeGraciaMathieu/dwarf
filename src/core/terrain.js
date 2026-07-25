@@ -33,6 +33,8 @@ const OUTCROP_DENSITY = 1 / 130;
 const OUTCROP_FILL = 0.7;
 const GROVE_DENSITY = 1 / 110;
 const GROVE_FILL = 0.55;
+const VEIN_DENSITY = 1 / 200;
+const VEIN_FILL = 0.6;
 const LAKE_DENSITY = 1 / 450;
 const LAKE_FILL = 0.8;
 const RIVER_START_RATIO = 0.25;
@@ -131,6 +133,12 @@ function generateCandidate(width, height, tileDefinitions) {
         fill: GROVE_FILL,
         type: 'tree',
     });
+    scatterVeins(tiles, width, height, boundary, {
+        count: Math.floor(width * height * VEIN_DENSITY),
+        minRadius: 1,
+        maxRadius: 2,
+        fill: VEIN_FILL,
+    });
     carveFords(tiles, width, height, riverColumns);
 
     for (let y = 0; y < height; y++) {
@@ -201,6 +209,31 @@ function scatterPatches(tiles, width, height, boundary, { count, minRadius, maxR
                 const inPlain = x > 0 && y > 0 && y < height - 1 && x < boundary[y];
                 if (inPlain && tiles[y][x] === 'floor' && Math.random() < fill) {
                     tiles[y][x] = type;
+                }
+            }
+        }
+    }
+}
+
+// Veines de minerai : des amas d'ore incrustés dans la montagne (wall → ore),
+// atteignables en creusant. Symétrique de scatterPatches mais côté montagne.
+function scatterVeins(tiles, width, height, boundary, { count, minRadius, maxRadius, fill }) {
+    for (let i = 0; i < count; i++) {
+        const cy = 1 + Math.floor(Math.random() * (height - 2));
+        const mountainWidth = width - 1 - boundary[cy];
+        if (mountainWidth < 1) {
+            continue;
+        }
+        const cx = boundary[cy] + Math.floor(Math.random() * mountainWidth);
+        const radius = minRadius + Math.floor(Math.random() * (maxRadius - minRadius + 1));
+        for (let dy = -radius; dy <= radius; dy++) {
+            for (let dx = -radius; dx <= radius; dx++) {
+                const x = cx + dx;
+                const y = cy + dy;
+                const inMountain =
+                    x > 0 && x < width - 1 && y > 0 && y < height - 1 && x >= boundary[y];
+                if (inMountain && tiles[y][x] === 'wall' && Math.random() < fill) {
+                    tiles[y][x] = 'ore';
                 }
             }
         }

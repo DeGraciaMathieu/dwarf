@@ -24,6 +24,14 @@
             "stone": {}
         }
     },
+    "ore": {
+        "glyph": "♦",
+        "color": "#c0902a",
+        "components": {
+            "item": {},
+            "ore": {}
+        }
+    },
     "workshop": {
         "glyph": "Π",
         "color": "#c0a060",

@@ -51,6 +51,18 @@ test('dig : le mur creusé laisse une pierre récupérable', () => {
     assert.equal(entitiesAt(colony.world, 'buildMaterial', 5, 1).length, 1, 'une pierre tombe sur place');
 });
 
+test('dig : creuser une veine de minerai fait tomber du minerai, pas de la pierre', () => {
+    const terrain = makeTerrain(['..........', '..........', '..........']);
+    terrain.set(5, 1, 'ore');
+    const colony = setupColony(terrain);
+    addDwarf(colony.world, 0, 0);
+    colony.jobBoard.post({ type: 'dig', target: { x: 5, y: 1 } });
+    colony.run(40);
+    assert.equal(terrain.get(5, 1), 'floor');
+    assert.equal(entitiesAt(colony.world, 'ore', 5, 1).length, 1, 'du minerai tombe sur place');
+    assert.equal(colony.world.query('stone').length, 0, 'pas de pierre depuis une veine');
+});
+
 test('dig : la pierre creusée suffit à bâtir un mur, sans bois', () => {
     const terrain = makeTerrain(['..........', '.....#....', '..........']);
     const colony = setupColony(terrain);

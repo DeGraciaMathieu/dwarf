@@ -73,7 +73,7 @@ export class DesignationControl {
     apply({ x, y }) {
         const tile = this.terrain.get(x, y);
         if (this.mode === 'designate') {
-            if (tile === 'wall' && !this.jobBoard.hasJobAt(x, y, 'dig')) {
+            if ((tile === 'wall' || tile === 'ore') && !this.jobBoard.hasJobAt(x, y, 'dig')) {
                 this.jobBoard.post({ type: 'dig', target: { x, y } });
             } else if (tile === 'tree' && !this.jobBoard.hasJobAt(x, y, 'chop')) {
                 this.jobBoard.post({ type: 'chop', target: { x, y } });
