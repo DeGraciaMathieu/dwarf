@@ -2,6 +2,52 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-25 — La forge, les armes et les armures
+
+- **Nouvelle forge** (🔥, bâtie à la menuiserie) : elle transforme le minerai en **épée** (`/`) et en **cotte de mailles** (`[`).
+- **Piloté par le panneau Objectifs**, comme la bière : fixez une cible d'épées ou de cottes, l'intendance forge ce qu'il faut, et un nain oisif va s'équiper tout seul — « Urist s'arme. » Plus aucune arme à placer à la main.
+- **La réponse à l'escalade des invasions** : une épée (+6 aux dégâts) abat un gobelin en deux fois moins de coups ; une cotte (−3 par coup encaissé) rend les nains bien plus coriaces.
+- Un nain tué **lâche son équipement au sol** — récupérable par un survivant.
+- Technique : nouveau système d'équipement (un emplacement arme + un armure) ; le combat lit l'équipement pour les dégâts et l'encaissement.
+
+## 2026-07-25 — Les veines de minerai
+
+- **Des veines de minerai** (`○` dorés) parsèment désormais la montagne. Les creuser fait tomber du **minerai** (`♦`) au lieu de la pierre.
+- Le minerai est la matière première de la forge — la montagne recèle de quoi s'armer.
+
+## 2026-07-25 — L'atelier de taille
+
+- **Nouvel atelier de taille** (🗿, bâti à la menuiserie) : on y taille un **lit de pierre** et une **porte de pierre** à partir de la pierre.
+- Une colonie creusée dans la roche, loin des arbres, peut se meubler entièrement en pierre.
+
+## 2026-07-25 — La pierre
+
+- **Creuser rapporte enfin quelque chose** : abattre un mur laisse une **pierre** (`*`) sur place.
+- La pierre se range au stock **Matériaux** et bâtit des murs aussi bien que le bois — la montagne devient une réserve de construction, plus seulement de la place.
+
+## 2026-07-25 — La barre d'outils réorganisée
+
+- Les outils passent dans un **rail vertical à gauche**, groupés par famille (**Désigner** / **Zones** / **Bâtir**) : tout reste visible et cliquable en un seul coup, même à mesure que le jeu s'enrichit.
+
+## 2026-07-25 — Les tombes
+
+- **Nouvel outil ⚰ Tombe** : peignez une zone et les nains y portent les cadavres pour les enterrer — « Urist a enterré un mort. » L'enterrement **apaise le moral** des témoins.
+- **Un cadavre laissé à l'air libre se putréfie** (« Un cadavre se putréfie à l'air libre… ») et ronge en continu le moral des nains alentour : enterrez vos morts, ou payez-en le prix.
+
+## 2026-07-25 — Les stocks spécialisés
+
+- **Deux nouvelles zones de stockage** : 🍞 **Nourriture** et 🪵 **Matériaux**, en plus du stockage général. Chaque objet rejoint la zone qui l'accepte ; la zone spécifique est préférée, la générale sert de repli.
+- De quoi séparer les vivres des matériaux et raccourcir les trajets.
+
+## 2026-07-25 — Les ateliers se construisent
+
+- **Les ateliers ne sont plus gratuits** : la menuiserie (⚒) et la brasserie (🏺) se posent désormais comme un ordre de fabrication, **coûtent une bûche**, et la brasserie **exige une menuiserie** au préalable.
+
+## 2026-07-25 — Deux plantages corrigés
+
+- Fini le gel de la partie quand un nain **mourait dans l'instant même où le journal l'annonçait** (agonie de faim ou de soif, blessure fatale).
+- Fini le gel quand un nain **livrait un objet ramassé pour un chantier abandonné** entre-temps.
+
 ## 2026-07-25 — Les objectifs de stock
 
 - **La colonie brasse toute seule** : fixez une cible dans le nouveau panneau **Objectifs** (« une bière 2 / 3 », boutons − / +) et l'intendance poste ou retire elle-même les ordres de brassage pour maintenir le stock — plus un clic par chope.
