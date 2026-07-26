@@ -51,12 +51,18 @@
                     <button data-speed="1" class="active">▶</button>
                     <button data-speed="3">▶▶</button>
                 </div>
+                <div id="zoom">
+                    <button id="zoom-out" title="Dézoomer">🔍−</button>
+                    <button id="zoom-in" title="Zoomer">🔍+</button>
+                </div>
                 <div id="session">
                     <button id="save-game" title="Sauvegarder">💾</button>
                     <button id="load-game" title="Charger">📂</button>
                 </div>
             </div>
-            <canvas id="game"></canvas>
+            <div id="viewport">
+                <canvas id="game"></canvas>
+            </div>
         </div>
         <aside>
             <p class="hint">Creuser / Couper : cliquez-glissez sur les murs (#) et les arbres (♣). Stockage et Champ : peignez des zones au sol. Cliquez sur un nain pour l'inspecter.</p>

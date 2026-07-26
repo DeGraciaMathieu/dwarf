@@ -14,6 +14,14 @@ export class Renderer {
         canvas.height = terrain.height * tileSize;
     }
 
+    // zoom : change la taille des tuiles et redimensionne le canvas ; le prochain
+    // rendu (boucle) dessine tout à la nouvelle échelle
+    setTileSize(tileSize) {
+        this.tileSize = tileSize;
+        this.ctx.canvas.width = this.terrain.width * tileSize;
+        this.ctx.canvas.height = this.terrain.height * tileSize;
+    }
+
     render(world) {
         const { ctx, terrain, tileSize } = this;
         ctx.fillStyle = '#000';

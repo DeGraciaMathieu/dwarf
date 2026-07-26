@@ -173,7 +173,7 @@ async function main() {
     const inspection = new InspectionPanel(document.getElementById('inspection'), world, bedrooms);
     const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
     const hud = new Hud(document.getElementById('hud'), world, jobBoard, goblinSpawn);
-    new DesignationControl({
+    const designation = new DesignationControl({
         canvas,
         toolbar: document.getElementById('toolbar'),
         world,
@@ -227,6 +227,26 @@ async function main() {
             button.classList.add('active');
             loop.speed = Number(button.dataset.speed);
         });
+    });
+
+    const ZOOM_LEVELS = [12, 14, 16, 20, 24, 28];
+    let zoomIndex = ZOOM_LEVELS.indexOf(TILE_SIZE);
+    const applyZoom = () => {
+        const size = ZOOM_LEVELS[zoomIndex];
+        renderer.setTileSize(size);
+        designation.tileSize = size;
+    };
+    document.getElementById('zoom-in').addEventListener('click', () => {
+        if (zoomIndex < ZOOM_LEVELS.length - 1) {
+            zoomIndex++;
+            applyZoom();
+        }
+    });
+    document.getElementById('zoom-out').addEventListener('click', () => {
+        if (zoomIndex > 0) {
+            zoomIndex--;
+            applyZoom();
+        }
     });
 }
 
