@@ -47,8 +47,35 @@ Convention de nommage : `<Lot><NN>-slug.md`.
 | 17 | [E17 — Deuxième source de moral](E17-source-moral.md) | Moyen / Moyen |
 | 18 | [E18 — Progression par paliers](E18-progression-paliers.md) | Fort / Moyen |
 
+## Lot F — Vie sociale & santé
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 19 | [F19 — Relations sociales entre nains](F19-relations-sociales.md) | Fort / Moyen |
+| 20 | [F20 — Blessures et soins](F20-blessures-soins.md) | Fort / Moyen |
+
+## Lot G — Chaîne économique
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 21 | [G21 — Cuisine et variété alimentaire](G21-cuisine-alimentation.md) | Moyen / Moyen |
+| 22 | [G22 — Élevage et chasse](G22-elevage-chasse.md) | Fort / Moyen |
+| 23 | [G23 — Caravanes et troc](G23-caravanes-troc.md) | Fort / Élevé |
+
+## Lot H — Environnement & profondeur
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 24 | [H24 — Qualité des pièces et confort](H24-qualite-pieces-confort.md) | Moyen / Moyen |
+| 25 | [H25 — Saisons et température](H25-saisons-temperature.md) | Moyen / Élevé |
+| 26 | [H26 — Pensées et humeurs stratifiées](H26-pensees-humeurs.md) | Moyen / Moyen |
+| 27 | [H27 — Chef-d'œuvre et inspiration](H27-chef-doeuvre-inspiration.md) | Faible / Faible |
+
 ## Ordre recommandé
 
 1. **Lot A** en premier — rend le jeu jouable et débogable.
 2. **Lot B** — transforme l'expérience (tension).
 3. **Lots C → E** — approfondissement une fois la boucle nerveuse en place.
+4. **Lot F** — attachement du joueur (relations, blessures se renforcent mutuellement).
+5. **Lot G** — chaîne économique cohérente (cuisine → élevage → caravanes).
+6. **Lot H** — profondeur d'ambiance ; H26 (pensées) et H27 (chef-d'œuvre) sont les meilleurs ratios plaisir/effort.
