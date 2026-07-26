@@ -40,6 +40,7 @@ import { FarmSystem } from './systems/farmSystem.js';
 import { FishSystem } from './systems/fishSystem.js';
 import { GoblinSpawnSystem } from './systems/goblinSpawnSystem.js';
 import { MigrantSystem } from './systems/migrantSystem.js';
+import { RandomEventSystem } from './systems/randomEventSystem.js';
 import { HostileSystem } from './systems/hostileSystem.js';
 import { CombatSystem } from './systems/combatSystem.js';
 import { JobAlertSystem } from './systems/jobAlertSystem.js';
@@ -58,13 +59,14 @@ const TILE_SIZE = 20;
 const TICKS_PER_SECOND = 5;
 
 async function main() {
-    const [creatures, items, tiles, plants, recipes, embark] = await Promise.all([
+    const [creatures, items, tiles, plants, recipes, embark, events] = await Promise.all([
         fetch('src/data/creatures.json').then((response) => response.json()),
         fetch('src/data/items.json').then((response) => response.json()),
         fetch('src/data/tiles.json').then((response) => response.json()),
         fetch('src/data/plants.json').then((response) => response.json()),
         fetch('src/data/recipes.json').then((response) => response.json()),
         fetch('src/data/embark.json').then((response) => response.json()),
+        fetch('src/data/events.json').then((response) => response.json()),
     ]);
 
     const embarkScreen = new EmbarkScreen(document.getElementById('embark'), embark);
@@ -126,6 +128,9 @@ async function main() {
     );
     world.registerSystem(goblinSpawn);
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
+    world.registerSystem(
+        new RandomEventSystem(terrain, events, { creatures, plant: plants.mushroom })
+    );
     const objectives = [
         { recipe: 'beer', target: 0 },
         { recipe: 'meal', target: 0 },

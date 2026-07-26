@@ -1,0 +1,58 @@
+{
+    "firstCheck": 800,
+    "checkInterval": 1000,
+    "jitter": 0.5,
+    "events": [
+        {
+            "id": "plague",
+            "weight": 3,
+            "cooldown": 3000,
+            "conditions": { "minPopulation": 3 },
+            "effect": { "type": "plague", "victims": 2, "healthLoss": 8 }
+        },
+        {
+            "id": "wildBeast",
+            "weight": 4,
+            "cooldown": 2000,
+            "conditions": {},
+            "effect": {
+                "type": "spawnBeast",
+                "count": 1,
+                "roster": [
+                    { "creature": "wolf", "weight": 40 },
+                    { "creature": "boar", "weight": 20 },
+                    { "creature": "bear", "weight": 8 },
+                    { "creature": "dragon", "weight": 1 }
+                ]
+            }
+        },
+        {
+            "id": "bountifulHarvest",
+            "weight": 3,
+            "cooldown": 2500,
+            "conditions": { "minCrops": 1 },
+            "effect": { "type": "harvestBoon" }
+        },
+        {
+            "id": "blight",
+            "weight": 2,
+            "cooldown": 2500,
+            "conditions": { "minCrops": 1 },
+            "effect": { "type": "harvestBlight" }
+        },
+        {
+            "id": "wanderer",
+            "weight": 3,
+            "cooldown": 3000,
+            "conditions": { "maxPopulation": 14 },
+            "effect": { "type": "specialArrival" }
+        },
+        {
+            "id": "caveIn",
+            "weight": 2,
+            "cooldown": 2500,
+            "conditions": {},
+            "effect": { "type": "caveIn" }
+        }
+    ]
+}

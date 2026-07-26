@@ -46,4 +46,10 @@ export const EVENTS = {
     SEASON_CHANGED: 'season.changed',
     FOOD_SPOILED: 'food.spoiled',
     COLONY_ENDED: 'colony.ended',
+    EVENT_PLAGUE_STRUCK: 'event.plague-struck',
+    EVENT_BEAST_APPEARED: 'event.beast-appeared',
+    EVENT_HARVEST_BOON: 'event.harvest-boon',
+    EVENT_HARVEST_BLIGHT: 'event.harvest-blight',
+    EVENT_WANDERER_ARRIVED: 'event.wanderer-arrived',
+    EVENT_CAVE_IN: 'event.cave-in',
 };

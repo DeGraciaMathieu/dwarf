@@ -105,7 +105,9 @@ export class EventLog {
             this.append(messages[cause] ?? `${name} a succombé à ses blessures.`);
         });
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) => {
-            this.append(`${dwarfName(killerId)} a terrassé un gobelin !`);
+            // le tueur n'est pas toujours un nain (un prédateur peut décimer les hostiles)
+            const killer = world.getComponent(killerId, 'identity');
+            this.append(killer ? `${killer.name} a terrassé un gobelin !` : 'Un gobelin a péri !');
         });
         eventBus.on(EVENTS.DWARF_TANTRUM, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} pète les plombs !`);
@@ -177,6 +179,33 @@ export class EventLog {
             const label = JOB_LABELS[job.type] ?? job.type;
             this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true);
         });
+        eventBus.on(EVENTS.EVENT_PLAGUE_STRUCK, ({ count }) => {
+            this.append(`Une épidémie frappe la colonie : ${count} nain(s) affaibli(s) !`, true);
+        });
+        eventBus.on(EVENTS.EVENT_BEAST_APPEARED, ({ creature, label }) => {
+            this.append(
+                creature === 'dragon'
+                    ? `UN DRAGON surgit et fond sur tout ce qui vit !`
+                    : `${this.capitalize(label ?? 'une bête sauvage')} rôde aux abords !`,
+                true
+            );
+        });
+        eventBus.on(EVENTS.EVENT_HARVEST_BOON, () => {
+            this.append('Une récolte miraculeuse : toutes les cultures mûrissent d\'un coup !');
+        });
+        eventBus.on(EVENTS.EVENT_HARVEST_BLIGHT, () => {
+            this.append('Une nuée ravage les champs : les cultures sont perdues !', true);
+        });
+        eventBus.on(EVENTS.EVENT_WANDERER_ARRIVED, ({ name }) => {
+            this.append(`Un vagabond rejoint la colonie : ${name} !`);
+        });
+        eventBus.on(EVENTS.EVENT_CAVE_IN, ({ x, y }) => {
+            this.append(`Un éboulement bloque un passage en (${x}, ${y}) !`, true);
+        });
+    }
+
+    capitalize(text) {
+        return text.charAt(0).toUpperCase() + text.slice(1);
     }
 
     append(message, alert = false) {
