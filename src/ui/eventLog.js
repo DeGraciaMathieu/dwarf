@@ -100,6 +100,7 @@ export class EventLog {
                 starvation: `${name} est mort de faim.`,
                 dehydration: `${name} est mort de soif.`,
                 brawl: `${name} est mort dans une rixe.`,
+                bleeding: `${name} s'est vidé de son sang.`,
             };
             this.append(messages[cause] ?? `${name} a succombé à ses blessures.`);
         });
@@ -148,6 +149,12 @@ export class EventLog {
         });
         eventBus.on(EVENTS.DWARF_SOBERED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a dessoûlé.`);
+        });
+        eventBus.on(EVENTS.DWARF_WOUNDED, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} s'effondre, grièvement blessé !`, true);
+        });
+        eventBus.on(EVENTS.DWARF_HEALED, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} est soigné et se remet sur pied.`);
         });
         eventBus.on(EVENTS.DWARF_BEFRIENDED, ({ entityId, otherId }) => {
             this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont devenus amis.`);

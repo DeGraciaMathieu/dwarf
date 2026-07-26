@@ -14,6 +14,8 @@ const EFFECTS = {
     victory: 15,
     buried: 8,
     injured: -10,
+    wounded: -20,
+    healed: 12,
     hungry: -5,
     thirsty: -5,
     fled: -5,
@@ -35,6 +37,12 @@ export class MoraleSystem {
         );
         eventBus.on(EVENTS.DWARF_INJURED, ({ entityId }) =>
             this.pending.push({ type: 'injured', entityId })
+        );
+        eventBus.on(EVENTS.DWARF_WOUNDED, ({ entityId }) =>
+            this.pending.push({ type: 'wounded', entityId })
+        );
+        eventBus.on(EVENTS.DWARF_HEALED, ({ entityId }) =>
+            this.pending.push({ type: 'healed', entityId })
         );
         eventBus.on(EVENTS.DWARF_HUNGRY, ({ entityId }) =>
             this.pending.push({ type: 'hungry', entityId })

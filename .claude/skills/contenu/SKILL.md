@@ -26,6 +26,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `relationships` | affinités par nain `{affinities: {entityId: score}}` ; se tissent en socialisant, chutent en rixe (`socializeSystem`) ; deuil renforcé à la mort d'un ami (`moraleSystem`) |
 | `morale` | humeur, ralentissement, crises (`moraleSystem`, `tantrumSystem`) |
 | `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee ; `combat.range` (défaut 1) porte l'attaque à distance (archer) |
+| `injury` | posé par `combatSystem` quand un nain tombe sous le seuil de blessure (`{bleeding, incapacitated}`) : incapacité + saignement (`injurySystem`), secours/soin via activités `rescue`/`heal` et Zone `infirmary` |
 | `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |
 | `worker` | arbitré par l'arbitre, prend des jobs, ciblé par les gobelins |
 | `skills` | niveaux d'aptitude par catégorie (`mining`, `woodcutting`…) ; accélèrent le job correspondant via `workEffort` (mapping `SKILL_BY_JOB`) ; une spécialité est tirée au spawn (`assignAptitude`) |

@@ -16,6 +16,9 @@ import { JobAssignmentSystem } from '../src/systems/jobAssignmentSystem.js';
 import { EatingSystem } from '../src/systems/eatingSystem.js';
 import { SleepSystem } from '../src/systems/sleepSystem.js';
 import { SocializeSystem } from '../src/systems/socializeSystem.js';
+import { RescueSystem } from '../src/systems/rescueSystem.js';
+import { HealSystem } from '../src/systems/healSystem.js';
+import { InjurySystem } from '../src/systems/injurySystem.js';
 import { FleeSystem } from '../src/systems/fleeSystem.js';
 import { FightSystem } from '../src/systems/fightSystem.js';
 import { BrawlSystem } from '../src/systems/brawlSystem.js';
@@ -75,6 +78,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     const farms = new Zone();
     const fishingSpots = new Zone();
     const graves = new Zone();
+    const infirmary = new Zone();
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
@@ -114,12 +118,14 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     if (objectives) {
         world.registerSystem(new StewardSystem(jobBoard, data.recipes, data.items, objectives));
     }
-    world.registerSystem(new ArbiterSystem(jobBoard));
+    world.registerSystem(new ArbiterSystem(jobBoard, infirmary));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
     world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new SocializeSystem(terrain));
+    world.registerSystem(new RescueSystem(terrain, infirmary));
+    world.registerSystem(new HealSystem(terrain, infirmary));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new BrawlSystem(terrain));
@@ -136,6 +142,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new FishSystem(jobBoard, terrain, fishingSpots, data.items.fish));
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, data.items.corpse));
+    world.registerSystem(new InjurySystem(jobBoard, data.items.corpse));
     world.registerSystem(new MovementSystem(terrain));
     world.registerSystem(new JobAlertSystem(jobBoard));
 
@@ -147,6 +154,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
         farms,
         fishingSpots,
         graves,
+        infirmary,
         terrain,
         run(ticks) {
             for (let i = 0; i < ticks; i++) {

@@ -16,6 +16,9 @@ import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
 import { SleepSystem } from './systems/sleepSystem.js';
 import { SocializeSystem } from './systems/socializeSystem.js';
+import { RescueSystem } from './systems/rescueSystem.js';
+import { HealSystem } from './systems/healSystem.js';
+import { InjurySystem } from './systems/injurySystem.js';
 import { EatingSystem } from './systems/eatingSystem.js';
 import { JobAssignmentSystem } from './systems/jobAssignmentSystem.js';
 import { FleeSystem } from './systems/fleeSystem.js';
@@ -70,6 +73,7 @@ async function main() {
     const farms = new Zone();
     const fishingSpots = new Zone();
     const graves = new Zone();
+    const infirmary = new Zone();
 
     world.registerSystem(
         new NeedsSystem([
@@ -119,12 +123,14 @@ async function main() {
         { recipe: 'shield', target: 0 },
     ];
     world.registerSystem(new StewardSystem(jobBoard, recipes, items, objectives));
-    world.registerSystem(new ArbiterSystem(jobBoard));
+    world.registerSystem(new ArbiterSystem(jobBoard, infirmary));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
     world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new SocializeSystem(terrain));
+    world.registerSystem(new RescueSystem(terrain, infirmary));
+    world.registerSystem(new HealSystem(terrain, infirmary));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new BrawlSystem(terrain));
@@ -141,6 +147,7 @@ async function main() {
     world.registerSystem(new FishSystem(jobBoard, terrain, fishingSpots, items.fish));
     world.registerSystem(new HostileSystem(terrain));
     world.registerSystem(new CombatSystem(jobBoard, items.corpse));
+    world.registerSystem(new InjurySystem(jobBoard, items.corpse));
     world.registerSystem(new MovementSystem(terrain));
     world.registerSystem(new JobAlertSystem(jobBoard));
 
@@ -155,7 +162,7 @@ async function main() {
     }
 
     const canvas = document.getElementById('game');
-    const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, TILE_SIZE);
+    const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, TILE_SIZE);
     const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world);
     const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
@@ -170,6 +177,7 @@ async function main() {
         farms,
         fishingSpots,
         graves,
+        infirmary,
         tileSize: TILE_SIZE,
         recipes,
         onDwarfClick: (x, y) => inspection.selectAt(x, y),
@@ -190,7 +198,7 @@ async function main() {
         },
     });
 
-    const game = { world, terrain, jobBoard, stockpiles, farms, fishingSpots, graves };
+    const game = { world, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary };
     document.getElementById('save-game').addEventListener('click', () => {
         localStorage.setItem('dwarf.save', JSON.stringify(serializeGame(game)));
         eventLog.append('Partie sauvegardée.');

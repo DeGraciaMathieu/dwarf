@@ -8,6 +8,9 @@ const ACTIVITY_LABELS = {
     drink: 'Va boire',
     sleep: 'Dort',
     socialize: 'Discute',
+    rescue: 'Secourt un blessé',
+    heal: 'Soigne un blessé',
+    incapacitated: 'À terre, blessé',
     work: 'Travaille',
     wander: 'Oisif',
 };
@@ -78,6 +81,7 @@ export class InspectionPanel {
         this.element.innerHTML = `
             <h3>${identity.name}</h3>
             <p class="status">${status}</p>
+            ${this.injuryNotice()}
             ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
             ${this.gauge('Moral', morale && { ...morale, threshold: morale.low }, true)}
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
@@ -119,6 +123,14 @@ export class InspectionPanel {
             parts.push(`Rivaux : ${rivals.join(', ')}`);
         }
         return `<p class="relationships">${parts.join(' · ')}</p>`;
+    }
+
+    injuryNotice() {
+        const injury = this.world.getComponent(this.selectedId, 'injury');
+        if (!injury) {
+            return '';
+        }
+        return '<p class="injury">⚠ Blessé, à terre — se vide de son sang</p>';
     }
 
     equipment() {

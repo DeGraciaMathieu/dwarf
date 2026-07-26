@@ -5,13 +5,16 @@ const DRUNK_BRAWL_SCORE = 90;
 const BRAWL_RANGE = 5;
 const TANTRUM_SCORE = 150;
 const TANTRUM_EXIT_MARGIN = 15;
+const HEAL_SCORE = 62;
+const RESCUE_SCORE = 60;
 const SOCIALIZE_SCORE = 50;
 const WORK_SCORE = 10;
 const WANDER_SCORE = 1;
 
 export class ArbiterSystem {
-    constructor(jobBoard) {
+    constructor(jobBoard, infirmary) {
         this.jobBoard = jobBoard;
+        this.infirmary = infirmary;
     }
 
     update(world) {
@@ -31,6 +34,10 @@ export class ArbiterSystem {
     }
 
     pickActivity(world, entityId, foodAvailable, hostilePositions) {
+        // un blessé est incapacité : il reste au sol, aucune activité active
+        if (world.getComponent(entityId, 'injury')) {
+            return 'incapacitated';
+        }
         const scores = [
             { type: 'fight', score: this.fightScore(world, entityId, hostilePositions) },
             { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
@@ -39,6 +46,8 @@ export class ArbiterSystem {
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
             { type: 'drink', score: this.drinkScore(world, entityId) },
             { type: 'sleep', score: this.sleepScore(world, entityId) },
+            { type: 'heal', score: this.healScore(world) },
+            { type: 'rescue', score: this.rescueScore(world) },
             { type: 'socialize', score: this.socializeScore(world, entityId) },
             { type: 'work', score: this.workScore(world, entityId) },
             { type: 'wander', score: WANDER_SCORE },
@@ -148,6 +157,26 @@ export class ArbiterSystem {
         const wantsSleep =
             fatigue.value >= fatigue.threshold || (sleeping && fatigue.value > 0);
         return wantsSleep ? Math.max(fatigue.value, fatigue.threshold) : 0;
+    }
+
+    // soigner un blessé déjà à l'infirmerie prime sur le secourir depuis le champ
+    healScore(world) {
+        return this.hasWounded(world, true) ? HEAL_SCORE : 0;
+    }
+
+    // secourir : un blessé gît hors de l'infirmerie et une infirmerie existe pour l'accueillir
+    rescueScore(world) {
+        return this.hasWounded(world, false) ? RESCUE_SCORE : 0;
+    }
+
+    hasWounded(world, inInfirmary) {
+        if (!this.infirmary || this.infirmary.list().length === 0) {
+            return false;
+        }
+        return world.query('injury', 'position').some((woundedId) => {
+            const position = world.getComponent(woundedId, 'position');
+            return this.infirmary.has(position.x, position.y) === inInfirmary;
+        });
     }
 
     // besoin social : sous le seuil de solitude, on cherche un camarade — mais

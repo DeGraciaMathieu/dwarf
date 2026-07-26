@@ -2,6 +2,8 @@ import { EVENTS } from '../events/events.js';
 import { kill } from './death.js';
 
 const PROVOKED_TTL = 30;
+const WOUND_THRESHOLD = 8;
+const BLEED_RATE = 0.3;
 
 export class CombatSystem {
     constructor(jobBoard, corpseDefinition) {
@@ -69,20 +71,38 @@ export class CombatSystem {
             : combat.damage + this.weaponDamage(world, attackerId) + this.commandBonus(world, attackerId);
         health.value -= Math.max(1, damage - this.armorDefense(world, targetId));
         const isDwarf = world.getComponent(targetId, 'worker') !== undefined;
-        if (health.value > 0) {
-            if (isDwarf) {
-                eventBus.emit(EVENTS.DWARF_INJURED, { entityId: targetId });
-                if (bareFisted) {
-                    // frappé au poing par un pair : la victime rend les coups
-                    world.addComponent(targetId, 'provoked', { by: attackerId, ttl: PROVOKED_TTL });
-                }
+        if (!isDwarf) {
+            if (health.value <= 0) {
+                kill(world, eventBus, this.jobBoard, this.corpseDefinition, targetId, {
+                    killerId: attackerId,
+                });
             }
             return;
         }
-        kill(world, eventBus, this.jobBoard, this.corpseDefinition, targetId, {
-            cause: bareFisted ? 'brawl' : 'combat',
-            killerId: attackerId,
-        });
+        // un nain déjà à terre n'est achevé que si un coup de plus le vide
+        if (world.getComponent(targetId, 'injury')) {
+            if (health.value <= 0) {
+                kill(world, eventBus, this.jobBoard, this.corpseDefinition, targetId, {
+                    cause: bareFisted ? 'brawl' : 'combat',
+                    killerId: attackerId,
+                });
+            }
+            return;
+        }
+        // sous le seuil, le nain tombe blessé au lieu de mourir net : il pourra être secouru
+        if (health.value <= WOUND_THRESHOLD) {
+            if (health.value <= 0) {
+                health.value = 1;
+            }
+            world.addComponent(targetId, 'injury', { bleeding: BLEED_RATE, incapacitated: true });
+            eventBus.emit(EVENTS.DWARF_WOUNDED, { entityId: targetId });
+            return;
+        }
+        eventBus.emit(EVENTS.DWARF_INJURED, { entityId: targetId });
+        if (bareFisted) {
+            // frappé au poing par un pair : la victime rend les coups
+            world.addComponent(targetId, 'provoked', { by: attackerId, ttl: PROVOKED_TTL });
+        }
     }
 
     weaponDamage(world, entityId) {

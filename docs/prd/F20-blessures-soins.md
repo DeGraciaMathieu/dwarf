@@ -1,6 +1,6 @@
 # PRD F20 — Blessures et soins
 
-**Lot :** F — Vie sociale & santé · **Point :** 20 · **Statut :** 🔲 À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** F — Vie sociale & santé · **Point :** 20 · **Statut :** ✅ Fait (réutilise `bed` + Zone `infirmary` ; soigneur requis, le lit accélère) · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 Le combat est aujourd'hui binaire : dans `combatSystem.js`, chaque coup retire des points au composant `health` (`{ value, max }`, cf. `creatures.json`), et dès que `health.value` atteint 0 le nain est détruit net par `kill` (`death.js`). Les rixes de taverne (`brawlSystem.js`, coups à mains nues via `combatSystem.strike`) peuvent donc tuer un nain sans étape intermédiaire, et un nain gravement touché n'a aucune chance d'être secouru ou soigné. Il n'existe ni état « blessé », ni activité de secours, ni rôle infirmerie ; les lits (`items.json`, propriété `bed` avec `recoveryMultiplier`/`heal`) ne servent qu'au sommeil (`sleepSystem.js`).

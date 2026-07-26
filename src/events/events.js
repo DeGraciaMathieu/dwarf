@@ -40,4 +40,7 @@ export const EVENTS = {
     DWARF_LONELY: 'dwarf.lonely',
     DWARF_BEFRIENDED: 'dwarf.befriended',
     DWARF_FELL_OUT: 'dwarf.fell-out',
+    DWARF_WOUNDED: 'dwarf.wounded',
+    DWARF_HEALED: 'dwarf.healed',
+    DWARF_BLED_OUT: 'dwarf.bled-out',
 };

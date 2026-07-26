@@ -18,7 +18,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 | `src/core/terrain.js` | Grille 2D hors ECS (`get/set/isWalkable`), génération (montagne, rivière à gués, lacs, bosquets, veines de minerai — avec validation de jouabilité et retirage), `largestWalkableRegion` | `tiles.json` |
 | `src/core/pathfinding.js` | `findPath(terrain, from, to)` — A* 8-directionnel, Chebyshev | terrain |
 | `src/core/jobBoard.js` | File de jobs : `post/claim/release/cancel/markUnreachable/resetUnreachable/complete/hasJobAt/hasAvailableJobs` | aucun |
-| `src/core/zones.js` | `Zone` : ensembles de cases peintes avec étiquette optionnelle `kind` (stockages typés, champs, tombes) | aucun |
+| `src/core/zones.js` | `Zone` : ensembles de cases peintes avec étiquette optionnelle `kind` (stockages typés, champs, tombes, infirmerie) | aucun |
 | `src/core/spawn.js` | `spawnFromDefinition(world, def, position)` — instancie une définition JSON | world |
 | `src/systems/*` | Toute la logique de jeu (voir ordre du tick ci-dessous) | core, events, data |
 | `src/events/events.js` | Constantes des types d'événements | aucun |
@@ -29,7 +29,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Needs → Attrition → Morale → Intoxication → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Socialize → Flee → Fight → Brawl → Tantrum → Dig → Chop → Haul → Grave → Equip → Build → Craft → Demolish → Farm → Fish → Hostile → Combat → Movement → JobAlert`
+`Needs → Attrition → Morale → Intoxication → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Socialize → Rescue → Heal → Flee → Fight → Brawl → Tantrum → Dig → Chop → Haul → Grave → Equip → Build → Craft → Demolish → Farm → Fish → Hostile → Combat → Injury → Movement → JobAlert`
 
 Logique : les besoins montent, le moral encaisse, l'intendance réconcilie les objectifs de stock (poste/retire les jobs de craft avant l'arbitrage, pour qu'ils soient réclamables au même tick), l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
 

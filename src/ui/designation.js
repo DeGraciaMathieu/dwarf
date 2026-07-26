@@ -11,6 +11,7 @@ export class DesignationControl {
         farms,
         fishingSpots,
         graves,
+        infirmary,
         tileSize,
         recipes,
         onDwarfClick,
@@ -23,6 +24,7 @@ export class DesignationControl {
         this.farms = farms;
         this.fishingSpots = fishingSpots;
         this.graves = graves;
+        this.infirmary = infirmary;
         this.tileSize = tileSize;
         this.recipes = recipes;
         this.onDwarfClick = onDwarfClick;
@@ -137,7 +139,8 @@ export class DesignationControl {
             tile !== 'floor' ||
             this.stockpiles.has(x, y) ||
             this.farms.has(x, y) ||
-            this.graves.has(x, y)
+            this.graves.has(x, y) ||
+            this.infirmary.has(x, y)
         ) {
             return;
         }
@@ -151,6 +154,8 @@ export class DesignationControl {
             this.farms.add(x, y);
         } else if (this.mode === 'grave') {
             this.graves.add(x, y);
+        } else if (this.mode === 'infirmary') {
+            this.infirmary.add(x, y);
         }
     }
 
@@ -215,7 +220,7 @@ export class DesignationControl {
     }
 
     removeZoneAt(x, y) {
-        for (const zone of [this.stockpiles, this.farms, this.fishingSpots, this.graves]) {
+        for (const zone of [this.stockpiles, this.farms, this.fishingSpots, this.graves, this.infirmary]) {
             if (zone.has(x, y)) {
                 zone.remove(x, y);
                 return;
