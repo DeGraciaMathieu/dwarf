@@ -2,6 +2,15 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Des invasions plus rares et imprévisibles
+
+- **Un vrai répit** : la première vague n'arrive plus qu'après un long calme initial, et les assauts suivants sont bien plus espacés qu'avant.
+- **Fini le métronome** : l'intervalle entre deux vagues varie fortement (±50 %) — impossible de régler sa montre dessus.
+- **Fausses alertes** : une menace sur quatre se dissipe sans la moindre attaque ; la tension monte parfois pour rien.
+- **Montée en puissance adoucie** : les vagues grossissent plus lentement, et les ennemis d'élite se font désirer — les **brutes** dès la vague 3, les **archers** dès la 4, et un **chef** qui ne mène qu'occasionnellement à partir de la vague 6 (au lieu d'apparaître systématiquement).
+- Objectif : moins de harcèlement mécanique, plus de surprise et de moments de calme pour bâtir.
+- Technique : intervalles jitterés + probabilité d'accalmie, composition de vague probabiliste ; RNG injectable pour des tests déterministes.
+
 ## 2026-07-26 — Garde-manger et plats qui se gâtent
 
 - **Les plats préparés ne se conservent plus éternellement** : laissé à traîner, un plat finit par **pourrir et disparaître** (« Un plat s'est gâté faute de garde-manger. »).
