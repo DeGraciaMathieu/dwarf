@@ -52,6 +52,7 @@ export const data = {
     plants: loadData('plants.json'),
     recipes: loadData('recipes.json'),
     creatures: loadData('creatures.json'),
+    embark: loadData('embark.json'),
 };
 
 export const goblinArchetypes = () => ({
