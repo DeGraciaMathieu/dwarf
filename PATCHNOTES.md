@@ -2,6 +2,52 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — La montée en puissance par paliers
+
+- Les recettes avancées ne sont plus disponibles d'emblée : forger une **hache**, une **lance**, une **cotte de plates** ou un **bouclier** exige d'avoir d'abord bâti un **atelier de taille**.
+- Le panneau Objectifs l'annonce clairement — « **Verrouillé : un atelier de taille requis** » — puis débloque la recette dès que le prérequis est satisfait, sans redémarrage.
+- Technique : prérequis déclaratifs (`requires`) sur les recettes — ajouter un palier ne demande que de la donnée.
+
+## 2026-07-26 — Le brasero
+
+- **Nouveau meuble de confort, le brasero** (☼, taillé à l'atelier de taille à partir de pierre) : les nains qui vivent à ses côtés voient leur moral remonter au fil du temps.
+- Enfin une **seconde source de moral** hors de la bière — de quoi garder une colonie heureuse et prévenir les crises de nerfs.
+
+## 2026-07-26 — Un arsenal élargi
+
+- La forge produit désormais, en plus de l'épée et de la cotte de mailles : une **hache** (`γ`, plus de dégâts), une **lance** (`↑`), une **cotte de plates** (`]`, plus de protection) et un **bouclier** (`)`).
+- À vous d'arbitrer : frapper plus fort ou encaisser davantage. Chaque pièce se réclame via le panneau Objectifs, comme l'épée.
+
+## 2026-07-26 — Plus de nains figés par la faim ou la soif
+
+- Un nain qui ne peut atteindre **ni nourriture ni eau** ne reste plus planté à attendre la mort : il **reprend le travail** en attendant qu'un accès s'ouvre.
+- Le journal prévient **une seule fois**, en rouge — « **… n'a plus accès à l'eau !** », « **… ne peut atteindre aucune nourriture !** » — et la crise se lève d'elle-même dès qu'on creuse un passage.
+
+## 2026-07-26 — Gérer sa main-d'œuvre
+
+- **Nouvel outil ⚡ Urgent** : marquez une désignation (creuser, bâtir, fabriquer…) comme prioritaire et les nains la traiteront avant le reste ; les chantiers urgents s'affichent en **rouge-orange**.
+- **Les nains ont des aptitudes** (Minage, Bûcheronnage, Artisanat, Construction, Agriculture, Pêche) : un spécialiste travaille plus vite dans son domaine. Cliquez un nain pour voir ses talents — de quoi valoriser chaque tête.
+
+## 2026-07-26 — Les invasions montent d'un cran
+
+- **Des vagues plus tôt, plus serrées et plus grosses** : la menace grandit avec votre population **et** votre richesse (armes, armures, ateliers), sans plafond figé.
+- **Trois nouveaux ennemis** : la **brute** (`B`, coriace et cognant fort), l'**archer** (`a`, qui frappe à distance) et le **chef** (`G`, dont la présence renforce toute sa bande).
+- **Une IA moins naïve** : un gobelin qui vous perd de vue poursuit votre **dernière position connue** avant d'abandonner — fini l'esquive en sortant d'un pas du champ de vision.
+- **La fuite a enfin un but** : un nain acculé se replie vers un refuge sûr, typiquement **derrière une porte** que les gobelins ne peuvent franchir.
+
+## 2026-07-26 — L'outil Démolir
+
+- **Nouvel outil 🚫 Démolir** : selon la cible, il annule un chantier en attente, efface une zone au sol, ou envoie un nain **détruire** une construction, un meuble ou un objet (« … a démoli quelque chose. »).
+- Portes et ponts se démontent aussi ; les cases marquées pour démolition s'affichent d'un **× rouge**.
+
+## 2026-07-26 — Voir ce qui se passe dans la colonie
+
+- **Bandeau d'état** en haut de l'écran : temps écoulé (⏱), population (☺), compte à rebours avant la prochaine vague (⚔) et chantiers disponibles / en cours / inaccessibles (⚒).
+- **Panneau d'inspection enrichi** : au clic sur un nain, son activité, le **chantier en cours avec sa cible et son étape**, et ses aptitudes.
+- **Alertes de crise au journal**, en rouge : nain isolé de l'eau ou de la nourriture, chantier devenu **inaccessible**.
+- **Objectifs plus parlants** : « Bloqué : forge manquante », « Bloqué : minerai insuffisant (0 disponible) », « En production (n en file) ».
+- **Repères sur la carte** : une barre de vie coiffe un nain blessé, une pastille signale un moral au plus bas ou une crise de rage.
+
 ## 2026-07-25 — La forge, les armes et les armures
 
 - **Nouvelle forge** (🔥, bâtie à la menuiserie) : elle transforme le minerai en **épée** (`/`) et en **cotte de mailles** (`[`).
