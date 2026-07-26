@@ -28,6 +28,7 @@ import { TantrumSystem } from '../src/systems/tantrumSystem.js';
 import { DigSystem } from '../src/systems/digSystem.js';
 import { ChopSystem } from '../src/systems/chopSystem.js';
 import { HaulSystem } from '../src/systems/haulSystem.js';
+import { PerishSystem } from '../src/systems/perishSystem.js';
 import { GraveSystem } from '../src/systems/graveSystem.js';
 import { EquipSystem } from '../src/systems/equipSystem.js';
 import { BuildSystem } from '../src/systems/buildSystem.js';
@@ -136,6 +137,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new DigSystem(jobBoard, terrain, data.items.stone, data.items.ore));
     world.registerSystem(new ChopSystem(jobBoard, terrain, data.items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
+    world.registerSystem(new PerishSystem(stockpiles));
     world.registerSystem(new GraveSystem(jobBoard, terrain, graves));
     world.registerSystem(new EquipSystem(jobBoard, terrain));
     world.registerSystem(new BuildSystem(jobBoard, terrain));
@@ -328,12 +330,13 @@ export function addKitchen(world, x, y) {
     return id;
 }
 
-export function addMeal(world, x, y) {
+export function addMeal(world, x, y, { freshness = 500 } = {}) {
     const id = world.createEntity();
     world.addComponent(id, 'position', { x, y });
     world.addComponent(id, 'food', { nutrition: 120 });
     world.addComponent(id, 'item', {});
     world.addComponent(id, 'cooked', {});
+    world.addComponent(id, 'perishable', { freshness, decay: 1 });
     return id;
 }
 

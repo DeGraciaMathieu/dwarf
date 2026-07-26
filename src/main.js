@@ -29,6 +29,7 @@ import { IntoxicationSystem } from './systems/intoxicationSystem.js';
 import { DigSystem } from './systems/digSystem.js';
 import { ChopSystem } from './systems/chopSystem.js';
 import { HaulSystem } from './systems/haulSystem.js';
+import { PerishSystem } from './systems/perishSystem.js';
 import { GraveSystem } from './systems/graveSystem.js';
 import { EquipSystem } from './systems/equipSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
@@ -142,6 +143,7 @@ async function main() {
     world.registerSystem(new DigSystem(jobBoard, terrain, items.stone, items.ore));
     world.registerSystem(new ChopSystem(jobBoard, terrain, items.log));
     world.registerSystem(new HaulSystem(jobBoard, terrain, stockpiles));
+    world.registerSystem(new PerishSystem(stockpiles));
     world.registerSystem(new GraveSystem(jobBoard, terrain, graves));
     world.registerSystem(new EquipSystem(jobBoard, terrain));
     world.registerSystem(new BuildSystem(jobBoard, terrain));

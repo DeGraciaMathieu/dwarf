@@ -4,6 +4,7 @@ import { approach } from './jobMovement.js';
 const STOCKPILE_KINDS = {
     food: ['food', 'drink'],
     materials: ['buildMaterial'],
+    pantry: ['food', 'drink'],
 };
 
 export class HaulSystem {
@@ -73,15 +74,21 @@ export class HaulSystem {
                 .filter((job) => job.type === 'demolish' && job.targetId !== undefined)
                 .map((job) => job.targetId)
         );
-        const pools = { food: 0, materials: 0, general: 0 };
+        const pools = { general: 0 };
+        for (const kind of Object.keys(STOCKPILE_KINDS)) {
+            pools[kind] = 0;
+        }
         for (const tile of this.freeStockpileTiles(world)) {
             pools[tile.kind ?? 'general']++;
         }
+        // un objet peut convenir à plusieurs types (une denrée : food ou pantry) :
+        // on réserve dans le premier type disponible qui l'accepte, sinon en zone générale
         const reserveTileFor = (itemId) => {
-            const kind = this.stockpileKindFor(world, itemId);
-            if (kind && pools[kind] > 0) {
-                pools[kind]--;
-                return true;
+            for (const kind of Object.keys(STOCKPILE_KINDS)) {
+                if (pools[kind] > 0 && this.tileAccepts(world, itemId, kind)) {
+                    pools[kind]--;
+                    return true;
+                }
             }
             if (pools.general > 0) {
                 pools.general--;
@@ -108,15 +115,6 @@ export class HaulSystem {
             }
             this.jobBoard.post({ type: 'haul', itemId, target: { x: position.x, y: position.y } });
         }
-    }
-
-    stockpileKindFor(world, itemId) {
-        for (const [kind, components] of Object.entries(STOCKPILE_KINDS)) {
-            if (components.some((name) => world.getComponent(itemId, name))) {
-                return kind;
-            }
-        }
-        return null;
     }
 
     tileAccepts(world, itemId, kind) {
@@ -208,23 +206,25 @@ export class HaulSystem {
     }
 
     nearestFreeTile(world, position, itemId) {
-        // la zone typée qui accepte l'objet passe avant la générale, même plus proche
+        // priorité : garde-manger pour un périssable > zone typée > zone générale ;
+        // à rang égal, la plus proche
+        const perishable = world.getComponent(itemId, 'perishable') !== undefined;
         let best = null;
+        let bestScore = -1;
         let bestDistance = Infinity;
-        let bestSpecific = false;
         for (const tile of this.freeStockpileTiles(world)) {
             if (!this.tileAccepts(world, itemId, tile.kind)) {
                 continue;
             }
-            const specific = Boolean(tile.kind);
+            const score = tile.kind === 'pantry' && perishable ? 2 : tile.kind ? 1 : 0;
             const distance = Math.max(
                 Math.abs(tile.x - position.x),
                 Math.abs(tile.y - position.y)
             );
-            if (specific !== bestSpecific ? specific : distance < bestDistance) {
+            if (score > bestScore || (score === bestScore && distance < bestDistance)) {
+                bestScore = score;
                 bestDistance = distance;
                 best = tile;
-                bestSpecific = specific;
             }
         }
         return best;

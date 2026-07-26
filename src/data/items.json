@@ -148,7 +148,8 @@
         "components": {
             "food": { "nutrition": 120 },
             "item": {},
-            "cooked": {}
+            "cooked": {},
+            "perishable": { "freshness": 500, "decay": 1 }
         }
     },
     "bridge": {

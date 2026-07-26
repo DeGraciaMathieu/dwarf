@@ -29,7 +29,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Season → Needs → Attrition → Morale → Intoxication → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Socialize → Rescue → Heal → Flee → Fight → Brawl → Tantrum → Dig → Chop → Haul → Grave → Equip → Build → Craft → Demolish → Farm → Fish → Hostile → Combat → Injury → Movement → JobAlert`
+`Season → Needs → Attrition → Morale → Intoxication → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Socialize → Rescue → Heal → Flee → Fight → Brawl → Tantrum → Dig → Chop → Haul → Perish → Grave → Equip → Build → Craft → Demolish → Farm → Fish → Hostile → Combat → Injury → Movement → JobAlert`
 
 Logique : la saison avance, les besoins montent, le moral encaisse, l'intendance réconcilie les objectifs de stock (poste/retire les jobs de craft avant l'arbitrage, pour qu'ils soient réclamables au même tick), l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
 

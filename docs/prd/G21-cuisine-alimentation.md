@@ -1,6 +1,6 @@
 # PRD G21 — Cuisine et variété alimentaire
 
-**Lot :** G — Chaîne économique · **Point :** 21 · **Statut :** ✅ Fait (variété implicite, qualité booléenne `cooked`) · **Impact / Effort :** Moyen / Moyen
+**Lot :** G — Chaîne économique · **Point :** 21 · **Statut :** ✅ Fait (variété implicite, qualité booléenne `cooked`) · **Extension :** ✅ garde-manger + périssabilité des plats (voir plus bas) · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 
@@ -59,3 +59,10 @@ Ajouter un **atelier de cuisine** qui transforme les récoltes et le poisson en 
 - Scénario `tests/` : atelier de cuisine + stock d'ingrédient cuisinable + objectif de plat → au bout de N ticks, des plats préparés existent en stock et le nombre de jobs `craft` se stabilise à la cible.
 - Scénario `tests/` : deux nains affamés, l'un mange un plat préparé, l'autre une récolte crue → le mangeur de plat a un moral strictement supérieur après le repas.
 - Scénario `tests/` : nain affamé sans plat mais avec récolte crue atteignable → il mange le cru et survit (pas de blocage).
+
+## Extension — Garde-manger et périssabilité des plats (initialement exclus, ajoutés ensuite)
+
+- **Périssabilité** : le plat `meal` porte un composant `perishable {freshness, decay}` ; `perishSystem.js` décrémente la fraîcheur chaque tick et détruit le plat à 0 (événement `food.spoiled`, journal). Les récoltes crues ne périssent pas (donnée sur le plat uniquement).
+- **Garde-manger** : nouveau type de stockage `pantry` (bouton 🍯, désigné comme les stockages typés existants). Un plat rangé sur une tuile `pantry` **ne perd pas de fraîcheur** (`perishSystem` court-circuite via `stockpiles.kindAt`). Le `pantry` accepte les mêmes composants que le stockage `food`.
+- **Acheminement** : `haulSystem` gère un objet convenant à plusieurs types (une denrée : `food` ou `pantry`) et **préfère le garde-manger pour un périssable** (`nearestFreeTile`). L'accounting des pools de zones a été rendu multi-type (`stockpileKindFor` supprimé).
+- Data-first : le comportement tient dans la donnée (`perishable` sur `meal`, `kind: pantry`) + un petit système ; `stockSystem`/craft inchangés.

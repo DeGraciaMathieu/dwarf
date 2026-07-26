@@ -38,6 +38,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `food` | mangeable (détruit au repas) ; le marqueur `cooked` (plat préparé) accroît le gain de moral au repas (`ateMeal` 20 vs `ate` 10, choisi dans `moraleSystem` via la charge utile de `dwarf.ate`) |
 | `cookable` | ingrédient des recettes `ingredient: 'cookable'` (cuisine) : posé sur `mushroom` et `fish` |
 | `cooked` | marqueur du plat préparé (produit `meal`) : nutrition supérieure au cru + bonus de moral au repas |
+| `perishable` | `{freshness, decay}` : le plat se gâte au fil du temps (`perishSystem`) et disparaît à 0 (`food.spoiled`) — sauf rangé dans un stockage `pantry` (garde-manger), qui le conserve ; le haul y range les périssables en priorité |
 | `drink` | buvable : un assoiffé le préfère à la berge, +15 de moral (`drinkSystem`) |
 | `buildMaterial` | consommé par les jobs `build` et `craft` (ingrédient par défaut) |
 | `brewable` | ingrédient des recettes `ingredient: 'brewable'` (bière) |

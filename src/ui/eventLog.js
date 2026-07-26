@@ -162,6 +162,9 @@ export class EventLog {
         eventBus.on(EVENTS.DWARF_FELL_OUT, ({ entityId, otherId }) => {
             this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont désormais rivaux.`, true);
         });
+        eventBus.on(EVENTS.FOOD_SPOILED, () => {
+            this.append('Un plat s\'est gâté faute de garde-manger.');
+        });
         eventBus.on(EVENTS.SEASON_CHANGED, ({ season, isWinter }) => {
             this.append(
                 isWinter

@@ -44,4 +44,5 @@ export const EVENTS = {
     DWARF_HEALED: 'dwarf.healed',
     DWARF_BLED_OUT: 'dwarf.bled-out',
     SEASON_CHANGED: 'season.changed',
+    FOOD_SPOILED: 'food.spoiled',
 };

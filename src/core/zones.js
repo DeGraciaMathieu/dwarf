@@ -11,6 +11,10 @@ export class Zone {
         return this.tiles.has(`${x},${y}`);
     }
 
+    kindAt(x, y) {
+        return this.tiles.get(`${x},${y}`)?.kind;
+    }
+
     remove(x, y) {
         this.tiles.delete(`${x},${y}`);
     }
