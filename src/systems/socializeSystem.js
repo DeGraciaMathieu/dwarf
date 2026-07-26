@@ -10,6 +10,7 @@ const SOCIAL_RECOVERY = 3;
 const BOND_STEP = 2;
 const RIVAL_STEP = 0.5;
 const DISTANCE_WEIGHT = 0.5; // dans le choix du compagnon, l'affinité prime sur la distance
+const COMPANION_RANGE = 8; // on ne rejoint un ami que s'il est à portée (sinon le plus proche)
 
 // personnalité : 0,5 = neutre (comportement historique). sociability accélère les
 // liens, temper la formation des rancunes. Absente ⇒ neutre.
@@ -133,13 +134,17 @@ export class SocializeSystem {
         }
     }
 
-    // on recherche de préférence ses amis (les cliques se renforcent) et on évite ses
-    // rivaux : score = affinité − distance pondérée
+    // à portée, on privilégie ses amis (les cliques se renforcent) et on évite ses
+    // rivaux : score = affinité − distance pondérée. Hors de portée, on ne traverse pas
+    // la carte : on se rabat sur le camarade le plus proche (évite les allers-retours et
+    // les poursuites d'un ami lointain qui bouge sans cesse).
     pickCompanion(world, entityId) {
         const position = world.getComponent(entityId, 'position');
         const relationships = world.getComponent(entityId, 'relationships');
         let best = null;
         let bestScore = -Infinity;
+        let nearest = null;
+        let nearestDistance = Infinity;
         for (const otherId of world.query('worker', 'position')) {
             if (otherId === entityId) {
                 continue;
@@ -149,6 +154,13 @@ export class SocializeSystem {
                 Math.abs(other.x - position.x),
                 Math.abs(other.y - position.y)
             );
+            if (distance < nearestDistance) {
+                nearestDistance = distance;
+                nearest = otherId;
+            }
+            if (distance > COMPANION_RANGE) {
+                continue;
+            }
             const affinity = relationships?.affinities[otherId] ?? 0;
             const score = affinity - distance * DISTANCE_WEIGHT;
             if (score > bestScore) {
@@ -156,6 +168,6 @@ export class SocializeSystem {
                 best = otherId;
             }
         }
-        return best;
+        return best ?? nearest;
     }
 }

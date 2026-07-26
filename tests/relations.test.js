@@ -5,18 +5,36 @@ import { openTerrain, setupColony, addDwarf } from './helpers.js';
 const affinity = (world, id, otherId) =>
     world.getComponent(id, 'relationships').affinities[otherId] ?? 0;
 
-test('cliques : un nain rejoint son ami éloigné plutôt que l\'inconnu voisin', () => {
+test('cliques : à portée, un nain rejoint son ami plutôt que l\'inconnu voisin', () => {
     const colony = setupColony(openTerrain(14, 3));
     const dwarf = addDwarf(colony.world, 1, 1, { name: 'Bofur', social: 90 });
     const stranger = addDwarf(colony.world, 2, 1, { name: 'Inconnu' });
-    const friend = addDwarf(colony.world, 11, 1, { name: 'Ami', social: 90 });
+    const friend = addDwarf(colony.world, 7, 1, { name: 'Ami', social: 90 }); // distance 6, à portée
     colony.world.getComponent(dwarf, 'relationships').affinities[friend] = 40;
     colony.world.getComponent(friend, 'relationships').affinities[dwarf] = 40;
 
     colony.run(60);
 
-    assert.ok(affinity(colony.world, dwarf, friend) > 40, 'il a rejoint et renforcé son ami');
+    assert.ok(affinity(colony.world, dwarf, friend) > 40, 'il a rejoint et renforcé son ami à portée');
     assert.equal(affinity(colony.world, dwarf, stranger), 0, 'il a ignoré l\'inconnu voisin');
+});
+
+test('cliques : un ami hors de portée ne fait plus traverser la carte', () => {
+    const colony = setupColony(openTerrain(20, 3));
+    const dwarf = addDwarf(colony.world, 1, 1, { name: 'Bofur', social: 90 });
+    const neighbour = addDwarf(colony.world, 2, 1, { name: 'Voisin', social: 90 });
+    const farFriend = addDwarf(colony.world, 18, 1, { name: 'Ami', social: 90 }); // distance 17 > portée
+    colony.world.getComponent(dwarf, 'relationships').affinities[farFriend] = 80;
+    colony.world.getComponent(farFriend, 'relationships').affinities[dwarf] = 80;
+
+    colony.run(10);
+
+    assert.ok(affinity(colony.world, dwarf, neighbour) > 0, 'il socialise avec le voisin proche');
+    assert.equal(
+        affinity(colony.world, dwarf, farFriend),
+        80,
+        'il ne court pas après l\'ami lointain'
+    );
 });
 
 test('personnalité : un nain sociable noue des liens plus vite qu\'un nain ordinaire', () => {
