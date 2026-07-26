@@ -2,6 +2,13 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Le puits
+
+- **Nouveau meuble ⊙ Puits**, taillé à l'**atelier de taille** à partir de pierre : une source d'eau au cœur de la colonie, loin des berges.
+- **L'eau du puits ne gèle jamais** : c'est la parade à l'hiver — tant qu'un puits est accessible, les nains n'ont plus à craindre les berges prises par la glace.
+- **Ordre de préférence à la soif** : bière (remontant de moral) d'abord, puis le puits, puis la berge. On boit au puits comme à une berge — de l'eau simple, sans ivresse.
+- Technique : meuble `well` (recette pierre à l'atelier de taille) ajouté comme cible de boisson dans `drinkSystem`, insensible au gel hivernal.
+
 ## 2026-07-26 — Des invasions plus rares et imprévisibles
 
 - **Un vrai répit** : la première vague n'arrive plus qu'après un long calme initial, et les assauts suivants sont bien plus espacés qu'avant.
