@@ -38,7 +38,7 @@ auto_invoke: true
 | `tests/doors.test.js` | portes : marchabilité selon l'allégeance, fabrication en tuile, forteresse étanche |
 | `tests/migrants.test.js` | migrants : conditions d'attractivité, plafond, colonie morte |
 | `tests/starvation.test.js` | inanition : agonie, sauvetage, érosion du moral, deuil des témoins |
-| `tests/invasions.test.js` | vagues de gobelins : escalade, proportionnalité à la population, persistance en sauvegarde |
+| `tests/invasions.test.js` | vagues de gobelins : rareté/espacement, progression lente, proportionnalité à la population, accalmies, persistance en sauvegarde (spawn aléatoire — `setupColony(terrain, { goblinSpawner: true, random })` injecte un RNG déterministe ; `() => 0.5` neutralise jitter/accalmie/spéciaux) |
 | `tests/bridges.test.js` | ponts : traversée ouverte à tous, réveil des chantiers d'outre-rivière |
 | `tests/fishing.test.js` | pêche : production continue, poisson mangé, annulation par un pont, persistance |
 | `tests/thirst.test.js` | soif : boire à la berge, priorité, renoncement sans eau, mort de soif |

@@ -72,7 +72,10 @@ export function openTerrain(width, height) {
     return makeTerrain(Array.from({ length: height }, () => '.'.repeat(width)));
 }
 
-export function setupColony(terrain, { goblinSpawner = false, migrants = false, objectives = null } = {}) {
+export function setupColony(
+    terrain,
+    { goblinSpawner = false, migrants = false, objectives = null, random = Math.random } = {}
+) {
     const world = new World();
     const bus = new EventBus();
     const jobBoard = new JobBoard();
@@ -114,7 +117,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new MoraleSystem(bus));
     world.registerSystem(new IntoxicationSystem());
     if (goblinSpawner) {
-        world.registerSystem(new GoblinSpawnSystem(terrain, goblinArchetypes()));
+        world.registerSystem(new GoblinSpawnSystem(terrain, goblinArchetypes(), random));
     }
     if (migrants) {
         world.registerSystem(new MigrantSystem(terrain, data.creatures.dwarf));

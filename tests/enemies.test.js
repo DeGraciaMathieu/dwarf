@@ -58,20 +58,24 @@ test('ennemis : un chef vivant renforce les frappes des hostiles', () => {
     assert.equal(strikeOnce(true), 25, 'avec chef : +1 dégât');
 });
 
-test('ennemis : la composition de vague introduit brutes, archers puis chef', () => {
-    const spawn = new GoblinSpawnSystem(openTerrain(5, 5), goblinArchetypes());
+test('ennemis : la composition de vague introduit brutes, archers puis chef, avec parcimonie', () => {
+    const terrain = openTerrain(5, 5);
+    // dés hauts : aucun spécial ne sort, même en vague avancée
+    const calm = new GoblinSpawnSystem(terrain, goblinArchetypes(), () => 0.9);
+    assert.deepEqual(calm.waveRoster(6, 4), ['grunt', 'grunt', 'grunt', 'grunt']);
 
-    assert.deepEqual(spawn.waveRoster(1, 4), ['grunt', 'grunt', 'grunt', 'grunt']);
+    // dés bas : les spéciaux sortent, mais seulement une fois leur vague atteinte
+    const fierce = new GoblinSpawnSystem(terrain, goblinArchetypes(), () => 0.05);
+    assert.deepEqual(fierce.waveRoster(2, 4), ['grunt', 'grunt', 'grunt', 'grunt'], 'rien de spécial avant la vague 3');
 
-    const wave2 = spawn.waveRoster(2, 4);
-    assert.ok(wave2.includes('brute'));
-    assert.ok(!wave2.includes('archer'));
-    assert.ok(!wave2.includes('chief'));
+    const wave3 = fierce.waveRoster(3, 4);
+    assert.ok(wave3.includes('brute'));
+    assert.ok(!wave3.includes('archer'), 'les archers n\'arrivent qu\'en vague 4');
 
-    const wave4 = spawn.waveRoster(4, 4);
-    assert.equal(wave4[0], 'chief');
-    assert.ok(wave4.includes('brute'));
-    assert.ok(wave4.includes('archer'));
+    assert.ok(fierce.waveRoster(4, 4).includes('archer'));
+
+    assert.ok(!fierce.waveRoster(5, 4).includes('chief'), 'le chef ne mène qu\'à partir de la vague 6');
+    assert.equal(fierce.waveRoster(6, 4)[0], 'chief');
 });
 
 test('ennemis : la brute encaisse nettement plus qu\'un gobelin', () => {

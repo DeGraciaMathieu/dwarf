@@ -19,68 +19,81 @@ const bunkerTerrain = () =>
         '..............................',
     ]);
 
+// RNG neutre : jitter nul (intervalle = base), jamais d'accalmie, que des grunts —
+// pour tester la temporisation de façon déterministe
 function bunkeredColony(population) {
-    const colony = setupColony(bunkerTerrain(), { goblinSpawner: true });
+    const colony = setupColony(bunkerTerrain(), { goblinSpawner: true, random: () => 0.5 });
     for (let i = 0; i < population; i++) {
         addDwarf(colony.world, 13 + (i % 5), 5, { name: `Reclus${i}` });
     }
     return colony;
 }
 
-test('invasions : les vagues grossissent et se rapprochent', () => {
+test('invasions : les vagues sont rares et espacées', () => {
     const colony = bunkeredColony(5);
     const waves = colony.collect(EVENTS.GOBLIN_ARRIVED);
-    colony.run(1200);
-    // vagues aux ticks 250 (1), 700 (1), 1100 (2)
-    assert.deepEqual(
-        waves.map((wave) => wave.count),
-        [1, 1, 2]
-    );
-    assert.equal(colony.world.query('hostile').length, 4);
+    colony.run(599);
+    assert.equal(waves.length, 0, 'long répit initial');
+    colony.run(1);
+    assert.equal(waves.length, 1, 'première vague au tick 600');
+    colony.run(1000);
+    assert.equal(waves.length, 1, 'toujours une seule ~1000 ticks plus tard');
+    colony.run(400);
+    assert.equal(waves.length, 2, 'la deuxième vague arrive seulement vers le tick 1970');
+    assert.deepEqual(waves.map((wave) => wave.count), [1, 1], 'progression lente');
     assert.equal(colony.world.query('worker').length, 5, 'le bunker protège');
 });
 
 test('invasions : une grosse colonie attire des bandes plus nombreuses', () => {
     const colony = bunkeredColony(12);
     const waves = colony.collect(EVENTS.GOBLIN_ARRIVED);
-    colony.run(300);
+    colony.run(600);
     assert.equal(waves.length, 1);
-    assert.equal(waves[0].count, 3, 'dès la première vague, la prospérité attire');
+    assert.equal(waves[0].count, 2, 'la population nourrit déjà la première vague');
 });
 
 test('invasions : l escalade survit à la sauvegarde', () => {
     const colony = bunkeredColony(5);
     const waves = colony.collect(EVENTS.GOBLIN_ARRIVED);
-    colony.run(300);
+    colony.run(600);
     assert.equal(waves.length, 1, 'la première vague est passée');
 
     const snapshot = JSON.parse(JSON.stringify(serializeGame(colony)));
     restoreGame(colony, snapshot);
 
-    colony.run(410);
+    colony.run(1370);
     assert.equal(waves.length, 2, 'la vague 2 arrive à l heure, pas remise à zéro');
 });
 
-test('invasions : la première vague arrive à FIRST_WAVE_DELAY', () => {
-    const colony = setupColony(openTerrain(10, 10), { goblinSpawner: true });
+test('invasions : la première vague arrive après le long répit initial', () => {
+    const colony = setupColony(openTerrain(10, 10), { goblinSpawner: true, random: () => 0.5 });
     addDwarf(colony.world, 5, 5);
     const waves = colony.collect(EVENTS.GOBLIN_ARRIVED);
 
-    colony.run(249);
-    assert.equal(waves.length, 0, 'pas de vague avant le délai');
+    colony.run(599);
+    assert.equal(waves.length, 0, 'pas de vague pendant le répit');
     colony.run(1);
-    assert.equal(waves.length, 1, 'la vague tombe pile au tick 250');
+    assert.equal(waves.length, 1, 'la vague tombe au tick 600');
 });
 
-test('invasions : la taille scale sur population, richesse et plafonne selon la colonie', () => {
+test('invasions : une alerte sur quatre se dissipe sans attaque', () => {
+    // random < 0.25 => accalmie systématique après la première vague
+    const colony = setupColony(openTerrain(10, 10), { goblinSpawner: true, random: () => 0.1 });
+    addDwarf(colony.world, 5, 5);
+    const waves = colony.collect(EVENTS.GOBLIN_ARRIVED);
+
+    colony.run(600);
+    assert.equal(waves.length, 1, 'la première vague passe toujours');
+    // les rendez-vous suivants tournent tous à l\'accalmie : plus aucune vague
+    colony.run(5000);
+    assert.equal(waves.length, 1, 'les alertes suivantes se dissipent (rareté)');
+});
+
+test('invasions : la taille scale lentement sur population, richesse et plafonne', () => {
     const spawn = new GoblinSpawnSystem(openTerrain(5, 5), data.creatures.goblin);
-    // petite colonie pauvre : croissance lente
     assert.equal(spawn.waveSize(1, 5, 0), 1);
-    assert.equal(spawn.waveSize(3, 5, 0), 2);
-    // la richesse (armes, armures, ateliers) grossit la vague
-    assert.equal(spawn.waveSize(1, 5, 6), 3);
-    // grande colonie prospère : la vague peut dépasser 6
-    assert.equal(spawn.waveSize(9, 12, 9), 10);
-    // petite colonie : plafond dérivé qui la ménage
-    assert.equal(spawn.waveSize(20, 5, 0), 5);
+    assert.equal(spawn.waveSize(4, 5, 0), 2, '+1 seulement toutes les trois vagues');
+    assert.equal(spawn.waveSize(1, 6, 10), 3, 'la richesse (10/5) grossit la vague');
+    assert.equal(spawn.waveSize(10, 14, 15), 9);
+    assert.equal(spawn.waveSize(30, 4, 0), 4, 'plafond ménageant les petites colonies');
 });
