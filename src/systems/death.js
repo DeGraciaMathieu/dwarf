@@ -24,6 +24,7 @@ export function kill(world, eventBus, jobBoard, corpseDefinition, targetId, { ca
         spawnFromDefinition(world, corpseDefinition, position);
         const identity = world.getComponent(targetId, 'identity');
         eventBus.emit(EVENTS.DWARF_DIED, {
+            entityId: targetId,
             name: identity?.name ?? 'Un nain',
             x: position.x,
             y: position.y,

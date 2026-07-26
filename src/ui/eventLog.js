@@ -149,6 +149,12 @@ export class EventLog {
         eventBus.on(EVENTS.DWARF_SOBERED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a dessoûlé.`);
         });
+        eventBus.on(EVENTS.DWARF_BEFRIENDED, ({ entityId, otherId }) => {
+            this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont devenus amis.`);
+        });
+        eventBus.on(EVENTS.DWARF_FELL_OUT, ({ entityId, otherId }) => {
+            this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont désormais rivaux.`, true);
+        });
         eventBus.on(EVENTS.JOB_UNREACHABLE, ({ job }) => {
             const label = JOB_LABELS[job.type] ?? job.type;
             this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true);

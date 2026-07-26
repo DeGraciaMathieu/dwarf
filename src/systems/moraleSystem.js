@@ -1,8 +1,10 @@
 import { EVENTS } from '../events/events.js';
+import { FRIEND_THRESHOLD } from './socializeSystem.js';
 
 const WITNESS_RANGE = 8;
 const ROT_RANGE = 4;
 const ROT_MALUS = 0.1;
+const GRIEF_FACTOR = 0.4;
 const EFFECTS = {
     ate: 10,
     drank: 5,
@@ -49,8 +51,8 @@ export class MoraleSystem {
         eventBus.on(EVENTS.DWARF_FLEES, ({ entityId }) =>
             this.pending.push({ type: 'fled', entityId })
         );
-        eventBus.on(EVENTS.DWARF_DIED, ({ x, y }) =>
-            this.pending.push({ type: 'death', x, y })
+        eventBus.on(EVENTS.DWARF_DIED, ({ entityId, x, y }) =>
+            this.pending.push({ type: 'death', deceasedId: entityId, x, y })
         );
         eventBus.on(EVENTS.CORPSE_BURIED, ({ x, y }) =>
             this.pending.push({ type: 'buried', x, y })
@@ -137,6 +139,7 @@ export class MoraleSystem {
                     entityId,
                     distance <= WITNESS_RANGE ? EFFECTS.deathWitnessed : EFFECTS.deathHeard
                 );
+                this.adjust(world, entityId, this.grief(world, entityId, event.deceasedId));
             }
             return;
         }
@@ -164,6 +167,20 @@ export class MoraleSystem {
             return;
         }
         this.adjust(world, event.entityId, EFFECTS[event.type]);
+    }
+
+    // deuil : la mort d'un ami proche pèse plus qu'un simple décès aperçu,
+    // proportionnellement à l'affinité tissée avec le défunt
+    grief(world, entityId, deceasedId) {
+        if (deceasedId === undefined) {
+            return 0;
+        }
+        const relationships = world.getComponent(entityId, 'relationships');
+        const affinity = relationships?.affinities[deceasedId] ?? 0;
+        if (affinity < FRIEND_THRESHOLD) {
+            return 0;
+        }
+        return -Math.round(affinity * GRIEF_FACTOR);
     }
 
     adjust(world, entityId, delta) {

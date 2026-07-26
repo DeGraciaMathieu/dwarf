@@ -15,6 +15,7 @@ import { ArbiterSystem } from '../src/systems/arbiterSystem.js';
 import { JobAssignmentSystem } from '../src/systems/jobAssignmentSystem.js';
 import { EatingSystem } from '../src/systems/eatingSystem.js';
 import { SleepSystem } from '../src/systems/sleepSystem.js';
+import { SocializeSystem } from '../src/systems/socializeSystem.js';
 import { FleeSystem } from '../src/systems/fleeSystem.js';
 import { FightSystem } from '../src/systems/fightSystem.js';
 import { BrawlSystem } from '../src/systems/brawlSystem.js';
@@ -79,6 +80,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
             { component: 'thirst', event: EVENTS.DWARF_THIRSTY },
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
+            { component: 'social', event: EVENTS.DWARF_LONELY },
         ])
     );
     world.registerSystem(
@@ -117,6 +119,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
     world.registerSystem(new SleepSystem(terrain));
+    world.registerSystem(new SocializeSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new BrawlSystem(terrain));
@@ -170,6 +173,8 @@ export function addDwarf(world, x, y, overrides = {}) {
         health = 30,
         morale = 70,
         courage = 0.5,
+        social = 0,
+        socialRate = 0,
     } = overrides;
     const id = world.createEntity();
     world.addComponent(id, 'identity', { name });
@@ -193,6 +198,8 @@ export function addDwarf(world, x, y, overrides = {}) {
         low: 40,
         tantrum: 15,
     });
+    world.addComponent(id, 'social', { value: social, rate: socialRate, threshold: 75, max: 100 });
+    world.addComponent(id, 'relationships', { affinities: {} });
     world.addComponent(id, 'wander', {});
     world.addComponent(id, 'worker', {});
     world.addComponent(id, 'equipment', {});

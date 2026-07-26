@@ -1,3 +1,5 @@
+import { FRIEND_THRESHOLD, RIVAL_THRESHOLD } from '../systems/socializeSystem.js';
+
 const ACTIVITY_LABELS = {
     fight: 'Combat !',
     flee: 'Fuit !',
@@ -5,6 +7,7 @@ const ACTIVITY_LABELS = {
     eat: 'Va manger',
     drink: 'Va boire',
     sleep: 'Dort',
+    socialize: 'Discute',
     work: 'Travaille',
     wander: 'Oisif',
 };
@@ -82,7 +85,40 @@ export class InspectionPanel {
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
             ${this.equipment()}
             ${this.aptitudes()}
+            ${this.relationships()}
         `;
+    }
+
+    // amis et rivaux marquants ; on ignore les affinités vers un nain disparu
+    relationships() {
+        const relationships = this.world.getComponent(this.selectedId, 'relationships');
+        if (!relationships) {
+            return '';
+        }
+        const friends = [];
+        const rivals = [];
+        for (const [otherId, affinity] of Object.entries(relationships.affinities)) {
+            const identity = this.world.getComponent(Number(otherId), 'identity');
+            if (!identity) {
+                continue;
+            }
+            if (affinity >= FRIEND_THRESHOLD) {
+                friends.push(identity.name);
+            } else if (affinity <= -RIVAL_THRESHOLD) {
+                rivals.push(identity.name);
+            }
+        }
+        if (friends.length === 0 && rivals.length === 0) {
+            return '';
+        }
+        const parts = [];
+        if (friends.length) {
+            parts.push(`Amis : ${friends.join(', ')}`);
+        }
+        if (rivals.length) {
+            parts.push(`Rivaux : ${rivals.join(', ')}`);
+        }
+        return `<p class="relationships">${parts.join(' · ')}</p>`;
     }
 
     equipment() {

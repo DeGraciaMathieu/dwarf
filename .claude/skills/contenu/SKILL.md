@@ -22,7 +22,8 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 | Composant | Effet |
 |---|---|
-| `hunger`, `thirst`, `fatigue` | besoins qui montent (`needsSystem`), activités eat/drink/sleep ; faim et soif au maximum tuent (`attritionSystem`) |
+| `hunger`, `thirst`, `fatigue`, `social` | besoins qui montent (`needsSystem`), activités eat/drink/sleep/socialize ; faim et soif au maximum tuent (`attritionSystem`) |
+| `relationships` | affinités par nain `{affinities: {entityId: score}}` ; se tissent en socialisant, chutent en rixe (`socializeSystem`) ; deuil renforcé à la mort d'un ami (`moraleSystem`) |
 | `morale` | humeur, ralentissement, crises (`moraleSystem`, `tantrumSystem`) |
 | `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee ; `combat.range` (défaut 1) porte l'attaque à distance (archer) |
 | `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |

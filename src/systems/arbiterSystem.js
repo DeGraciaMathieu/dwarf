@@ -5,6 +5,7 @@ const DRUNK_BRAWL_SCORE = 90;
 const BRAWL_RANGE = 5;
 const TANTRUM_SCORE = 150;
 const TANTRUM_EXIT_MARGIN = 15;
+const SOCIALIZE_SCORE = 50;
 const WORK_SCORE = 10;
 const WANDER_SCORE = 1;
 
@@ -38,6 +39,7 @@ export class ArbiterSystem {
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
             { type: 'drink', score: this.drinkScore(world, entityId) },
             { type: 'sleep', score: this.sleepScore(world, entityId) },
+            { type: 'socialize', score: this.socializeScore(world, entityId) },
             { type: 'work', score: this.workScore(world, entityId) },
             { type: 'wander', score: WANDER_SCORE },
         ];
@@ -146,6 +148,29 @@ export class ArbiterSystem {
         const wantsSleep =
             fatigue.value >= fatigue.threshold || (sleeping && fatigue.value > 0);
         return wantsSleep ? Math.max(fatigue.value, fatigue.threshold) : 0;
+    }
+
+    // besoin social : sous le seuil de solitude, on cherche un camarade — mais
+    // seulement si un autre nain existe (sinon on reste au travail). Hystérésis via
+    // le marqueur 'socializing' : on continue jusqu'à combler le besoin (valeur 0).
+    socializeScore(world, entityId) {
+        const social = world.getComponent(entityId, 'social');
+        if (!social) {
+            return 0;
+        }
+        const socializing = world.getComponent(entityId, 'socializing');
+        const wantsCompany =
+            social.value >= social.threshold || (socializing && social.value > 0);
+        if (!wantsCompany || !this.companionExists(world, entityId)) {
+            return 0;
+        }
+        return SOCIALIZE_SCORE;
+    }
+
+    companionExists(world, entityId) {
+        return world
+            .query('worker', 'position')
+            .some((otherId) => otherId !== entityId);
     }
 
     workScore(world, entityId) {

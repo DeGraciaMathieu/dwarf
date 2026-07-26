@@ -37,4 +37,7 @@ export const EVENTS = {
     DWARF_DRUNK: 'dwarf.drunk',
     DWARF_SOBERED: 'dwarf.sobered',
     DWARF_BRAWLS: 'dwarf.brawls',
+    DWARF_LONELY: 'dwarf.lonely',
+    DWARF_BEFRIENDED: 'dwarf.befriended',
+    DWARF_FELL_OUT: 'dwarf.fell-out',
 };

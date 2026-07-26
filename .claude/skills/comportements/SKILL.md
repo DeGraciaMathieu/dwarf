@@ -19,6 +19,7 @@ Toute la politique comportementale des nains vit dans `src/systems/arbiterSystem
 | `eat` | valeur de faim (≤ 100) | `eatingSystem.js` | faim ≥ seuil ET nourriture existante ET pas de marqueur `noFoodAccess` (posé quand aucune nourriture n'est atteignable — évite le gel, réévalué ~50 ticks, levé dès qu'un chemin réapparaît) |
 | `drink` | valeur de soif (≤ 100) | `drinkSystem.js` | soif ≥ seuil ET pas de marqueur `noWaterAccess` (posé quand aucune berge n'est atteignable — évite le gel, réévalué ~50 ticks, levé dès que l'eau redevient accessible) |
 | `sleep` | `max(fatigue, seuil)` (≤ 120) | `sleepSystem.js` | fatigue ≥ seuil, hystérésis via composant `sleeping` (dort jusqu'à fatigue 0) |
+| `socialize` | 50 | `socializeSystem.js` | besoin `social` ≥ seuil (hystérésis via composant `socializing`, jusqu'à `social` 0) ET au moins un autre nain existe. Rejoint le camarade le plus proche ; à ≤ 1 case, les deux comblent leur besoin `social` et tissent une affinité (composant `relationships`) |
 | `work` | 10 | `jobAssignmentSystem.js` + systèmes de jobs (dont `equipSystem.js` : s'armer/s'armurer est un job `equip` fait en temps de travail) | a un `currentJob` OU `jobBoard.hasAvailableJobs()` |
 | `wander` | 1 | `movementSystem.js` | toujours (repli) |
 
@@ -29,6 +30,7 @@ Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSy
 - `activity ≠ work` → `JobAssignmentSystem` relâche le `currentJob` (le job retourne en file).
 - `activity ≠ eat` → `EatingSystem` retire le `foodTarget`.
 - `activity ≠ sleep` → `SleepSystem` retire `sleeping` (+ événement réveil) et `bedTarget`.
+- `activity ≠ socialize` → `SocializeSystem` retire `socializing`.
 - Un porteur qui perd son job → `HaulSystem.dropOrphanedItems` dépose sa charge au sol.
 
 ## Pièges connus (appris en les corrigeant)
@@ -39,10 +41,11 @@ Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSy
 
 ## Besoins et moral
 
-- Besoins (faim, soif, fatigue) : composants data (`creatures.json`) + `needsSystem.js` générique (configuré dans `main.js` : composant → événement de seuil). **Ajouter un besoin = une entrée JSON + une ligne de config**, pas un nouveau système.
+- Besoins (faim, soif, fatigue, **social**) : composants data (`creatures.json`) + `needsSystem.js` générique (configuré dans `main.js` : composant → événement de seuil). **Ajouter un besoin = une entrée JSON + une ligne de config**, pas un nouveau système. Le besoin `social` monte comme la faim ; le combler passe par l'activité `socialize` (voir la table).
+- **Relations** (`socializeSystem.js`) : composant data pur `relationships {affinities: {entityId: score}}`. Socialiser côte à côte fait monter l'affinité (palier ami à +30, événement `dwarf.befriended`) ; une rixe (`provoked`) la fait chuter (palier rival à −30, `dwarf.fell-out`). L'affinité est écrite dans les deux sens ; l'UI purge à la lecture les liens vers un nain disparu (auto-réparable, jamais de nettoyage à la mort). Seul `socializeSystem.js` lit/écrit `relationships`.
 - **Attrition** (`attritionSystem.js`, configuré dans `main.js`) : un besoin au maximum érode santé et moral jusqu'à la mort via `kill()` avec sa cause — faim (`starving`, 0,15/tick, `starvation`) et soif (`dehydrated`, 0,25/tick, `dehydration`). Satisfaire le besoin stoppe l'érosion. Ajouter une cause d'attrition = une entrée de config.
 - **Boire** (`drinkSystem.js`) : préfère une **bière** atteignable (composant `drink`, détruite en buvant, événement `dwarf.drank-beer`, +15 de moral), sinon la berge atteignable la plus proche (tri par distance + `findPath` de vérification — jamais la plus proche aveuglément, ça gèle le nain). Une berge = case praticable touchant l'eau ; un pont compte. La cible bière est revalidée chaque tick — un hauler ou un autre buveur peut l'avoir déplacée/détruite.
-- Moral : `moraleSystem.js` consomme les événements du bus (repas +10, boire +5, **bière +15**, réveil complet **+10 en lit / +3 au sol** — l'événement `dwarf.woke` porte `{rested, inBed}`, victoire +15, blessure −10, faim −5, soif −5, fuite −5, mort vue à ≤ 8 cases −25 / apprise −8) puis dérive vers `baseline`. Moral < `low` → travail à mi-vitesse (`workEffort.js`). Moral ≤ `tantrum` → crise.
+- Moral : `moraleSystem.js` consomme les événements du bus (repas +10, boire +5, **bière +15**, réveil complet **+10 en lit / +3 au sol** — l'événement `dwarf.woke` porte `{rested, inBed}`, victoire +15, blessure −10, faim −5, soif −5, fuite −5, mort vue à ≤ 8 cases −25 / apprise −8, **deuil d'un ami** −`affinité × 0,4` en plus si `relationships` lie le témoin au défunt au-delà du palier ami — d'où l'`entityId` du mort ajouté au payload `dwarf.died`) puis dérive vers `baseline`. Moral < `low` → travail à mi-vitesse (`workEffort.js`). Moral ≤ `tantrum` → crise.
 - **N'ajoute jamais un effet de moral en modifiant un émetteur** : abonne `moraleSystem.js` à l'événement existant.
 
 ## Ajouter une activité

@@ -15,6 +15,7 @@ import { MoraleSystem } from './systems/moraleSystem.js';
 import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
 import { SleepSystem } from './systems/sleepSystem.js';
+import { SocializeSystem } from './systems/socializeSystem.js';
 import { EatingSystem } from './systems/eatingSystem.js';
 import { JobAssignmentSystem } from './systems/jobAssignmentSystem.js';
 import { FleeSystem } from './systems/fleeSystem.js';
@@ -75,6 +76,7 @@ async function main() {
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
             { component: 'thirst', event: EVENTS.DWARF_THIRSTY },
             { component: 'fatigue', event: EVENTS.DWARF_TIRED },
+            { component: 'social', event: EVENTS.DWARF_LONELY },
         ])
     );
     world.registerSystem(
@@ -122,6 +124,7 @@ async function main() {
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
     world.registerSystem(new SleepSystem(terrain));
+    world.registerSystem(new SocializeSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new BrawlSystem(terrain));
