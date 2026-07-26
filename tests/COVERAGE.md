@@ -22,7 +22,7 @@ nouveau PRD comportemental = ajouter sa ligne ici avec son fichier de scénario.
 | D14 — garde-fou besoins | marqueur + une alerte, levé à l'ouverture (eau, nourriture) | `needs-access.test.js` |
 | E16 — armes/armures | hache tue plus vite, plates encaissent mieux, recettes forge | `equipment.test.js` |
 | E17 — source de moral | nain près d'un brasero > témoin hors portée | `comfort.test.js` |
-| E18 — progression paliers | _à couvrir à l'implémentation_ | — |
+| E18 — progression paliers | recette verrouillée sans atelier prérequis, débloquée après | `progression.test.js` |
 
 Hors PRD mais couvert : outil « Démolir » (`demolish.test.js`).
 

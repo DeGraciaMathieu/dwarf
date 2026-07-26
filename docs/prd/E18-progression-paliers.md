@@ -1,6 +1,6 @@
 # PRD E18 — Progression par paliers
 
-**Lot :** E — Richesse de contenu · **Point :** 18 · **Statut :** À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** E — Richesse de contenu · **Point :** 18 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 
