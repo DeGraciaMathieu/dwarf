@@ -51,6 +51,14 @@
         "ingredient": "stone",
         "workshop": "masonry"
     },
+    "brazier": {
+        "label": "un brasero",
+        "ghost": "☼",
+        "craftTicks": 14,
+        "produces": "brazier",
+        "ingredient": "stone",
+        "workshop": "masonry"
+    },
     "stoneDoor": {
         "label": "une porte de pierre",
         "ghost": "+",

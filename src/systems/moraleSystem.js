@@ -73,6 +73,38 @@ export class MoraleSystem {
                 morale.value = Math.max(morale.baseline, morale.value - morale.drift);
             }
         }
+
+        this.comfortOfHome(world);
+    }
+
+    // un meuble de confort (brasero) réchauffe le moral des nains à portée —
+    // un seul bonus par nain (le meilleur), sans cumul entre sources
+    comfortOfHome(world) {
+        const sources = world
+            .query('comfort', 'position')
+            .map((id) => ({
+                position: world.getComponent(id, 'position'),
+                comfort: world.getComponent(id, 'comfort'),
+            }));
+        if (sources.length === 0) {
+            return;
+        }
+        for (const entityId of world.query('morale', 'position')) {
+            const position = world.getComponent(entityId, 'position');
+            let bonus = 0;
+            for (const source of sources) {
+                const distance = Math.max(
+                    Math.abs(position.x - source.position.x),
+                    Math.abs(position.y - source.position.y)
+                );
+                if (distance <= source.comfort.range) {
+                    bonus = Math.max(bonus, source.comfort.bonus);
+                }
+            }
+            if (bonus > 0) {
+                this.adjust(world, entityId, bonus);
+            }
+        }
     }
 
     // un cadavre putréfié laissé à l'air libre ronge le moral des nains alentour

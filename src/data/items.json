@@ -118,6 +118,14 @@
             "bed": { "recoveryMultiplier": 1.5, "heal": 1 }
         }
     },
+    "brazier": {
+        "glyph": "☼",
+        "color": "#e08040",
+        "components": {
+            "item": {},
+            "comfort": { "range": 3, "bonus": 0.1 }
+        }
+    },
     "fish": {
         "glyph": "α",
         "color": "#6ab0d8",
