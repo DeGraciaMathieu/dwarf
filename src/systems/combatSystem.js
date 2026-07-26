@@ -20,13 +20,24 @@ export class CombatSystem {
         }
 
         for (const hostileId of world.query('hostile', 'combat', 'position')) {
-            const target = this.targetInRange(world, hostileId, 'worker');
+            // un prédateur peut avoir tué cet hostile plus tôt dans le même tick
+            if (!world.getComponent(hostileId, 'combat')) {
+                continue;
+            }
+            // un prédateur frappe tout être vivant à portée ; un hostile ordinaire, les nains
+            const target = world.getComponent(hostileId, 'predator')
+                ? this.preyInRange(world, hostileId)
+                : this.targetInRange(world, hostileId, 'worker');
             if (target !== undefined) {
                 this.strike(world, eventBus, hostileId, target);
             }
         }
 
         for (const dwarfId of world.query('worker', 'combat', 'position')) {
+            // un prédateur peut avoir tué ce nain plus tôt dans le même tick
+            if (!world.getComponent(dwarfId, 'combat')) {
+                continue;
+            }
             const activity = world.getComponent(dwarfId, 'activity')?.type;
             if (activity === 'fight') {
                 const target = this.targetInRange(world, dwarfId, 'hostile');
@@ -41,6 +52,23 @@ export class CombatSystem {
                 }
             }
         }
+    }
+
+    // cible d'un prédateur : le premier être vivant à portée, sauf lui-même et les prédateurs
+    preyInRange(world, attackerId) {
+        const position = world.getComponent(attackerId, 'position');
+        const range = world.getComponent(attackerId, 'combat').range ?? 1;
+        return world.query('health', 'position').find((targetId) => {
+            if (targetId === attackerId || world.getComponent(targetId, 'predator')) {
+                return false;
+            }
+            const targetPosition = world.getComponent(targetId, 'position');
+            const distance = Math.max(
+                Math.abs(targetPosition.x - position.x),
+                Math.abs(targetPosition.y - position.y)
+            );
+            return distance <= range;
+        });
     }
 
     targetInRange(world, attackerId, targetTag) {

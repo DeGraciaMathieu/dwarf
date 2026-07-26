@@ -21,6 +21,51 @@
             "personality": { "sociability": 0.5, "temper": 0.5 }
         }
     },
+    "wolf": {
+        "glyph": "w",
+        "color": "#909090",
+        "label": "un loup",
+        "components": {
+            "hostile": { "visionRange": 7 },
+            "health": { "value": 10, "max": 10 },
+            "combat": { "damage": 3, "cooldown": 5 },
+            "wander": {}
+        }
+    },
+    "boar": {
+        "glyph": "b",
+        "color": "#8a6a4a",
+        "label": "un sanglier",
+        "components": {
+            "hostile": { "visionRange": 5 },
+            "health": { "value": 18, "max": 18 },
+            "combat": { "damage": 4, "cooldown": 6 },
+            "wander": {}
+        }
+    },
+    "bear": {
+        "glyph": "B",
+        "color": "#8a5a30",
+        "label": "un ours",
+        "components": {
+            "hostile": { "visionRange": 6 },
+            "health": { "value": 30, "max": 30 },
+            "combat": { "damage": 6, "cooldown": 6 },
+            "wander": {}
+        }
+    },
+    "dragon": {
+        "glyph": "D",
+        "color": "#e05020",
+        "label": "un dragon",
+        "components": {
+            "hostile": { "visionRange": 12 },
+            "predator": {},
+            "health": { "value": 400, "max": 400 },
+            "combat": { "damage": 25, "cooldown": 4 },
+            "wander": {}
+        }
+    },
     "goblin": {
         "glyph": "g",
         "color": "#d04040",

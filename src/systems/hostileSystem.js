@@ -8,10 +8,15 @@ export class HostileSystem {
     }
 
     update(world) {
-        const targets = world.query('worker', 'position');
+        const workers = world.query('worker', 'position');
         for (const hostileId of world.query('hostile', 'position')) {
             const hostile = world.getComponent(hostileId, 'hostile');
             const position = world.getComponent(hostileId, 'position');
+            // un prédateur (dragon) traque tout être vivant, nains comme hostiles ;
+            // les hostiles ordinaires ne visent que les nains
+            const targets = world.getComponent(hostileId, 'predator')
+                ? this.preyFor(world, hostileId)
+                : workers;
             const { target, distance } = this.nearestTarget(world, targets, position);
 
             if (target && distance <= hostile.visionRange) {
@@ -45,6 +50,13 @@ export class HostileSystem {
 
             this.setActivity(world, hostileId, 'wander');
         }
+    }
+
+    // proies d'un prédateur : tout ce qui a de la vie, sauf lui-même et les autres prédateurs
+    preyFor(world, predatorId) {
+        return world
+            .query('health', 'position')
+            .filter((id) => id !== predatorId && !world.getComponent(id, 'predator'));
     }
 
     nearestTarget(world, targets, position) {
