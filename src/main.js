@@ -115,6 +115,7 @@ async function main() {
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     const objectives = [
         { recipe: 'beer', target: 3 },
+        { recipe: 'meal', target: 0 },
         { recipe: 'sword', target: 0 },
         { recipe: 'axe', target: 0 },
         { recipe: 'spear', target: 0 },

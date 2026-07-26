@@ -7,6 +7,7 @@ const ROT_MALUS = 0.1;
 const GRIEF_FACTOR = 0.4;
 const EFFECTS = {
     ate: 10,
+    ateMeal: 20,
     drank: 5,
     drankBeer: 15,
     rested: 10,
@@ -26,8 +27,8 @@ const EFFECTS = {
 export class MoraleSystem {
     constructor(eventBus) {
         this.pending = [];
-        eventBus.on(EVENTS.DWARF_ATE, ({ entityId }) =>
-            this.pending.push({ type: 'ate', entityId })
+        eventBus.on(EVENTS.DWARF_ATE, ({ entityId, cooked }) =>
+            this.pending.push({ type: cooked ? 'ateMeal' : 'ate', entityId })
         );
         eventBus.on(EVENTS.DWARF_WOKE, ({ entityId, rested, inBed }) =>
             this.pending.push({ type: 'woke', entityId, rested, inBed })

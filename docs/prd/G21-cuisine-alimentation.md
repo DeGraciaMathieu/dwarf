@@ -1,6 +1,6 @@
 # PRD G21 — Cuisine et variété alimentaire
 
-**Lot :** G — Chaîne économique · **Point :** 21 · **Statut :** 🔲 À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** G — Chaîne économique · **Point :** 21 · **Statut :** ✅ Fait (variété implicite, qualité booléenne `cooked`) · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 

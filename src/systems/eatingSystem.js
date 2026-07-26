@@ -115,9 +115,10 @@ export class EatingSystem {
         if (position.x === foodPosition.x && position.y === foodPosition.y) {
             const hunger = world.getComponent(entityId, 'hunger');
             hunger.value = Math.max(0, hunger.value - food.nutrition);
+            const cooked = world.getComponent(foodTarget.target, 'cooked') !== undefined;
             world.destroyEntity(foodTarget.target);
             world.removeComponent(entityId, 'foodTarget');
-            eventBus.emit(EVENTS.DWARF_ATE, { entityId });
+            eventBus.emit(EVENTS.DWARF_ATE, { entityId, cooked });
         }
     }
 }

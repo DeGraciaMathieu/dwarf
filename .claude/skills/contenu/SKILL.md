@@ -34,7 +34,9 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `wander` | erre quand `activity === 'wander'` |
 | `hostile` | poursuit les workers (`hostileSystem`) ; garde une `chaseMemory` (dernière position vue + TTL) pour poursuivre hors de vue avant d'oublier ; déclenche fuite/combat |
 | `item` | transportable au stock, cassable en crise de nerfs |
-| `food` | mangeable (détruit au repas) |
+| `food` | mangeable (détruit au repas) ; le marqueur `cooked` (plat préparé) accroît le gain de moral au repas (`ateMeal` 20 vs `ate` 10, choisi dans `moraleSystem` via la charge utile de `dwarf.ate`) |
+| `cookable` | ingrédient des recettes `ingredient: 'cookable'` (cuisine) : posé sur `mushroom` et `fish` |
+| `cooked` | marqueur du plat préparé (produit `meal`) : nutrition supérieure au cru + bonus de moral au repas |
 | `drink` | buvable : un assoiffé le préfère à la berge, +15 de moral (`drinkSystem`) |
 | `buildMaterial` | consommé par les jobs `build` et `craft` (ingrédient par défaut) |
 | `brewable` | ingrédient des recettes `ingredient: 'brewable'` (bière) |
@@ -44,7 +46,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `equipment` | slots d'un nain `{weapon, armor}` (ids des objets portés) ; lu par `combatSystem` (bonus d'arme, atténuation d'armure), lâché au sol à la mort |
 | `bed` | dortoir : récupération ×`recoveryMultiplier`, soin `heal`/tick (`sleepSystem`) |
 | `comfort` | meuble de confort (brasero) : `{range, bonus}` ; réchauffe en drift le moral des nains à portée (`moraleSystem.comfortOfHome`), un seul bonus par nain |
-| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`, `masonry`, `forge`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery`/`masonry`/`forge` (`workshop: carpentry` → exigent un atelier de menuiserie) |
+| `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`, `masonry`, `forge`, `kitchen`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery`/`masonry`/`forge`/`kitchen` (`workshop: carpentry` → exigent un atelier de menuiserie) |
 | `corpse` | dépouille qui vieillit (`decay`) : au seuil elle passe `rotten` (malus de moral de proximité) ; un job `bury` vers la zone `graves` la transforme en `buried`. Portée par `item` mais ignorée du haul générique (`graveSystem`) |
 | `crop` | pousse puis se récolte (`farmSystem`) |
 | `identity` | nom affiché (journal, inspection) — nains uniquement |

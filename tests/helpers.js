@@ -292,6 +292,23 @@ export function addMushroom(world, x, y) {
     world.addComponent(id, 'food', { nutrition: 80 });
     world.addComponent(id, 'item', {});
     world.addComponent(id, 'brewable', {});
+    world.addComponent(id, 'cookable', {});
+    return id;
+}
+
+export function addKitchen(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'workshop', { type: 'kitchen' });
+    return id;
+}
+
+export function addMeal(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'food', { nutrition: 120 });
+    world.addComponent(id, 'item', {});
+    world.addComponent(id, 'cooked', {});
     return id;
 }
 

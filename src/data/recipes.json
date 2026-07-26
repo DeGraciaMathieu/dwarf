@@ -134,5 +134,20 @@
         "ingredient": "brewable",
         "workshop": "brewery",
         "consumable": true
+    },
+    "kitchen": {
+        "label": "une cuisine",
+        "ghost": "∩",
+        "craftTicks": 10,
+        "produces": "kitchen",
+        "workshop": "carpentry"
+    },
+    "meal": {
+        "label": "un plat",
+        "craftTicks": 8,
+        "produces": "meal",
+        "ingredient": "cookable",
+        "workshop": "kitchen",
+        "consumable": true
     }
 }

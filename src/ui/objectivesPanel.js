@@ -3,12 +3,14 @@ const WORKSHOP_LABELS = {
     brewery: 'brasserie manquante',
     masonry: 'atelier de taille manquant',
     forge: 'forge manquante',
+    kitchen: 'cuisine manquante',
 };
 
 const INGREDIENT_LABELS = {
     ore: 'minerai',
     stone: 'pierre',
     brewable: 'ingrédient brassable',
+    cookable: 'ingrédient cuisinable',
 };
 
 const WORKSHOP_REQUIRED = {

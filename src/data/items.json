@@ -131,7 +131,24 @@
         "color": "#6ab0d8",
         "components": {
             "food": { "nutrition": 60 },
-            "item": {}
+            "item": {},
+            "cookable": {}
+        }
+    },
+    "kitchen": {
+        "glyph": "∩",
+        "color": "#c07850",
+        "components": {
+            "workshop": { "type": "kitchen" }
+        }
+    },
+    "meal": {
+        "glyph": "♨",
+        "color": "#e0b070",
+        "components": {
+            "food": { "nutrition": 120 },
+            "item": {},
+            "cooked": {}
         }
     },
     "bridge": {
@@ -177,7 +194,8 @@
         "components": {
             "food": { "nutrition": 80 },
             "item": {},
-            "brewable": {}
+            "brewable": {},
+            "cookable": {}
         }
     }
 }
