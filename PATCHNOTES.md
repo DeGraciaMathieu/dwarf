@@ -2,6 +2,15 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Le cycle des saisons
+
+- **Les saisons défilent** : printemps, été, automne, hiver s'enchaînent au fil du temps, affichés dans le bandeau d'état (🌱/☀/🍂/❄).
+- **L'hiver mord** : les **cultures cessent de pousser** et les **berges gèlent** — les nains assoiffés ne peuvent plus s'y abreuver et doivent se rabattre sur la **bière stockée**. Sans réserve, la crise de soif menace.
+- **Il faut anticiper** : constituez vos stocks de vivres et de boisson avant les grands froids ; les **migrants ne passent plus** tant que dure l'hiver.
+- **Le dégel répare tout seul** : au retour du printemps, cultures et berges redeviennent normales, sans rien à faire.
+- Le journal annonce chaque changement de saison, en rouge à l'entrée de l'hiver.
+- Technique : `seasonSystem` porte un cycle sur une entité-composant `season` (600 ticks/saison) ; gel logique lu par `farmSystem`, `drinkSystem` et `migrantSystem` via `isWinter`, sans état persistant sur les nains.
+
 ## 2026-07-26 — De vraies chambres à coucher
 
 - **Nouvelle zone 🛏 Chambre** : désignez une pièce, et un nain qui y dort dans un **lit avec un brasero à portée** se réveille **bien mieux reposé** qu'à l'air libre.
