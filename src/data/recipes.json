@@ -83,6 +83,38 @@
         "workshop": "forge",
         "consumable": true
     },
+    "axe": {
+        "label": "une hache",
+        "craftTicks": 18,
+        "produces": "axe",
+        "ingredient": "ore",
+        "workshop": "forge",
+        "consumable": true
+    },
+    "spear": {
+        "label": "une lance",
+        "craftTicks": 14,
+        "produces": "spear",
+        "ingredient": "ore",
+        "workshop": "forge",
+        "consumable": true
+    },
+    "plate": {
+        "label": "une cotte de plates",
+        "craftTicks": 20,
+        "produces": "plate",
+        "ingredient": "ore",
+        "workshop": "forge",
+        "consumable": true
+    },
+    "shield": {
+        "label": "un bouclier",
+        "craftTicks": 12,
+        "produces": "shield",
+        "ingredient": "ore",
+        "workshop": "forge",
+        "consumable": true
+    },
     "beer": {
         "label": "une bière",
         "craftTicks": 8,

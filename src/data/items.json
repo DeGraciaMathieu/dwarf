@@ -74,6 +74,34 @@
             "armor": { "defense": 3 }
         }
     },
+    "axe": {
+        "glyph": "γ",
+        "color": "#c0b080",
+        "components": {
+            "weapon": { "damage": 8 }
+        }
+    },
+    "spear": {
+        "glyph": "↑",
+        "color": "#c0c0d0",
+        "components": {
+            "weapon": { "damage": 7 }
+        }
+    },
+    "plate": {
+        "glyph": "]",
+        "color": "#9098a8",
+        "components": {
+            "armor": { "defense": 5 }
+        }
+    },
+    "shield": {
+        "glyph": ")",
+        "color": "#8890a0",
+        "components": {
+            "armor": { "defense": 2 }
+        }
+    },
     "beer": {
         "glyph": "δ",
         "color": "#e0a030",

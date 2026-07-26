@@ -107,7 +107,11 @@ async function main() {
     const objectives = [
         { recipe: 'beer', target: 3 },
         { recipe: 'sword', target: 0 },
+        { recipe: 'axe', target: 0 },
+        { recipe: 'spear', target: 0 },
         { recipe: 'mail', target: 0 },
+        { recipe: 'plate', target: 0 },
+        { recipe: 'shield', target: 0 },
     ];
     world.registerSystem(new StewardSystem(jobBoard, recipes, items, objectives));
     world.registerSystem(new ArbiterSystem(jobBoard));
