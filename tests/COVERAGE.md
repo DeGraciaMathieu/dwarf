@@ -24,7 +24,7 @@ nouveau PRD comportemental = ajouter sa ligne ici avec son fichier de scénario.
 | E17 — source de moral | nain près d'un brasero > témoin hors portée | `comfort.test.js` |
 | E18 — progression paliers | recette verrouillée sans atelier prérequis, débloquée après | `progression.test.js` |
 
-Hors PRD mais couvert : outil « Démolir » (`demolish.test.js`).
+Hors PRD mais couvert : outil « Démolir » (`demolish.test.js`), rixes de taverne / ivresse (`brawl.test.js`).
 
 Style attendu (cf. skill `testing`) : monde minimal via `helpers.js`, avancer N ticks,
 asserter l'état observable. Pas d'aléatoire non contrôlé (les nains de test viennent

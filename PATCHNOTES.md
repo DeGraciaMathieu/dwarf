@@ -2,6 +2,18 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Beuverie et rixes de taverne
+
+- **Trop de bière rend ivre** : à force de boire, un nain finit par être saoul (« … est ivre ! »). Un ivrogne **travaille au ralenti** et **cherche la bagarre** avec un camarade à proximité (« … cherche la bagarre ! »).
+- **Bagarres à mains nues, pour de vrai** : les nains se cognent **au poing** (l'arme équipée ne compte pas), et **le nain frappé riposte** — une querelle peut vite tourner à la rixe générale. Un mort dans la mêlée donne « … est mort dans une rixe. »
+- L'ivresse **redescend avec le temps** : une fois dessaoulé, le nain reprend le travail (« … a dessoûlé. »).
+- À surveiller : une taverne trop bien fournie peut coûter cher — la bière n'est plus seulement un remontant de moral.
+- Technique : composant `intoxication` + état `drunk` (hystérésis) ; nouvelle activité `brawl` arbitrée, combat nain-contre-nain à mains nues avec riposte (`provoked`).
+
+## 2026-07-26 — L'équipement dans la fiche du nain
+
+- **La fiche d'inspection affiche désormais l'équipement porté** : « Arme : hache (+8 dégâts) · Armure : cotte de plates (+5 déf.) », ou « aucune » quand l'emplacement est vide — d'un coup d'œil, on voit qui part au combat désarmé.
+
 ## 2026-07-26 — La montée en puissance par paliers
 
 - Les recettes avancées ne sont plus disponibles d'emblée : forger une **hache**, une **lance**, une **cotte de plates** ou un **bouclier** exige d'avoir d'abord bâti un **atelier de taille**.

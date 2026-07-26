@@ -28,6 +28,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |
 | `worker` | arbitré par l'arbitre, prend des jobs, ciblé par les gobelins |
 | `skills` | niveaux d'aptitude par catégorie (`mining`, `woodcutting`…) ; accélèrent le job correspondant via `workEffort` (mapping `SKILL_BY_JOB`) ; une spécialité est tirée au spawn (`assignAptitude`) |
+| `intoxication` | ébriété : monte à la bière (`drinkSystem`), redescend (`intoxicationSystem`) ; au seuil pose le marqueur d'hystérésis `drunk` (travail ×0,5 via `workEffort`, cherche la bagarre via l'arbitre). `provoked {by, ttl}` (frappé au poing) déclenche la riposte |
 | `wander` | erre quand `activity === 'wander'` |
 | `hostile` | poursuit les workers (`hostileSystem`) ; garde une `chaseMemory` (dernière position vue + TTL) pour poursuivre hors de vue avant d'oublier ; déclenche fuite/combat |
 | `item` | transportable au stock, cassable en crise de nerfs |
