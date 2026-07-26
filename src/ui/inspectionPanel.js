@@ -31,6 +31,16 @@ const SKILL_LABELS = {
     fishing: 'Pêche',
 };
 
+// nom d'un équipement d'après son glyphe (les items ne portent pas de nom)
+const EQUIPMENT_LABELS = {
+    '/': 'épée',
+    'γ': 'hache',
+    '↑': 'lance',
+    '[': 'cotte de mailles',
+    ']': 'cotte de plates',
+    ')': 'bouclier',
+};
+
 export class InspectionPanel {
     constructor(element, world) {
         this.element = element;
@@ -70,8 +80,29 @@ export class InspectionPanel {
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
             ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
+            ${this.equipment()}
             ${this.aptitudes()}
         `;
+    }
+
+    equipment() {
+        const equipment = this.world.getComponent(this.selectedId, 'equipment');
+        if (!equipment) {
+            return '';
+        }
+        const weapon = this.gear(equipment.weapon, 'weapon', 'damage', 'dégâts');
+        const armor = this.gear(equipment.armor, 'armor', 'defense', 'déf.');
+        return `<p class="equipment">Arme : ${weapon} · Armure : ${armor}</p>`;
+    }
+
+    gear(itemId, component, stat, unit) {
+        if (itemId === undefined || itemId === null) {
+            return 'aucune';
+        }
+        const data = this.world.getComponent(itemId, component);
+        const glyph = this.world.getComponent(itemId, 'renderable')?.glyph;
+        const name = EQUIPMENT_LABELS[glyph] ?? component;
+        return data ? `${name} (+${data[stat]} ${unit})` : name;
     }
 
     aptitudes() {

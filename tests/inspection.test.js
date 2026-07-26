@@ -41,3 +41,19 @@ test('inspection : un nain sans job ni besoin est affiché « Oisif »', () => {
     const html = inspect(colony, dwarf);
     assert.match(html, /Oisif/);
 });
+
+test('inspection : la fiche montre l\'équipement porté (ou « aucune »)', () => {
+    const colony = setupColony(openTerrain(6, 1));
+    const dwarf = addDwarf(colony.world, 0, 0);
+
+    // nain nu : les deux emplacements sont vides
+    assert.match(inspect(colony, dwarf), /Arme : aucune · Armure : aucune/);
+
+    // on lui équipe une hache
+    const axe = colony.world.createEntity();
+    colony.world.addComponent(axe, 'weapon', { damage: 8 });
+    colony.world.addComponent(axe, 'renderable', { glyph: 'γ', color: '#c0b080' });
+    colony.world.getComponent(dwarf, 'equipment').weapon = axe;
+
+    assert.match(inspect(colony, dwarf), /Arme : hache \(\+8 dégâts\)/);
+});
