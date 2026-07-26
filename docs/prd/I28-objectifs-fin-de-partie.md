@@ -1,6 +1,6 @@
 # PRD I28 — Objectifs, fin de partie et légende de la colonie
 
-**Lot :** I — Rejouabilité · **Point :** 28 · **Statut :** 🔲 À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** I — Rejouabilité · **Point :** 28 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 La partie n'a ni but ni conclusion : on joue jusqu'à ce que tous les nains meurent, mais rien ne le signale. `main.js` lance une boucle infinie (`startLoop`) sans condition de fin ; quand `world.query('worker')` devient vide, la simulation continue à tourner à vide et aucun bilan n'est présenté. Le tableau `objectives` de `main.js` (piloté par `stewardSystem.js`) ne concerne que des paliers de production de recettes, pas des jalons de colonie. Toute la matière d'un récit de partie existe pourtant déjà : le bus émet en continu des faits accomplis (`dwarf.died` avec sa `cause`, `migrant.arrived`, `dwarf.befriended`, `dwarf.fell-out`, `goblin.slain`, `item.crafted`, `season.changed`) mais personne ne les agrège.
