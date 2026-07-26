@@ -99,6 +99,7 @@ export class EventLog {
             const messages = {
                 starvation: `${name} est mort de faim.`,
                 dehydration: `${name} est mort de soif.`,
+                brawl: `${name} est mort dans une rixe.`,
             };
             this.append(messages[cause] ?? `${name} a succombé à ses blessures.`);
         });
@@ -138,6 +139,15 @@ export class EventLog {
         });
         eventBus.on(EVENTS.DEMOLISHED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a démoli quelque chose.`);
+        });
+        eventBus.on(EVENTS.DWARF_DRUNK, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} est ivre !`, true);
+        });
+        eventBus.on(EVENTS.DWARF_BRAWLS, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} cherche la bagarre !`, true);
+        });
+        eventBus.on(EVENTS.DWARF_SOBERED, ({ entityId }) => {
+            this.append(`${dwarfName(entityId)} a dessoûlé.`);
         });
         eventBus.on(EVENTS.JOB_UNREACHABLE, ({ job }) => {
             const label = JOB_LABELS[job.type] ?? job.type;

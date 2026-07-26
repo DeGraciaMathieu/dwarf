@@ -19,6 +19,8 @@ import { EatingSystem } from './systems/eatingSystem.js';
 import { JobAssignmentSystem } from './systems/jobAssignmentSystem.js';
 import { FleeSystem } from './systems/fleeSystem.js';
 import { FightSystem } from './systems/fightSystem.js';
+import { BrawlSystem } from './systems/brawlSystem.js';
+import { IntoxicationSystem } from './systems/intoxicationSystem.js';
 import { DigSystem } from './systems/digSystem.js';
 import { ChopSystem } from './systems/chopSystem.js';
 import { HaulSystem } from './systems/haulSystem.js';
@@ -96,6 +98,7 @@ async function main() {
         ])
     );
     world.registerSystem(new MoraleSystem(eventBus));
+    world.registerSystem(new IntoxicationSystem());
     const goblinSpawn = new GoblinSpawnSystem(terrain, {
         grunt: creatures.goblin,
         brute: creatures.brute,
@@ -121,6 +124,7 @@ async function main() {
     world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
+    world.registerSystem(new BrawlSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));
     world.registerSystem(new DigSystem(jobBoard, terrain, items.stone, items.ore));
     world.registerSystem(new ChopSystem(jobBoard, terrain, items.log));

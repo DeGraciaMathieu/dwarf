@@ -1,4 +1,5 @@
 const LOW_MORALE_EFFORT = 0.5;
+const DRUNK_EFFORT = 0.5;
 const SKILL_BONUS_PER_LEVEL = 0.3;
 const SPECIALIST_LEVEL = 2;
 
@@ -15,10 +16,11 @@ export const SKILL_BY_JOB = {
 
 export const SKILL_CATEGORIES = [...new Set(Object.values(SKILL_BY_JOB))];
 
-// effort de travail = malus de moral × bonus d'aptitude (cumulables)
+// effort de travail = malus de moral × malus d'ivresse × bonus d'aptitude (cumulables)
 export function workEffort(world, entityId, jobType) {
     const moraleFactor = lowMorale(world, entityId) ? LOW_MORALE_EFFORT : 1;
-    return moraleFactor * skillFactor(world, entityId, jobType);
+    const drunkFactor = world.getComponent(entityId, 'drunk') ? DRUNK_EFFORT : 1;
+    return moraleFactor * drunkFactor * skillFactor(world, entityId, jobType);
 }
 
 function lowMorale(world, entityId) {

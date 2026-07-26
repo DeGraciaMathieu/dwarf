@@ -10,6 +10,8 @@ const VOLATILE_COMPONENTS = [
     'noFoodAccess',
     'fleeing',
     'fighting',
+    'brawling',
+    'provoked',
     'starving',
     'dehydrated',
     'carrying',

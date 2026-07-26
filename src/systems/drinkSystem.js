@@ -3,6 +3,8 @@ import { approach } from './jobMovement.js';
 import { findPath } from '../core/pathfinding.js';
 
 const NO_WATER_RETRY_DELAY = 50;
+const BEER_INTOXICATION = 45;
+const INTOXICATION_MAX = 150;
 
 export class DrinkSystem {
     constructor(terrain) {
@@ -48,6 +50,10 @@ export class DrinkSystem {
             world.removeComponent(entityId, 'drinkTarget');
             if (drinkTarget.itemId !== undefined) {
                 world.destroyEntity(drinkTarget.itemId);
+                const intoxication = world.getComponent(entityId, 'intoxication');
+                if (intoxication) {
+                    intoxication.value = Math.min(INTOXICATION_MAX, intoxication.value + BEER_INTOXICATION);
+                }
                 eventBus.emit(EVENTS.DWARF_DRANK_BEER, { entityId });
             } else {
                 eventBus.emit(EVENTS.DWARF_DRANK, { entityId });

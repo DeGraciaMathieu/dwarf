@@ -17,6 +17,8 @@ import { EatingSystem } from '../src/systems/eatingSystem.js';
 import { SleepSystem } from '../src/systems/sleepSystem.js';
 import { FleeSystem } from '../src/systems/fleeSystem.js';
 import { FightSystem } from '../src/systems/fightSystem.js';
+import { BrawlSystem } from '../src/systems/brawlSystem.js';
+import { IntoxicationSystem } from '../src/systems/intoxicationSystem.js';
 import { TantrumSystem } from '../src/systems/tantrumSystem.js';
 import { DigSystem } from '../src/systems/digSystem.js';
 import { ChopSystem } from '../src/systems/chopSystem.js';
@@ -100,6 +102,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
         ])
     );
     world.registerSystem(new MoraleSystem(bus));
+    world.registerSystem(new IntoxicationSystem());
     if (goblinSpawner) {
         world.registerSystem(new GoblinSpawnSystem(terrain, goblinArchetypes()));
     }
@@ -116,6 +119,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new SleepSystem(terrain));
     world.registerSystem(new FleeSystem(terrain));
     world.registerSystem(new FightSystem(terrain));
+    world.registerSystem(new BrawlSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));
     world.registerSystem(new DigSystem(jobBoard, terrain, data.items.stone, data.items.ore));
     world.registerSystem(new ChopSystem(jobBoard, terrain, data.items.log));

@@ -34,4 +34,7 @@ export const EVENTS = {
     DWARF_CANNOT_REACH_FOOD: 'dwarf.cannot-reach-food',
     JOB_UNREACHABLE: 'job.unreachable',
     DEMOLISHED: 'something.demolished',
+    DWARF_DRUNK: 'dwarf.drunk',
+    DWARF_SOBERED: 'dwarf.sobered',
+    DWARF_BRAWLS: 'dwarf.brawls',
 };

@@ -1,6 +1,8 @@
 import { EVENTS } from '../events/events.js';
 import { kill } from './death.js';
 
+const PROVOKED_TTL = 30;
+
 export class CombatSystem {
     constructor(jobBoard, corpseDefinition) {
         this.jobBoard = jobBoard;
@@ -23,12 +25,18 @@ export class CombatSystem {
         }
 
         for (const dwarfId of world.query('worker', 'combat', 'position')) {
-            if (world.getComponent(dwarfId, 'activity')?.type !== 'fight') {
-                continue;
-            }
-            const target = this.targetInRange(world, dwarfId, 'hostile');
-            if (target !== undefined) {
-                this.strike(world, eventBus, dwarfId, target);
+            const activity = world.getComponent(dwarfId, 'activity')?.type;
+            if (activity === 'fight') {
+                const target = this.targetInRange(world, dwarfId, 'hostile');
+                if (target !== undefined) {
+                    this.strike(world, eventBus, dwarfId, target);
+                }
+            } else if (activity === 'brawl') {
+                // rixe entre nains : au poing, l'arme et l'aura de chef ne comptent pas
+                const target = this.targetInRange(world, dwarfId, 'worker');
+                if (target !== undefined) {
+                    this.strike(world, eventBus, dwarfId, target, { bareFisted: true });
+                }
             }
         }
     }
@@ -37,6 +45,9 @@ export class CombatSystem {
         const position = world.getComponent(attackerId, 'position');
         const range = world.getComponent(attackerId, 'combat').range ?? 1;
         return world.query(targetTag, 'health', 'position').find((targetId) => {
+            if (targetId === attackerId) {
+                return false;
+            }
             const targetPosition = world.getComponent(targetId, 'position');
             const distance = Math.max(
                 Math.abs(targetPosition.x - position.x),
@@ -46,27 +57,30 @@ export class CombatSystem {
         });
     }
 
-    strike(world, eventBus, attackerId, targetId) {
+    strike(world, eventBus, attackerId, targetId, { bareFisted = false } = {}) {
         const combat = world.getComponent(attackerId, 'combat');
         if (combat.cooldownRemaining > 0) {
             return;
         }
         combat.cooldownRemaining = combat.cooldown;
         const health = world.getComponent(targetId, 'health');
-        const damage =
-            combat.damage +
-            this.weaponDamage(world, attackerId) +
-            this.commandBonus(world, attackerId);
+        const damage = bareFisted
+            ? combat.damage
+            : combat.damage + this.weaponDamage(world, attackerId) + this.commandBonus(world, attackerId);
         health.value -= Math.max(1, damage - this.armorDefense(world, targetId));
         const isDwarf = world.getComponent(targetId, 'worker') !== undefined;
         if (health.value > 0) {
             if (isDwarf) {
                 eventBus.emit(EVENTS.DWARF_INJURED, { entityId: targetId });
+                if (bareFisted) {
+                    // frappé au poing par un pair : la victime rend les coups
+                    world.addComponent(targetId, 'provoked', { by: attackerId, ttl: PROVOKED_TTL });
+                }
             }
             return;
         }
         kill(world, eventBus, this.jobBoard, this.corpseDefinition, targetId, {
-            cause: 'combat',
+            cause: bareFisted ? 'brawl' : 'combat',
             killerId: attackerId,
         });
     }

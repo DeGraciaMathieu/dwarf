@@ -13,7 +13,8 @@
             "wander": {},
             "worker": {},
             "equipment": {},
-            "skills": { "mining": 0, "woodcutting": 0, "crafting": 0, "building": 0, "farming": 0, "fishing": 0 }
+            "skills": { "mining": 0, "woodcutting": 0, "crafting": 0, "building": 0, "farming": 0, "fishing": 0 },
+            "intoxication": { "value": 0 }
         }
     },
     "goblin": {

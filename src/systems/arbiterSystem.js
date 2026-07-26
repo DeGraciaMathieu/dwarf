@@ -1,5 +1,8 @@
 const FLEE_SCORE = 200;
 const FLEE_RANGE = 6;
+const PROVOKED_SCORE = 190;
+const DRUNK_BRAWL_SCORE = 90;
+const BRAWL_RANGE = 5;
 const TANTRUM_SCORE = 150;
 const TANTRUM_EXIT_MARGIN = 15;
 const WORK_SCORE = 10;
@@ -30,6 +33,7 @@ export class ArbiterSystem {
         const scores = [
             { type: 'fight', score: this.fightScore(world, entityId, hostilePositions) },
             { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
+            { type: 'brawl', score: this.brawlScore(world, entityId) },
             { type: 'tantrum', score: this.tantrumScore(world, entityId) },
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
             { type: 'drink', score: this.drinkScore(world, entityId) },
@@ -65,6 +69,32 @@ export class ArbiterSystem {
             morale.value <= morale.tantrum ||
             (tantruming && morale.value < morale.tantrum + TANTRUM_EXIT_MARGIN);
         return raging ? TANTRUM_SCORE : 0;
+    }
+
+    // riposte (on m'a frappé) prime sur l'ivresse (je cherche la bagarre)
+    brawlScore(world, entityId) {
+        const provoked = world.getComponent(entityId, 'provoked');
+        if (provoked && world.getComponent(provoked.by, 'position')) {
+            return PROVOKED_SCORE;
+        }
+        if (world.getComponent(entityId, 'drunk') && this.rivalNear(world, entityId)) {
+            return DRUNK_BRAWL_SCORE;
+        }
+        return 0;
+    }
+
+    rivalNear(world, entityId) {
+        const position = world.getComponent(entityId, 'position');
+        return world.query('worker', 'position').some((otherId) => {
+            if (otherId === entityId) {
+                return false;
+            }
+            const other = world.getComponent(otherId, 'position');
+            return (
+                Math.max(Math.abs(other.x - position.x), Math.abs(other.y - position.y)) <=
+                BRAWL_RANGE
+            );
+        });
     }
 
     dangerNear(world, entityId, hostilePositions) {
