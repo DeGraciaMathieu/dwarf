@@ -35,7 +35,7 @@ export class DemolishSystem {
             if (status !== 'arrived') {
                 continue;
             }
-            currentJob.progress += workEffort(world, entityId);
+            currentJob.progress += workEffort(world, entityId, currentJob.job.type);
             if (currentJob.progress >= DEMOLISH_TICKS) {
                 this.demolish(world, currentJob.job, target);
                 this.jobBoard.complete(currentJob.job);

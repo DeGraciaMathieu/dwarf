@@ -42,7 +42,7 @@ export class FishSystem {
             if (status !== 'arrived') {
                 continue;
             }
-            currentJob.progress += workEffort(world, entityId);
+            currentJob.progress += workEffort(world, entityId, currentJob.job.type);
             if (currentJob.progress < FISH_TICKS) {
                 continue;
             }

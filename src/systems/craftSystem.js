@@ -48,7 +48,7 @@ export class CraftSystem {
         if (status !== 'arrived') {
             return;
         }
-        currentJob.progress += workEffort(world, entityId);
+        currentJob.progress += workEffort(world, entityId, currentJob.job.type);
         if (currentJob.progress < recipe.craftTicks) {
             return;
         }

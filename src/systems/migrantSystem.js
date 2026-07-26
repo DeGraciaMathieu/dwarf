@@ -1,6 +1,7 @@
 import { EVENTS } from '../events/events.js';
 import { spawnFromDefinition } from '../core/spawn.js';
 import { randomEdgeTile } from '../core/terrain.js';
+import { assignAptitude } from './workEffort.js';
 
 const FIRST_CHECK_TICK = 900;
 const CHECK_INTERVAL = 600;
@@ -40,6 +41,7 @@ export class MigrantSystem {
             const migrantId = spawnFromDefinition(world, this.dwarfDefinition, tile);
             const name = this.pickName(world);
             world.addComponent(migrantId, 'identity', { name });
+            assignAptitude(world, migrantId);
             eventBus.emit(EVENTS.MIGRANT_ARRIVED, { entityId: migrantId, name });
         }
     }

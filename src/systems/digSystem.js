@@ -29,7 +29,7 @@ export class DigSystem {
             if (status !== 'arrived') {
                 continue;
             }
-            currentJob.progress += workEffort(world, entityId);
+            currentJob.progress += workEffort(world, entityId, currentJob.job.type);
             if (currentJob.progress >= DIG_TICKS) {
                 const dug = this.terrain.get(target.x, target.y);
                 this.terrain.set(target.x, target.y, 'floor');

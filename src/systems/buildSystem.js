@@ -72,7 +72,7 @@ export class BuildSystem {
         if (status !== 'arrived') {
             return;
         }
-        currentJob.progress += workEffort(world, entityId);
+        currentJob.progress += workEffort(world, entityId, currentJob.job.type);
         if (currentJob.progress < BUILD_TICKS || this.tileOccupied(world, target)) {
             return;
         }

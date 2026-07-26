@@ -28,7 +28,7 @@ export class ChopSystem {
             if (status !== 'arrived') {
                 continue;
             }
-            currentJob.progress += workEffort(world, entityId);
+            currentJob.progress += workEffort(world, entityId, currentJob.job.type);
             if (currentJob.progress >= CHOP_TICKS) {
                 this.terrain.set(target.x, target.y, 'floor');
                 spawnFromDefinition(world, this.logDefinition, target);

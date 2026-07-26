@@ -27,6 +27,7 @@ import { EquipSystem } from './systems/equipSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
 import { CraftSystem } from './systems/craftSystem.js';
 import { DemolishSystem } from './systems/demolishSystem.js';
+import { assignAptitude } from './systems/workEffort.js';
 import { StewardSystem } from './systems/stewardSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
 import { FishSystem } from './systems/fishSystem.js';
@@ -136,6 +137,7 @@ async function main() {
     for (const name of creatures.dwarf.names.slice(0, STARTING_DWARVES)) {
         const dwarfId = spawnFromDefinition(world, creatures.dwarf, randomTile());
         world.addComponent(dwarfId, 'identity', { name });
+        assignAptitude(world, dwarfId);
     }
     for (let i = 0; i < BREAD_COUNT; i++) {
         spawnFromDefinition(world, items.bread, randomTile());

@@ -114,7 +114,7 @@ export class FarmSystem {
         if (status !== 'arrived') {
             return 'moving';
         }
-        currentJob.progress += workEffort(world, entityId);
+        currentJob.progress += workEffort(world, entityId, currentJob.job.type);
         return currentJob.progress >= requiredTicks ? 'done' : 'working';
     }
 }

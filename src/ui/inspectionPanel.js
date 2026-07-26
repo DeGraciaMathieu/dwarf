@@ -22,6 +22,15 @@ const JOB_LABELS = {
     bury: 'enterre un corps',
 };
 
+const SKILL_LABELS = {
+    mining: 'Minage',
+    woodcutting: 'Bûcheronnage',
+    crafting: 'Artisanat',
+    building: 'Construction',
+    farming: 'Agriculture',
+    fishing: 'Pêche',
+};
+
 export class InspectionPanel {
     constructor(element, world) {
         this.element = element;
@@ -61,7 +70,20 @@ export class InspectionPanel {
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
             ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
+            ${this.aptitudes()}
         `;
+    }
+
+    aptitudes() {
+        const skills = this.world.getComponent(this.selectedId, 'skills');
+        if (!skills) {
+            return '';
+        }
+        const notable = Object.entries(skills).filter(([, level]) => level > 0);
+        const text = notable.length
+            ? notable.map(([name, level]) => `${SKILL_LABELS[name] ?? name} niv. ${level}`).join(', ')
+            : 'Généraliste';
+        return `<p class="aptitudes">${text}</p>`;
     }
 
     describeActivity(activity, currentJob) {
