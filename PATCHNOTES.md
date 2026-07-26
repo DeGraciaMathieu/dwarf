@@ -2,6 +2,14 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — La cuisine et les plats préparés
+
+- **Nouvel atelier 🍳 Cuisine** (bâti à la menuiserie) : on y transforme les **champignons** et le **poisson** en **plats préparés**, une nourriture bien plus nourrissante que la récolte crue.
+- **Bien manger remonte le moral** : un nain qui déguste un plat cuisiné gagne **deux fois plus de moral** qu'en avalant du cru — une deuxième source de bonheur pilotable, après la bière.
+- **Piloté par le panneau Objectifs**, comme la bière : fixez une cible de plats et l'intendance cuisine ce qu'il faut, puis s'arrête une fois le stock atteint (« Bloqué : cuisine manquante » / « ingrédient cuisinable insuffisant » sinon).
+- Enfin une **raison de développer l'agriculture et la pêche** au-delà de la simple survie.
+- Technique : recette d'atelier `kitchen` + recette de plat `meal` (données pures) ; marqueur `cookable` sur les ingrédients, `cooked` sur les plats ; le gain de moral au repas dépend de la qualité (`ateMeal` vs `ate`).
+
 ## 2026-07-26 — Blessés, secours et infirmerie
 
 - **On ne meurt plus d'un seul coup** : sous un certain seuil, un nain **s'effondre grièvement blessé** au lieu de mourir net (« … s'effondre, grièvement blessé ! ») — à terre, incapable de travailler, de se battre ou de fuir.
