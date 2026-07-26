@@ -80,12 +80,43 @@ export class DrinkSystem {
     }
 
     findDrinkTarget(world, entityId) {
-        // en hiver les berges sont gelées : on se rabat uniquement sur la bière stockée
         const beer = this.nearestBeerTarget(world, entityId);
-        if (beer || isWinter(world)) {
+        if (beer) {
             return beer;
         }
+        // le puits ne gèle jamais : c'est la seule eau sûre en hiver
+        const well = this.nearestWellTarget(world, entityId);
+        if (well) {
+            return well;
+        }
+        // en hiver les berges sont gelées : sans puits ni bière, c'est l'isolement
+        if (isWinter(world)) {
+            return null;
+        }
         return this.reachableBankTarget(world, entityId);
+    }
+
+    nearestWellTarget(world, entityId) {
+        const position = world.getComponent(entityId, 'position');
+        const wells = world
+            .query('well', 'position')
+            .map((wellId) => {
+                const wellPosition = world.getComponent(wellId, 'position');
+                const distance = Math.max(
+                    Math.abs(wellPosition.x - position.x),
+                    Math.abs(wellPosition.y - position.y)
+                );
+                return { wellPosition, distance };
+            })
+            .sort((a, b) => a.distance - b.distance);
+        for (const { wellPosition } of wells) {
+            const path = findPath(this.terrain, position, wellPosition);
+            if (path) {
+                // pas d'itemId : on boit comme à une berge (eau, sans ivresse)
+                return { spot: { x: wellPosition.x, y: wellPosition.y }, path };
+            }
+        }
+        return null;
     }
 
     itemStillAt(world, drinkTarget) {

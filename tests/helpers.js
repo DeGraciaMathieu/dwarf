@@ -350,6 +350,13 @@ export function addBrewery(world, x, y) {
     return id;
 }
 
+export function addWell(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'well', {});
+    return id;
+}
+
 export function addBeer(world, x, y) {
     const id = world.createEntity();
     world.addComponent(id, 'position', { x, y });

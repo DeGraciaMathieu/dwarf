@@ -210,6 +210,7 @@ export class DesignationControl {
             return Boolean(
                 this.world.getComponent(id, 'workshop') ||
                     this.world.getComponent(id, 'bed') ||
+                    this.world.getComponent(id, 'well') ||
                     this.world.getComponent(id, 'item')
             );
         });

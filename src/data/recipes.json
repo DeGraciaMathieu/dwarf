@@ -59,6 +59,14 @@
         "ingredient": "stone",
         "workshop": "masonry"
     },
+    "well": {
+        "label": "un puits",
+        "ghost": "⊙",
+        "craftTicks": 18,
+        "produces": "well",
+        "ingredient": "stone",
+        "workshop": "masonry"
+    },
     "stoneDoor": {
         "label": "une porte de pierre",
         "ghost": "+",

@@ -126,6 +126,14 @@
             "comfort": { "range": 3, "bonus": 0.1 }
         }
     },
+    "well": {
+        "glyph": "⊙",
+        "color": "#5a8ab0",
+        "components": {
+            "item": {},
+            "well": {}
+        }
+    },
     "fish": {
         "glyph": "α",
         "color": "#6ab0d8",

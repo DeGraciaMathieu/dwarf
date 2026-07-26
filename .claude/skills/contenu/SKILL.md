@@ -48,6 +48,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `equipment` | slots d'un nain `{weapon, armor}` (ids des objets portés) ; lu par `combatSystem` (bonus d'arme, atténuation d'armure), lâché au sol à la mort |
 | `bed` | dortoir : récupération ×`recoveryMultiplier`, soin `heal`/tick (`sleepSystem`) |
 | `comfort` | meuble de confort (brasero) : `{range, bonus}` ; réchauffe en drift le moral des nains à portée (`moraleSystem.comfortOfHome`), un seul bonus par nain |
+| `well` | meuble puits (taillé à l'atelier de taille, pierre) : source d'eau que `drinkSystem` propose avant la berge et **qui ne gèle pas en hiver** — on y boit comme à une berge (sans ivresse) |
 | `workshop` | site de fabrication requis par les jobs `craft` ; `type` (`carpentry`, `brewery`, `masonry`, `forge`, `kitchen`) doit correspondre au champ `workshop` de la recette (un atelier sans type accepte tout — anciennes sauvegardes). L'atelier lui-même se construit via une recette `craft` : `workshop` (sans champ `workshop` → fabriqué sur le chantier), `brewery`/`masonry`/`forge`/`kitchen` (`workshop: carpentry` → exigent un atelier de menuiserie) |
 | `corpse` | dépouille qui vieillit (`decay`) : au seuil elle passe `rotten` (malus de moral de proximité) ; un job `bury` vers la zone `graves` la transforme en `buried`. Portée par `item` mais ignorée du haul générique (`graveSystem`) |
 | `crop` | pousse puis se récolte (`farmSystem`) |
