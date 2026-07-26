@@ -85,18 +85,31 @@ export class InspectionPanel {
             <h3>${identity.name}</h3>
             <p class="status">${status}</p>
             ${this.injuryNotice()}
-            ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
-            ${this.gauge('Moral', morale && { ...morale, threshold: morale.low }, true)}
+            <div class="section vitals">
+                ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
+                ${this.gauge('Moral', morale && { ...morale, threshold: morale.low }, true)}
+                ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
+                ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
+                ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
+            </div>
             ${this.moods()}
-            ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
-            ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
-            ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
-            ${this.equipment()}
-            ${this.aptitudes()}
-            ${this.character()}
-            ${this.rest()}
-            ${this.relationships()}
+            ${this.details()}
         `;
+    }
+
+    // regroupe les attributs textuels du nain dans une seule section
+    details() {
+        const parts = [
+            this.equipment(),
+            this.aptitudes(),
+            this.character(),
+            this.rest(),
+            this.relationships(),
+        ].filter(Boolean);
+        if (parts.length === 0) {
+            return '';
+        }
+        return `<div class="section details">${parts.join('')}</div>`;
     }
 
     // traits de caractère marquants (sociabilité, tempérament)
@@ -184,7 +197,7 @@ export class InspectionPanel {
                 return `<li class="mood-${sign}">${label}</li>`;
             })
             .join('');
-        return `<ul class="thoughts">${items}</ul>`;
+        return `<div class="section moods"><h4>Humeur</h4><ul class="thoughts">${items}</ul></div>`;
     }
 
     injuryNotice() {
@@ -224,7 +237,7 @@ export class InspectionPanel {
         const text = notable.length
             ? notable.map(([name, level]) => `${SKILL_LABELS[name] ?? name} niv. ${level}`).join(', ')
             : 'Généraliste';
-        return `<p class="aptitudes">${text}</p>`;
+        return `<p class="aptitudes">Aptitudes : ${text}</p>`;
     }
 
     describeActivity(activity, currentJob) {

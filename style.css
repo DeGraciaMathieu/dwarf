@@ -129,6 +129,31 @@ canvas {
 #inspection .status {
     margin: 0 0 8px;
     font-size: 12px;
+    color: #b0b0b0;
+}
+
+#inspection .section {
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid #333;
+}
+
+#inspection .section h4 {
+    margin: 0 0 4px;
+    font-size: 11px;
+    font-weight: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+}
+
+#inspection .details p {
+    margin: 0 0 4px;
+    font-size: 12px;
+}
+
+#inspection .details p:last-child {
+    margin-bottom: 0;
 }
 
 #inspection .gauge {
@@ -137,6 +162,10 @@ canvas {
     gap: 8px;
     font-size: 11px;
     margin-bottom: 4px;
+}
+
+#inspection .gauge:last-child {
+    margin-bottom: 0;
 }
 
 #inspection .gauge span {
@@ -157,6 +186,32 @@ canvas {
 
 #inspection .gauge-fill.critical {
     background: #c05030;
+}
+
+#inspection .thoughts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 12px;
+}
+
+#inspection .thoughts li {
+    padding: 1px 0;
+}
+
+#inspection .thoughts .mood-good {
+    color: #7aa86a;
+}
+
+#inspection .thoughts .mood-bad {
+    color: #c07060;
+}
+
+#inspection .injury {
+    margin: 8px 0 0;
+    font-size: 12px;
+    color: #e06060;
+    font-weight: bold;
 }
 
 aside {
