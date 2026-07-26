@@ -117,7 +117,7 @@ async function main() {
     world.registerSystem(goblinSpawn);
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     const objectives = [
-        { recipe: 'beer', target: 3 },
+        { recipe: 'beer', target: 0 },
         { recipe: 'meal', target: 0 },
         { recipe: 'sword', target: 0 },
         { recipe: 'axe', target: 0 },
