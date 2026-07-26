@@ -100,10 +100,15 @@ test('intendance : le statut de l\'objectif suit les blocages puis la production
     assert.equal(objectives[0].status.blocker, null);
 
     const stocksSeen = new Set();
+    let sawPending = false;
     for (let tick = 0; tick < 300; tick++) {
         colony.run(1);
         stocksSeen.add(objectives[0].status.stock);
+        if (objectives[0].status.pending > 0) {
+            sawPending = true;
+        }
     }
+    assert.ok(sawPending, 'la production en file apparaît dans le statut (« en production »)');
     assert.ok(stocksSeen.has(1), 'le stock intermédiaire doit apparaître dans le statut');
     assert.equal(objectives[0].status.stock, 2);
     assert.equal(objectives[0].status.blocker, null);
