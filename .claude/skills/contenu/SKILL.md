@@ -13,7 +13,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | Fichier | Contient | Chargé par |
 |---|---|---|
 | `creatures.json` | `dwarf` (+ pool `names`, composant `skills` d'aptitudes), archétypes hostiles `goblin`, `brute` (coriace), `archer` (`combat.range`), `chief` (`leader`, aura de dégâts) | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
-| `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `sword`, `mail` | `main.js`, systèmes producteurs |
+| `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, armes `sword`/`axe`/`spear`, armures `mail`/`plate`/`shield` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `ore`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
 | `recipes.json` | `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `sword`, `mail`, `beer` — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?}` | `craftSystem.js`, `designation.js` |

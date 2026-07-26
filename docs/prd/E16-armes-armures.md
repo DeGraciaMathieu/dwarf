@@ -1,6 +1,6 @@
 # PRD E16 — Armes et armures supplémentaires
 
-**Lot :** E — Richesse de contenu · **Point :** 16 · **Statut :** À faire · **Impact / Effort :** Moyen / Faible
+**Lot :** E — Richesse de contenu · **Point :** 16 · **Statut :** ✅ Fait · **Impact / Effort :** Moyen / Faible
 
 ## Problème
 
