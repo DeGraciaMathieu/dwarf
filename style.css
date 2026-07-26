@@ -387,19 +387,23 @@ aside h2 {
     color: #e0c060;
 }
 
-#event-log {
+.event-log {
     margin: 0;
     padding: 0;
     list-style: none;
     font-size: 12px;
 }
 
-#event-log li {
+#event-log-important {
+    margin-bottom: 16px;
+}
+
+.event-log li {
     padding: 2px 0;
     border-bottom: 1px solid #2a2a2a;
 }
 
-#event-log li.alert {
+.event-log li.alert {
     color: #e06060;
     font-weight: bold;
 }

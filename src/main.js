@@ -177,7 +177,12 @@ async function main() {
 
     const canvas = document.getElementById('game');
     const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, bedrooms, TILE_SIZE);
-    const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
+    const eventLog = new EventLog(
+        document.getElementById('event-log-important'),
+        document.getElementById('event-log'),
+        eventBus,
+        world
+    );
     const inspection = new InspectionPanel(document.getElementById('inspection'), world, bedrooms);
     const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
     const legendPanel = new LegendPanel(document.getElementById('legend'), world);
@@ -232,7 +237,7 @@ async function main() {
 
     document.getElementById('show-legend').addEventListener('click', () => legendPanel.toggle());
     eventBus.on(EVENTS.COLONY_ENDED, () => {
-        eventLog.append('La colonie s\'est éteinte. Voici sa légende…', true);
+        eventLog.append('La colonie s\'est éteinte. Voici sa légende…', true, true);
         legendPanel.open();
     });
 

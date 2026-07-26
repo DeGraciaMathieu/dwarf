@@ -16,8 +16,11 @@ const JOB_LABELS = {
 };
 
 export class EventLog {
-    constructor(element, eventBus, world) {
-        this.element = element;
+    // importantElement : journal des faits marquants (dangers, jalons) ;
+    // routineElement : journal des activités courantes
+    constructor(importantElement, routineElement, eventBus, world) {
+        this.importantElement = importantElement;
+        this.routineElement = routineElement;
         // l'entité peut avoir été détruite avant le flush de fin de tick
         // (mort dans le même tick que l'événement) : repli sur un nom générique
         const dwarfName = (entityId) => {
@@ -65,20 +68,22 @@ export class EventLog {
             this.append(
                 count > 1
                     ? `Une bande de ${count} gobelins déferle sur la région !`
-                    : 'Un gobelin est apparu aux abords de la carte !'
+                    : 'Un gobelin est apparu aux abords de la carte !',
+                true,
+                true
             );
         });
         eventBus.on(EVENTS.MIGRANT_ARRIVED, ({ name }) => {
-            this.append(`Un migrant est arrivé : ${name} !`);
+            this.append(`Un migrant est arrivé : ${name} !`, false, true);
         });
         eventBus.on(EVENTS.DWARF_FLEES, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} détale devant un gobelin !`);
+            this.append(`${dwarfName(entityId)} détale devant un gobelin !`, false, true);
         });
         eventBus.on(EVENTS.DWARF_FIGHTS, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} charge un gobelin !`);
+            this.append(`${dwarfName(entityId)} charge un gobelin !`, false, true);
         });
         eventBus.on(EVENTS.DWARF_INJURED, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} est blessé !`);
+            this.append(`${dwarfName(entityId)} est blessé !`, false, true);
         });
         eventBus.on(EVENTS.DWARF_THIRSTY, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a soif !`);
@@ -90,10 +95,10 @@ export class EventLog {
             this.append(`${dwarfName(entityId)} a vidé une chope de bière !`);
         });
         eventBus.on(EVENTS.DWARF_STARVING, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} meurt de faim !`);
+            this.append(`${dwarfName(entityId)} meurt de faim !`, true, true);
         });
         eventBus.on(EVENTS.DWARF_DEHYDRATED, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} meurt de soif !`);
+            this.append(`${dwarfName(entityId)} meurt de soif !`, true, true);
         });
         eventBus.on(EVENTS.DWARF_DIED, ({ name, cause }) => {
             const messages = {
@@ -102,15 +107,19 @@ export class EventLog {
                 brawl: `${name} est mort dans une rixe.`,
                 bleeding: `${name} s'est vidé de son sang.`,
             };
-            this.append(messages[cause] ?? `${name} a succombé à ses blessures.`);
+            this.append(messages[cause] ?? `${name} a succombé à ses blessures.`, true, true);
         });
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) => {
             // le tueur n'est pas toujours un nain (un prédateur peut décimer les hostiles)
             const killer = world.getComponent(killerId, 'identity');
-            this.append(killer ? `${killer.name} a terrassé un gobelin !` : 'Un gobelin a péri !');
+            this.append(
+                killer ? `${killer.name} a terrassé un gobelin !` : 'Un gobelin a péri !',
+                false,
+                true
+            );
         });
         eventBus.on(EVENTS.DWARF_TANTRUM, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} pète les plombs !`);
+            this.append(`${dwarfName(entityId)} pète les plombs !`, true, true);
         });
         eventBus.on(EVENTS.DWARF_CALMED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} s'est calmé.`);
@@ -135,10 +144,10 @@ export class EventLog {
             this.append(`${dwarfName(entityId)} ${gear}.`);
         });
         eventBus.on(EVENTS.DWARF_ISOLATED_FROM_WATER, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} n'a plus accès à l'eau !`, true);
+            this.append(`${dwarfName(entityId)} n'a plus accès à l'eau !`, true, true);
         });
         eventBus.on(EVENTS.DWARF_CANNOT_REACH_FOOD, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} ne peut atteindre aucune nourriture !`, true);
+            this.append(`${dwarfName(entityId)} ne peut atteindre aucune nourriture !`, true, true);
         });
         eventBus.on(EVENTS.DEMOLISHED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a démoli quelque chose.`);
@@ -147,22 +156,22 @@ export class EventLog {
             this.append(`${dwarfName(entityId)} est ivre !`, true);
         });
         eventBus.on(EVENTS.DWARF_BRAWLS, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} cherche la bagarre !`, true);
+            this.append(`${dwarfName(entityId)} cherche la bagarre !`, true, true);
         });
         eventBus.on(EVENTS.DWARF_SOBERED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} a dessoûlé.`);
         });
         eventBus.on(EVENTS.DWARF_WOUNDED, ({ entityId }) => {
-            this.append(`${dwarfName(entityId)} s'effondre, grièvement blessé !`, true);
+            this.append(`${dwarfName(entityId)} s'effondre, grièvement blessé !`, true, true);
         });
         eventBus.on(EVENTS.DWARF_HEALED, ({ entityId }) => {
             this.append(`${dwarfName(entityId)} est soigné et se remet sur pied.`);
         });
         eventBus.on(EVENTS.DWARF_BEFRIENDED, ({ entityId, otherId }) => {
-            this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont devenus amis.`);
+            this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont devenus amis.`, false, true);
         });
         eventBus.on(EVENTS.DWARF_FELL_OUT, ({ entityId, otherId }) => {
-            this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont désormais rivaux.`, true);
+            this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont désormais rivaux.`, true, true);
         });
         eventBus.on(EVENTS.FOOD_SPOILED, () => {
             this.append('Un plat s\'est gâté faute de garde-manger.');
@@ -172,35 +181,37 @@ export class EventLog {
                 isWinter
                     ? "L'hiver s'installe : les cultures gèlent et les berges se prennent en glace."
                     : `Le climat tourne : voici ${season}.`,
-                isWinter
+                isWinter,
+                true
             );
         });
         eventBus.on(EVENTS.JOB_UNREACHABLE, ({ job }) => {
             const label = JOB_LABELS[job.type] ?? job.type;
-            this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true);
+            this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true, true);
         });
         eventBus.on(EVENTS.EVENT_PLAGUE_STRUCK, ({ count }) => {
-            this.append(`Une épidémie frappe la colonie : ${count} nain(s) affaibli(s) !`, true);
+            this.append(`Une épidémie frappe la colonie : ${count} nain(s) affaibli(s) !`, true, true);
         });
         eventBus.on(EVENTS.EVENT_BEAST_APPEARED, ({ creature, label }) => {
             this.append(
                 creature === 'dragon'
                     ? `UN DRAGON surgit et fond sur tout ce qui vit !`
                     : `${this.capitalize(label ?? 'une bête sauvage')} rôde aux abords !`,
+                true,
                 true
             );
         });
         eventBus.on(EVENTS.EVENT_HARVEST_BOON, () => {
-            this.append('Une récolte miraculeuse : toutes les cultures mûrissent d\'un coup !');
+            this.append('Une récolte miraculeuse : toutes les cultures mûrissent d\'un coup !', false, true);
         });
         eventBus.on(EVENTS.EVENT_HARVEST_BLIGHT, () => {
-            this.append('Une nuée ravage les champs : les cultures sont perdues !', true);
+            this.append('Une nuée ravage les champs : les cultures sont perdues !', true, true);
         });
         eventBus.on(EVENTS.EVENT_WANDERER_ARRIVED, ({ name }) => {
-            this.append(`Un vagabond rejoint la colonie : ${name} !`);
+            this.append(`Un vagabond rejoint la colonie : ${name} !`, false, true);
         });
         eventBus.on(EVENTS.EVENT_CAVE_IN, ({ x, y }) => {
-            this.append(`Un éboulement bloque un passage en (${x}, ${y}) !`, true);
+            this.append(`Un éboulement bloque un passage en (${x}, ${y}) !`, true, true);
         });
     }
 
@@ -208,15 +219,17 @@ export class EventLog {
         return text.charAt(0).toUpperCase() + text.slice(1);
     }
 
-    append(message, alert = false) {
+    // important : range la ligne dans le journal des faits marquants plutôt que le courant
+    append(message, alert = false, important = false) {
         const line = document.createElement('li');
         line.textContent = message;
         if (alert) {
             line.className = 'alert';
         }
-        this.element.prepend(line);
-        while (this.element.children.length > MAX_LINES) {
-            this.element.lastChild.remove();
+        const target = important ? this.importantElement : this.routineElement;
+        target.prepend(line);
+        while (target.children.length > MAX_LINES) {
+            target.lastChild.remove();
         }
     }
 }

@@ -21,7 +21,7 @@ globalThis.document ??= { createElement: () => ({}) };
 
 test('journal : une mort survenue dans le tick de son annonce ne fige pas le jeu', () => {
     const colony = setupColony(openTerrain(6, 1));
-    new EventLog(fakeLogElement(), colony.bus, colony.world);
+    new EventLog(fakeLogElement(), fakeLogElement(), colony.bus, colony.world);
     // soif au maximum + santé quasi nulle : l'annonce DWARF_DEHYDRATED et la mort
     // tombent dans le même tick, l'entité est détruite avant le flush du journal
     addDwarf(colony.world, 0, 0, { name: 'Litast', thirst: 100, health: 0.2 });
