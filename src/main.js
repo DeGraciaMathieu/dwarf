@@ -51,8 +51,8 @@ import { InspectionPanel } from './ui/inspectionPanel.js';
 import { ObjectivesPanel } from './ui/objectivesPanel.js';
 import { Hud } from './ui/hud.js';
 
-const GRID = { width: 40, height: 25 };
-const TILE_SIZE = 20;
+const GRID = { width: 60, height: 36 };
+const TILE_SIZE = 16;
 const TICKS_PER_SECOND = 5;
 const STARTING_DWARVES = 5;
 const BREAD_COUNT = 8;
