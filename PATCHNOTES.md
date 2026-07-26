@@ -2,6 +2,15 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Blessés, secours et infirmerie
+
+- **On ne meurt plus d'un seul coup** : sous un certain seuil, un nain **s'effondre grièvement blessé** au lieu de mourir net (« … s'effondre, grièvement blessé ! ») — à terre, incapable de travailler, de se battre ou de fuir.
+- **Le sablier tourne** : un blessé laissé sans soin **se vide de son sang** et finit par succomber (« … s'est vidé de son sang. ») — il faut faire vite.
+- **Nouvelle zone ✚ Infirmerie** : désignez-la, et un nain valide **traîne le blessé** jusqu'à elle (secours), puis **un soigneur le remet sur pied** (« … est soigné et se remet sur pied. »). Un **lit** sur place accélère la guérison.
+- **Les rixes de taverne** peuvent désormais laisser un camarade blessé à secourir, et non plus seulement un mort ou rien.
+- La fiche d'inspection signale l'état **« ⚠ Blessé, à terre »**.
+- Technique : composant `injury` (saignement + incapacité) posé sous le seuil par `combatSystem` ; `injurySystem` gère le saignement ; activités arbitrées `rescue`/`heal` + Zone `infirmary`.
+
 ## 2026-07-26 — Amitiés, rivalités et deuils
 
 - **Les nains se lient enfin** : à force d'être seul, un nain va **discuter** avec un camarade proche ; côte à côte, tous deux comblent leur besoin de compagnie et **tissent une amitié** (« … et … sont devenus amis. »).
