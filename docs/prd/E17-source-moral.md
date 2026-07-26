@@ -1,6 +1,6 @@
 # PRD E17 — Deuxième source de moral
 
-**Lot :** E — Richesse de contenu · **Point :** 17 · **Statut :** À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** E — Richesse de contenu · **Point :** 17 · **Statut :** ✅ Fait (option meuble de proximité) · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 

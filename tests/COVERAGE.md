@@ -21,7 +21,7 @@ nouveau PRD comportemental = ajouter sa ligne ici avec son fichier de scénario.
 | D13 — resetUnreachable ciblé | accès (proche) vs supply (global) | `unreachable.test.js` |
 | D14 — garde-fou besoins | marqueur + une alerte, levé à l'ouverture (eau, nourriture) | `needs-access.test.js` |
 | E16 — armes/armures | hache tue plus vite, plates encaissent mieux, recettes forge | `equipment.test.js` |
-| E17 — source de moral | _à couvrir à l'implémentation_ | — |
+| E17 — source de moral | nain près d'un brasero > témoin hors portée | `comfort.test.js` |
 | E18 — progression paliers | _à couvrir à l'implémentation_ | — |
 
 Hors PRD mais couvert : outil « Démolir » (`demolish.test.js`).
