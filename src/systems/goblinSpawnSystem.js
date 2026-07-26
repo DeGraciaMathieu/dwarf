@@ -23,10 +23,16 @@ const CHIEF_CHANCE = 0.5;
 
 export class GoblinSpawnSystem {
     // archetypes : { grunt, brute, archer, chief } (définitions de creatures.json)
-    constructor(terrain, archetypes, random = Math.random) {
+    // config : override de la courbe de menace par difficulté (valeurs par défaut = constantes de module)
+    constructor(terrain, archetypes, random = Math.random, config = {}) {
         this.terrain = terrain;
         this.archetypes = archetypes.grunt ? archetypes : { grunt: archetypes };
         this.random = random;
+        this.firstWaveDelay = config.firstWaveDelay ?? FIRST_WAVE_DELAY;
+        this.baseInterval = config.baseInterval ?? BASE_INTERVAL;
+        this.minInterval = config.minInterval ?? MIN_INTERVAL;
+        this.maxWaveSize = config.maxWaveSize ?? MAX_WAVE_SIZE;
+        this.populationComfort = config.populationComfort ?? POPULATION_COMFORT;
     }
 
     update(world, eventBus) {
@@ -62,7 +68,7 @@ export class GoblinSpawnSystem {
 
     // intervalle jitteré autour d'une base qui se resserre lentement avec les vagues
     nextInterval(wave) {
-        const base = Math.max(MIN_INTERVAL, BASE_INTERVAL - wave * INTERVAL_ACCEL);
+        const base = Math.max(this.minInterval, this.baseInterval - wave * INTERVAL_ACCEL);
         const jitter = 1 + (this.random() * 2 - 1) * INTERVAL_JITTER;
         return Math.round(base * jitter);
     }
@@ -73,7 +79,7 @@ export class GoblinSpawnSystem {
             return world.getComponent(existing, 'invasion');
         }
         const stateId = world.createEntity();
-        const state = { wave: 0, countdown: FIRST_WAVE_DELAY };
+        const state = { wave: 0, countdown: this.firstWaveDelay };
         world.addComponent(stateId, 'invasion', state);
         return state;
     }
@@ -88,7 +94,7 @@ export class GoblinSpawnSystem {
         const existing = world.query('invasion')[0];
         return existing !== undefined
             ? world.getComponent(existing, 'invasion').countdown
-            : FIRST_WAVE_DELAY;
+            : this.firstWaveDelay;
     }
 
     // prospérité militaire et industrielle : ce qui attire les pillards
@@ -103,10 +109,10 @@ export class GoblinSpawnSystem {
     waveSize(wave, population, richness) {
         // progression lente : +1 toutes les 3 vagues seulement
         const fromWave = Math.floor((wave - 1) / 3);
-        const fromPopulation = Math.floor(Math.max(0, population - POPULATION_COMFORT) / 4);
+        const fromPopulation = Math.floor(Math.max(0, population - this.populationComfort) / 4);
         const fromRichness = Math.floor(richness / 5);
         // plafond dérivé : une petite colonie est ménagée, une grande peut être submergée
-        const cap = Math.min(MAX_WAVE_SIZE, Math.max(3, population));
+        const cap = Math.min(this.maxWaveSize, Math.max(3, population));
         return Math.min(cap, 1 + fromWave + fromPopulation + fromRichness);
     }
 

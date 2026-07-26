@@ -1,0 +1,63 @@
+{
+    "profiles": [
+        {
+            "id": "standard",
+            "label": "Colonie équilibrée",
+            "description": "Cinq nains et des vivres pour tenir. Le départ classique.",
+            "default": true,
+            "dwarves": 5,
+            "items": [{ "item": "bread", "count": 8 }]
+        },
+        {
+            "id": "pioneers",
+            "label": "Poignée de pionniers",
+            "description": "Trois nains seulement et peu de provisions. Un vrai défi.",
+            "dwarves": 3,
+            "items": [{ "item": "bread", "count": 5 }]
+        },
+        {
+            "id": "caravan",
+            "label": "Grande caravane",
+            "description": "Sept nains et des provisions abondantes, bière comprise.",
+            "dwarves": 7,
+            "items": [
+                { "item": "bread", "count": 12 },
+                { "item": "beer", "count": 4 }
+            ]
+        }
+    ],
+    "difficulties": [
+        {
+            "id": "peaceful",
+            "label": "Paisible",
+            "description": "Les gobelins se font rares et les vivres abondent.",
+            "resourceMultiplier": 1.5,
+            "waveParams": {
+                "firstWaveDelay": 1200,
+                "baseInterval": 2000,
+                "minInterval": 1400,
+                "maxWaveSize": 8
+            }
+        },
+        {
+            "id": "normal",
+            "label": "Normale",
+            "description": "L'équilibre historique de la colonie.",
+            "default": true,
+            "resourceMultiplier": 1,
+            "waveParams": {}
+        },
+        {
+            "id": "harsh",
+            "label": "Rude",
+            "description": "Vagues plus fréquentes et plus nombreuses, vivres réduits.",
+            "resourceMultiplier": 0.6,
+            "waveParams": {
+                "firstWaveDelay": 400,
+                "baseInterval": 1000,
+                "minInterval": 700,
+                "maxWaveSize": 16
+            }
+        }
+    ]
+}

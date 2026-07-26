@@ -4,7 +4,6 @@ import { startLoop } from './core/loop.js';
 import { generateTerrain, largestWalkableRegion } from './core/terrain.js';
 import { JobBoard } from './core/jobBoard.js';
 import { Zone } from './core/zones.js';
-import { spawnFromDefinition } from './core/spawn.js';
 import { serializeGame, restoreGame } from './save.js';
 import { EVENTS } from './events/events.js';
 import { MovementSystem } from './systems/movementSystem.js';
@@ -16,7 +15,7 @@ import { MoraleSystem } from './systems/moraleSystem.js';
 import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
 import { SleepSystem } from './systems/sleepSystem.js';
-import { SocializeSystem, assignPersonality } from './systems/socializeSystem.js';
+import { SocializeSystem } from './systems/socializeSystem.js';
 import { RescueSystem } from './systems/rescueSystem.js';
 import { HealSystem } from './systems/healSystem.js';
 import { InjurySystem } from './systems/injurySystem.js';
@@ -35,7 +34,7 @@ import { EquipSystem } from './systems/equipSystem.js';
 import { BuildSystem } from './systems/buildSystem.js';
 import { CraftSystem } from './systems/craftSystem.js';
 import { DemolishSystem } from './systems/demolishSystem.js';
-import { assignAptitude } from './systems/workEffort.js';
+import { populateColony } from './systems/embarkSetup.js';
 import { StewardSystem } from './systems/stewardSystem.js';
 import { FarmSystem } from './systems/farmSystem.js';
 import { FishSystem } from './systems/fishSystem.js';
@@ -51,22 +50,25 @@ import { DesignationControl } from './ui/designation.js';
 import { InspectionPanel } from './ui/inspectionPanel.js';
 import { ObjectivesPanel } from './ui/objectivesPanel.js';
 import { LegendPanel } from './ui/legendPanel.js';
+import { EmbarkScreen } from './ui/embarkScreen.js';
 import { Hud } from './ui/hud.js';
 
 const GRID = { width: 40, height: 25 };
 const TILE_SIZE = 20;
 const TICKS_PER_SECOND = 5;
-const STARTING_DWARVES = 5;
-const BREAD_COUNT = 8;
 
 async function main() {
-    const [creatures, items, tiles, plants, recipes] = await Promise.all([
+    const [creatures, items, tiles, plants, recipes, embark] = await Promise.all([
         fetch('src/data/creatures.json').then((response) => response.json()),
         fetch('src/data/items.json').then((response) => response.json()),
         fetch('src/data/tiles.json').then((response) => response.json()),
         fetch('src/data/plants.json').then((response) => response.json()),
         fetch('src/data/recipes.json').then((response) => response.json()),
+        fetch('src/data/embark.json').then((response) => response.json()),
     ]);
+
+    const embarkScreen = new EmbarkScreen(document.getElementById('embark'), embark);
+    const embarkConfig = await embarkScreen.choose();
 
     const world = new World();
     const eventBus = new EventBus();
@@ -111,12 +113,17 @@ async function main() {
     );
     world.registerSystem(new MoraleSystem(eventBus));
     world.registerSystem(new IntoxicationSystem());
-    const goblinSpawn = new GoblinSpawnSystem(terrain, {
-        grunt: creatures.goblin,
-        brute: creatures.brute,
-        archer: creatures.archer,
-        chief: creatures.chief,
-    });
+    const goblinSpawn = new GoblinSpawnSystem(
+        terrain,
+        {
+            grunt: creatures.goblin,
+            brute: creatures.brute,
+            archer: creatures.archer,
+            chief: creatures.chief,
+        },
+        Math.random,
+        embarkConfig.difficulty.waveParams
+    );
     world.registerSystem(goblinSpawn);
     world.registerSystem(new MigrantSystem(terrain, creatures.dwarf));
     const objectives = [
@@ -161,15 +168,7 @@ async function main() {
     world.registerSystem(new ChronicleSystem(eventBus));
 
     const randomTile = () => spawnRegion[Math.floor(Math.random() * spawnRegion.length)];
-    for (const name of creatures.dwarf.names.slice(0, STARTING_DWARVES)) {
-        const dwarfId = spawnFromDefinition(world, creatures.dwarf, randomTile());
-        world.addComponent(dwarfId, 'identity', { name });
-        assignAptitude(world, dwarfId);
-        assignPersonality(world, dwarfId);
-    }
-    for (let i = 0; i < BREAD_COUNT; i++) {
-        spawnFromDefinition(world, items.bread, randomTile());
-    }
+    populateColony(world, { dwarf: creatures.dwarf, items }, embarkConfig, randomTile);
 
     const canvas = document.getElementById('game');
     const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, bedrooms, TILE_SIZE);

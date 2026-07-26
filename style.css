@@ -11,6 +11,88 @@ main {
     padding: 16px;
 }
 
+.embark-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    background: rgba(10, 10, 10, 0.95);
+    overflow: auto;
+}
+
+.embark-overlay.visible {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.embark-panel {
+    width: 420px;
+    max-width: 90vw;
+    padding: 24px;
+    border: 1px solid #6a5a30;
+    background: #222;
+}
+
+.embark-panel h1 {
+    margin: 0 0 16px;
+    font-size: 20px;
+    color: #e0c060;
+}
+
+.embark-panel h2 {
+    margin: 16px 0 8px;
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: #888;
+}
+
+.embark-option {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 2px 8px;
+    padding: 8px;
+    margin-bottom: 6px;
+    border: 1px solid #444;
+    cursor: pointer;
+}
+
+.embark-option:hover {
+    border-color: #6a5a30;
+}
+
+.embark-option input {
+    grid-row: span 2;
+    align-self: center;
+}
+
+.embark-option-label {
+    font-size: 13px;
+    color: #e0c060;
+}
+
+.embark-option-desc {
+    font-size: 12px;
+    color: #999;
+}
+
+.embark-panel #embark-start {
+    margin-top: 16px;
+    width: 100%;
+    padding: 10px;
+    background: #4a8a3a;
+    color: #fff;
+    border: none;
+    font-family: monospace;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.embark-panel #embark-start:hover {
+    background: #5aa048;
+}
+
 canvas {
     background: #000;
     border: 1px solid #444;
