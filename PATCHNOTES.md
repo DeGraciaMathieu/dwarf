@@ -2,6 +2,19 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — L'hiver ne gèle plus toute l'eau
+
+- **Le gel hivernal est désormais partiel** : à l'arrivée de l'hiver, une partie seulement des cases d'eau gèle — le reste reste de l'**eau libre** où les nains peuvent encore s'abreuver et pêcher.
+- **Distinction visuelle** : la **glace** apparaît en bleu pâle (`▒`), bien distincte de l'eau libre (`≈` bleu profond) — un coup d'œil suffit à repérer où boire.
+- **Fini l'isolement systématique** : tant qu'une berge libre reste accessible, plus de crise de soif automatique en hiver ; celle-ci ne survient que si l'eau proche est entièrement gelée (le puits et la bière restant toujours sûrs).
+- **Le dégel restaure tout** : au printemps, la glace redevient de l'eau, sans rien à faire.
+- Technique : `freezeSystem` convertit ~60 % des cases `water` en `ice` à l'entrée de l'hiver et l'inverse au dégel ; l'état vit dans le terrain (donc sauvegardé), le gel ne se rejoue qu'une fois par hiver.
+
+## 2026-07-26 — Fin des allers-retours sociaux
+
+- **Les nains ne traversent plus la carte pour bavarder** : un nain esseulé rejoint un ami **à portée**, et se rabat sinon sur le camarade le plus proche — fini les longs trajets vers un ami lointain et les poursuites sans fin d'un compagnon qui bouge.
+- Les **cliques locales** restent préservées : à portée, on privilégie toujours ses amis.
+
 ## 2026-07-26 — Deux journaux : marquant vs quotidien
 
 - **Le journal est désormais scindé en deux** : un panneau **« Événements marquants »** au-dessus, et le **« Journal »** courant en dessous.
