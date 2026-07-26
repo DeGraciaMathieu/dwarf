@@ -1,12 +1,16 @@
 import { EVENTS } from '../events/events.js';
 import { findPath } from '../core/pathfinding.js';
 
+const NO_FOOD_RETRY_DELAY = 50;
+
 export class EatingSystem {
     constructor(terrain) {
         this.terrain = terrain;
     }
 
     update(world, eventBus) {
+        this.reviewAccess(world);
+
         for (const entityId of world.query('activity', 'position')) {
             const activity = world.getComponent(entityId, 'activity');
             if (activity.type === 'eat' && !world.getComponent(entityId, 'foodTarget')) {
@@ -24,7 +28,38 @@ export class EatingSystem {
         }
     }
 
+    // garde-fou : un affamé sans nourriture atteignable est réévalué ; dès qu'un
+    // chemin réapparaît le marqueur est levé, sans ré-émettre pendant l'impasse
+    reviewAccess(world) {
+        for (const entityId of world.query('noFoodAccess')) {
+            const marker = world.getComponent(entityId, 'noFoodAccess');
+            if (marker.cooldown-- > 0) {
+                continue;
+            }
+            if (this.reachableFood(world, entityId)) {
+                world.removeComponent(entityId, 'noFoodAccess');
+            } else {
+                marker.cooldown = NO_FOOD_RETRY_DELAY;
+            }
+        }
+    }
+
     assignFoodTarget(world, eventBus, entityId) {
+        const target = this.reachableFood(world, entityId);
+        if (target) {
+            world.addComponent(entityId, 'foodTarget', target);
+            world.removeComponent(entityId, 'noFoodAccess');
+            return;
+        }
+        // aucune nourriture atteignable : il continuera de s'affamer (sans figer,
+        // l'arbitre l'écarte de 'eat' tant que le marqueur tient)
+        if (!world.getComponent(entityId, 'noFoodAccess')) {
+            eventBus.emit(EVENTS.DWARF_CANNOT_REACH_FOOD, { entityId });
+            world.addComponent(entityId, 'noFoodAccess', { cooldown: NO_FOOD_RETRY_DELAY });
+        }
+    }
+
+    reachableFood(world, entityId) {
         const position = world.getComponent(entityId, 'position');
         const candidates = world
             .query('food', 'position')
@@ -41,16 +76,10 @@ export class EatingSystem {
         for (const { foodId, foodPosition } of candidates) {
             const path = findPath(this.terrain, position, foodPosition);
             if (path) {
-                world.addComponent(entityId, 'foodTarget', { target: foodId, path });
-                world.removeComponent(entityId, 'noFoodAccess');
-                return;
+                return { target: foodId, path };
             }
         }
-        // aucune nourriture atteignable : il continuera de s'affamer
-        if (!world.getComponent(entityId, 'noFoodAccess')) {
-            eventBus.emit(EVENTS.DWARF_CANNOT_REACH_FOOD, { entityId });
-            world.addComponent(entityId, 'noFoodAccess', {});
-        }
+        return null;
     }
 
     followPath(world, eventBus, entityId) {

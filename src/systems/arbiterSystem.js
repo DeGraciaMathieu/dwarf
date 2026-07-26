@@ -90,6 +90,9 @@ export class ArbiterSystem {
         if (!hunger || !foodAvailable || hunger.value < hunger.threshold) {
             return 0;
         }
+        if (world.getComponent(entityId, 'noFoodAccess')) {
+            return 0;
+        }
         return hunger.value;
     }
 

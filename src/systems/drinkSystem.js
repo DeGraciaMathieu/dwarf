@@ -10,13 +10,7 @@ export class DrinkSystem {
     }
 
     update(world, eventBus) {
-        for (const entityId of world.query('noWaterAccess')) {
-            const noWater = world.getComponent(entityId, 'noWaterAccess');
-            noWater.cooldown--;
-            if (noWater.cooldown <= 0) {
-                world.removeComponent(entityId, 'noWaterAccess');
-            }
-        }
+        this.reviewAccess(world);
 
         for (const entityId of world.query('activity', 'thirst')) {
             const activity = world.getComponent(entityId, 'activity');
@@ -30,9 +24,7 @@ export class DrinkSystem {
                 drinkTarget = null;
             }
             if (!drinkTarget) {
-                drinkTarget =
-                    this.nearestBeerTarget(world, entityId) ??
-                    this.reachableBankTarget(world, entityId);
+                drinkTarget = this.findDrinkTarget(world, entityId);
                 if (!drinkTarget) {
                     // renoncement : il continuera à vivre et travailler en se déshydratant
                     if (!world.getComponent(entityId, 'noWaterAccess')) {
@@ -61,6 +53,29 @@ export class DrinkSystem {
                 eventBus.emit(EVENTS.DWARF_DRANK, { entityId });
             }
         }
+    }
+
+    // garde-fou : un nain isolé de l'eau est réévalué périodiquement ; dès que
+    // l'eau redevient atteignable, le marqueur (et donc la crise) est levé sans
+    // ré-émettre l'alerte tant que l'impasse dure
+    reviewAccess(world) {
+        for (const entityId of world.query('noWaterAccess')) {
+            const marker = world.getComponent(entityId, 'noWaterAccess');
+            if (marker.cooldown-- > 0) {
+                continue;
+            }
+            if (this.findDrinkTarget(world, entityId)) {
+                world.removeComponent(entityId, 'noWaterAccess');
+            } else {
+                marker.cooldown = NO_WATER_RETRY_DELAY;
+            }
+        }
+    }
+
+    findDrinkTarget(world, entityId) {
+        return (
+            this.nearestBeerTarget(world, entityId) ?? this.reachableBankTarget(world, entityId)
+        );
     }
 
     itemStillAt(world, drinkTarget) {
