@@ -5,5 +5,6 @@
     "tree": { "glyph": "♣", "color": "#4a8a3a", "walkable": false },
     "door": { "glyph": "+", "color": "#c09050", "walkable": true, "blocksHostiles": true },
     "water": { "glyph": "≈", "color": "#3a6ad0", "walkable": false },
+    "ice": { "glyph": "▒", "color": "#a8ccdf", "walkable": false },
     "bridge": { "glyph": "≡", "color": "#a07040", "walkable": true }
 }

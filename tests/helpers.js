@@ -6,6 +6,7 @@ import { JobBoard } from '../src/core/jobBoard.js';
 import { Zone } from '../src/core/zones.js';
 import { EVENTS } from '../src/events/events.js';
 import { SeasonSystem, SEASON_LENGTH, SEASONS } from '../src/systems/seasonSystem.js';
+import { FreezeSystem } from '../src/systems/freezeSystem.js';
 import { NeedsSystem } from '../src/systems/needsSystem.js';
 import { AttritionSystem } from '../src/systems/attritionSystem.js';
 import { DrinkSystem } from '../src/systems/drinkSystem.js';
@@ -95,6 +96,7 @@ export function setupColony(
     const infirmary = new Zone();
     const bedrooms = new Zone();
     world.registerSystem(new SeasonSystem());
+    world.registerSystem(new FreezeSystem(terrain, random));
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },

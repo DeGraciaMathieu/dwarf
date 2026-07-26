@@ -51,12 +51,13 @@ test('saisons : en hiver un assoiffé boit la bière stockée', () => {
     assert.ok(drankBeer.length >= 1, 'il a bu de la bière, pas à la berge');
 });
 
-test('saisons : en hiver sans bière, l\'assoiffé déclenche l\'isolement malgré l\'eau', () => {
-    const colony = setupColony(makeTerrain(['~....', '.....', '.....']));
+test('saisons : en hiver, une berge gelée sans bière déclenche l\'isolement', () => {
+    // random 0 : toute l'eau gèle → plus une seule berge libre à proximité
+    const colony = setupColony(makeTerrain(['~....', '.....', '.....']), { random: () => 0 });
     const dwarf = addDwarf(colony.world, 3, 1, { name: 'Urist', thirst: 80 });
     const isolated = colony.collect(EVENTS.DWARF_ISOLATED_FROM_WATER);
 
-    seasonTicks(colony.world, 1800); // hiver : les berges sont gelées
+    seasonTicks(colony.world, 1800); // hiver : les berges gèlent
     colony.run(10);
 
     assert.ok(isolated.length >= 1, 'la berge gelée déclenche la crise d\'isolement');
@@ -64,7 +65,8 @@ test('saisons : en hiver sans bière, l\'assoiffé déclenche l\'isolement malgr
 });
 
 test('saisons : gel puis dégel émettent season.changed et restaurent l\'accès aux berges', () => {
-    const colony = setupColony(makeTerrain(['~..', '...', '...']));
+    // random 0 : la seule case d'eau gèle en hiver, puis dégèle au printemps
+    const colony = setupColony(makeTerrain(['~..', '...', '...']), { random: () => 0 });
     const dwarf = addDwarf(colony.world, 2, 2, { name: 'Urist' });
     const drink = new DrinkSystem(colony.terrain);
     const changes = colony.collect(EVENTS.SEASON_CHANGED);

@@ -1,7 +1,6 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 import { findPath } from '../core/pathfinding.js';
-import { isWinter } from './seasonSystem.js';
 
 const NO_WATER_RETRY_DELAY = 50;
 const BEER_INTOXICATION = 45;
@@ -84,15 +83,13 @@ export class DrinkSystem {
         if (beer) {
             return beer;
         }
-        // le puits ne gèle jamais : c'est la seule eau sûre en hiver
+        // le puits ne gèle jamais : toujours disponible, même quand les berges gèlent
         const well = this.nearestWellTarget(world, entityId);
         if (well) {
             return well;
         }
-        // en hiver les berges sont gelées : sans puits ni bière, c'est l'isolement
-        if (isWinter(world)) {
-            return null;
-        }
+        // en hiver, une partie des berges gèle (`ice`) : on ne boit qu'à l'eau libre encore
+        // atteignable (`touchesWater` ignore la glace). Faute de quoi, c'est l'isolement.
         return this.reachableBankTarget(world, entityId);
     }
 
