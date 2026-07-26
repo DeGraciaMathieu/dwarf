@@ -2,6 +2,13 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Les pensées des nains
+
+- **On voit enfin pourquoi un nain est de bonne ou de mauvaise humeur** : sa fiche d'inspection liste désormais ses **pensées du moment** — « a savouré un bon plat », « a dormi à même le sol », « a vu quelqu'un mourir », « pleure un proche disparu »… en vert pour le positif, en rouge pour le négatif.
+- **Chaque pensée s'estompe avec le temps** : un bon repas s'oublie vite, la mort d'un compagnon pèse longtemps. Quand une crise de nerfs éclate, un coup d'œil suffit à en diagnostiquer la cause.
+- Sous le capot, rien ne change au ressenti : les mêmes événements, les mêmes montants de moral qu'avant — ils sont simplement rendus **lisibles**.
+- Technique : composant `thoughts` (pile de pensées horodatées expirantes) déposé par `moraleSystem.remember()` à chaque effet de moral, avec libellés français ; `morale.value` reste l'accumulateur (aucune régression sur les crises ni la vitesse de travail).
+
 ## 2026-07-26 — Le cycle des saisons
 
 - **Les saisons défilent** : printemps, été, automne, hiver s'enchaînent au fil du temps, affichés dans le bandeau d'état (🌱/☀/🍂/❄).
