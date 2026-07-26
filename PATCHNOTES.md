@@ -2,6 +2,14 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — De vraies chambres à coucher
+
+- **Nouvelle zone 🛏 Chambre** : désignez une pièce, et un nain qui y dort dans un **lit avec un brasero à portée** se réveille **bien mieux reposé** qu'à l'air libre.
+- **Trois niveaux de couchage** : dormir au sol nu (+3 de moral), sur un lit (+10), ou dans une chambre équipée (+18) — enfin une **récompense mécanique** pour aménager de vraies pièces (murs, porte, brasero).
+- **La fiche d'inspection** indique désormais la qualité du couchage du nain : « à la dure », « sur un lit » ou « en chambre équipée ».
+- **Aucune régression** : sans chambre désignée, les gains de repos restent exactement ceux d'avant ; effacer une chambre ou détruire son brasero rabaisse simplement le confort au réveil suivant.
+- Technique : Zone `bedrooms` réutilisant l'infrastructure existante ; `sleepSystem.roomQuality()` évalue le lieu au réveil (aucun composant stocké), `moraleSystem` mappe la qualité vers ses barèmes (`restedInRoom`).
+
 ## 2026-07-26 — La cuisine et les plats préparés
 
 - **Nouvel atelier 🍳 Cuisine** (bâti à la menuiserie) : on y transforme les **champignons** et le **poisson** en **plats préparés**, une nourriture bien plus nourrissante que la récolte crue.
