@@ -71,6 +71,31 @@ Convention de nommage : `<Lot><NN>-slug.md`.
 | 26 | [H26 — Pensées et humeurs stratifiées](H26-pensees-humeurs.md) | Moyen / Moyen |
 | 27 | [H27 — Chef-d'œuvre et inspiration](H27-chef-doeuvre-inspiration.md) | Faible / Faible |
 
+## Lot I — Rejouabilité
+
+Issus d'une analyse « profondeur & rejouabilité » : donner un but, de la variété entre parties, de l'imprévu.
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 28 | [I28 — Objectifs, fin de partie et légende](I28-objectifs-fin-de-partie.md) | Fort / Moyen |
+| 29 | [I29 — Choix d'embarquement (profils, difficulté, graine)](I29-embarquement.md) | Fort / Moyen |
+| 30 | [I30 — Événements aléatoires](I30-evenements-aleatoires.md) | Fort / Moyen |
+| 31 | [I31 — Variété de biomes et de ressources](I31-biomes-ressources.md) | Moyen / Moyen |
+| — | Contrôle de l'immigration → voir [C12](C12-controle-immigration.md) | Moyen / Faible |
+
+## Lot J — Profondeur
+
+Des décisions qui s'entrelacent au-delà de la survie.
+
+| # | PRD | Impact / Effort |
+|---|-----|-----------------|
+| 32 | [J32 — Couche militaire (soldats, entraînement, pièges)](J32-militaire.md) | Fort / Élevé |
+| 33 | [J33 — Progression des aptitudes par l'expérience](J33-progression-aptitudes.md) | Moyen / Moyen |
+| 34 | [J34 — Santé approfondie (maladies et séquelles)](J34-sante-approfondie.md) | Moyen / Moyen |
+| 35 | [J35 — Gouvernance : chef et mandats](J35-gouvernance.md) | Moyen / Moyen |
+| 36 | [J36 — Niveaux verticaux et cavernes (z-levels)](J36-z-levels.md) | Très fort / Très élevé |
+| — | Élevage & chasse → voir [G22](G22-elevage-chasse.md) · Caravanes & troc → voir [G23](G23-caravanes-troc.md) · Chef-d'œuvre → voir [H27](H27-chef-doeuvre-inspiration.md) | — |
+
 ## Ordre recommandé
 
 1. **Lot A** en premier — rend le jeu jouable et débogable.
@@ -79,3 +104,5 @@ Convention de nommage : `<Lot><NN>-slug.md`.
 4. **Lot F** — attachement du joueur (relations, blessures se renforcent mutuellement).
 5. **Lot G** — chaîne économique cohérente (cuisine → élevage → caravanes).
 6. **Lot H** — profondeur d'ambiance ; H26 (pensées) et H27 (chef-d'œuvre) sont les meilleurs ratios plaisir/effort.
+7. **Lot I** — rejouabilité : I28 (objectifs & légende) et I30 (événements) d'abord, ils se branchent sans risque sur l'existant.
+8. **Lot J** — profondeur au long cours ; J33 (XP) est le gain rapide, J36 (z-levels) le grand pari architectural, à garder pour la fin.
