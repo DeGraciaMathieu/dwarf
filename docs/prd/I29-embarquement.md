@@ -1,6 +1,6 @@
 # PRD I29 — Choix d'embarquement (profils, difficulté, graine)
 
-**Lot :** I — Rejouabilité · **Point :** 29 · **Statut :** 🔲 À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** I — Rejouabilité · **Point :** 29 · **Statut :** ✅ Fait (hors graine reproductible, reportée) · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 Chaque partie démarre à l'identique. `main.js` code en dur `STARTING_DWARVES = 5` et `BREAD_COUNT = 8`, fait apparaître les cinq premiers noms de `creatures.dwarf.names`, dote la colonie de pains, puis lance la boucle directement — sans écran ni choix. La carte, générée par `generateTerrain(GRID.width, GRID.height, tiles)`, repose entièrement sur `Math.random` (dans `mountainBoundary`, `carveRiver`, `scatterPatches`, `scatterVeins`…) : elle est donc différente à chaque lancement mais jamais reproductible. La difficulté est fixe : la courbe de vagues de `goblinSpawnSystem.js` et la migration de `migrantSystem.js` sont invariables. Rien ne permet de varier ou de rejouer une même partie.

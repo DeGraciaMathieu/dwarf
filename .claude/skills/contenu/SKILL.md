@@ -8,7 +8,7 @@ auto_invoke: true
 
 Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`src/core/spawn.js`) instancie position + renderable + un `structuredClone` de chaque composant. **Le comportement découle des composants présents** — pas du fichier d'origine.
 
-## Les cinq fichiers
+## Les fichiers de données
 
 | Fichier | Contient | Chargé par |
 |---|---|---|
@@ -17,6 +17,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `tiles.json` | `floor`, `wall`, `ore`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
 | `recipes.json` | ateliers/meubles/équipements — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?, requires?}` ; `requires: { workshop }` = palier de progression (`recipeGate.js`, lu par steward et `designation.js`) | `craftSystem.js`, `designation.js`, `stewardSystem.js` |
+| `embark.json` | choix d'embarquement : `profiles` (`{id, label, description, default?, dwarves, items: [{item, count}]}`) et `difficulties` (`{id, label, description, default?, resourceMultiplier, waveParams}`) | `main.js` (via `embarkScreen.js` → `embarkSetup.js` et config de `goblinSpawnSystem`) |
 
 ## Quel composant déclenche quel système
 
@@ -77,5 +78,7 @@ Les **armes/armures** suivent ce modèle : recettes `consumable: true` (forgées
 **Ajouter un type de tuile** : `tiles.json` (`walkable` correct ; `blocksHostiles: true` pour bloquer les hostiles seulement — `isWalkable(x, y, {hostile})` et `findPath(..., {hostile: true})` en tiennent compte) + le placer dans la génération (`terrain.js`) ou via une recette `installsTile`.
 
 **Ajouter une culture** : `plants.json` + l'aliment produit dans `items.json`. `farmSystem.js` est mono-culture (champignon) — le paramétrer par champ serait l'extension à faire.
+
+**Ajouter un profil / une difficulté d'embarquement** : entrée dans `embark.json`. Un profil = `{id, label, description, dwarves, items: [{item, count}]}` (les `item` réfèrent des clés de `items.json`). Une difficulté = `{id, label, description, resourceMultiplier, waveParams}` où `waveParams` surcharge les constantes de menace de `goblinSpawnSystem` (`firstWaveDelay`, `baseInterval`, `minInterval`, `maxWaveSize`, `populationComfort` ; `{}` = valeurs par défaut). Marquer d'un `default: true` le profil/la difficulté présélectionnés. Aucun code neuf : `embarkScreen.js` liste les choix et `embarkSetup.js` peuple la colonie.
 
 Après tout ajout : vérifier l'équilibrage en le testant dans un scénario (`tests/`), pas à l'œil.
