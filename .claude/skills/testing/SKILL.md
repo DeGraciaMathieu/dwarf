@@ -55,3 +55,4 @@ auto_invoke: true
 3. Poser les `collect()` **avant** `run()`.
 4. Trois cas pour une mécanique : nominal, empêché (inaccessible/occupé/pénurie), interrompu (gobelin ou faim en cours de route).
 5. `npm test` doit être vert avant de déclarer la tâche finie — et les scénarios de validation d'un chantier restent dans la suite, ils ne sont jamais jetés.
+6. Un PRD comportemental (ceux de `docs/prd/`) doit avoir au moins un scénario : tenir à jour la table `tests/COVERAGE.md` (PRD → fichier).

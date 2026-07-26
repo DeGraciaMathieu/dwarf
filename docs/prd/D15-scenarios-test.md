@@ -1,6 +1,6 @@
 # PRD D15 — Scénarios de test des lots
 
-**Lot :** D — Robustesse · **Point :** 15 · **Statut :** À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** D — Robustesse · **Point :** 15 · **Statut :** ✅ Fait (C12/E16-E18 à couvrir à leur implémentation) · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 
