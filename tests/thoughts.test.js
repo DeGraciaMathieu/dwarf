@@ -25,6 +25,29 @@ test('pensées : manger, boire et voir un mort empilent des pensées datées', (
     assert.equal(Math.round(morale.value), 60);
 });
 
+test('pensées : satisfaire un besoin chasse la pensée de manque opposée', () => {
+    const colony = setupColony(openTerrain(6, 1));
+    const dwarf = addDwarf(colony.world, 2, 0, { name: 'Urist' });
+
+    // le nain a faim et soif, puis mange et boit
+    colony.bus.emit(EVENTS.DWARF_HUNGRY, { entityId: dwarf });
+    colony.bus.emit(EVENTS.DWARF_THIRSTY, { entityId: dwarf });
+    colony.bus.flush();
+    colony.run(1);
+    assert.deepEqual(
+        thoughtsOf(colony.world, dwarf).map((thought) => thought.type).sort(),
+        ['hungry', 'thirsty']
+    );
+
+    colony.bus.emit(EVENTS.DWARF_ATE, { entityId: dwarf });
+    colony.bus.emit(EVENTS.DWARF_DRANK, { entityId: dwarf });
+    colony.bus.flush();
+    colony.run(1);
+
+    const types = thoughtsOf(colony.world, dwarf).map((thought) => thought.type).sort();
+    assert.deepEqual(types, ['ate', 'drank'], 'les pensées de manque ont disparu');
+});
+
 test('pensées : le barème vient d\'EFFECTS (mort vue = -25)', () => {
     const colony = setupColony(openTerrain(6, 1));
     const dwarf = addDwarf(colony.world, 2, 0, { name: 'Urist' });

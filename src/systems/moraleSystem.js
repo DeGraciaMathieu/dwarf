@@ -49,6 +49,18 @@ const THOUGHT_TTL = {
     grief: 2000,
 };
 
+// pensées mutuellement exclusives : satisfaire un besoin chasse la pensée de manque
+// correspondante (et inversement), pour ne pas afficher « a mangé à sa faim » et
+// « a le ventre vide » en même temps
+const OPPOSITE_THOUGHTS = {
+    ate: ['hungry'],
+    ateMeal: ['hungry'],
+    hungry: ['ate', 'ateMeal'],
+    drank: ['thirsty'],
+    drankBeer: ['thirsty'],
+    thirsty: ['drank', 'drankBeer'],
+};
+
 // libellés français des pensées, lus par la fiche d'inspection (UI en lecture seule)
 export const THOUGHT_LABELS = {
     ate: 'a mangé à sa faim',
@@ -255,6 +267,10 @@ export class MoraleSystem {
         if (!thoughts) {
             thoughts = { list: [] };
             world.addComponent(entityId, 'thoughts', thoughts);
+        }
+        const opposites = OPPOSITE_THOUGHTS[type];
+        if (opposites) {
+            thoughts.list = thoughts.list.filter((thought) => !opposites.includes(thought.type));
         }
         thoughts.list.push({
             type,
