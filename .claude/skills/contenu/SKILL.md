@@ -12,7 +12,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 | Fichier | Contient | Chargé par |
 |---|---|---|
-| `creatures.json` | `dwarf` (+ pool `names` pour fondateurs et migrants), archétypes hostiles `goblin`, `brute` (coriace), `archer` (`combat.range`), `chief` (`leader`, aura de dégâts) | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
+| `creatures.json` | `dwarf` (+ pool `names`, composant `skills` d'aptitudes), archétypes hostiles `goblin`, `brute` (coriace), `archer` (`combat.range`), `chief` (`leader`, aura de dégâts) | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
 | `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `forge`, `bed`, `door`, `bridge`, `stoneBed`, `stoneDoor`, `sword`, `mail` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `ore`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
@@ -27,6 +27,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee ; `combat.range` (défaut 1) porte l'attaque à distance (archer) |
 | `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |
 | `worker` | arbitré par l'arbitre, prend des jobs, ciblé par les gobelins |
+| `skills` | niveaux d'aptitude par catégorie (`mining`, `woodcutting`…) ; accélèrent le job correspondant via `workEffort` (mapping `SKILL_BY_JOB`) ; une spécialité est tirée au spawn (`assignAptitude`) |
 | `wander` | erre quand `activity === 'wander'` |
 | `hostile` | poursuit les workers (`hostileSystem`) ; garde une `chaseMemory` (dernière position vue + TTL) pour poursuivre hors de vue avant d'oublier ; déclenche fuite/combat |
 | `item` | transportable au stock, cassable en crise de nerfs |

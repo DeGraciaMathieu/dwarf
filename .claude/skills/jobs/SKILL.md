@@ -25,7 +25,7 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 - **L'assignation ne connaît aucun type de job.** `JobAssignmentSystem` claim/release sur la seule base de `activity === 'work'` — ne jamais y ajouter de logique spécifique.
 - **L'état durable vit sur le job, pas sur `currentJob`.** `currentJob` disparaît à chaque release (fuite, faim, mort) ; ce qui doit survivre à une interruption (ex. `job.producedId` du meuble déjà fabriqué dans `craftSystem.js`) se stocke sur l'objet job.
 - **Boucle claim/release interdite.** Un job impossible *maintenant* → `markUnreachable`, jamais `release` (sinon le nain le réclame en boucle à chaque tick). `release` = « un autre peut le faire », `markUnreachable` = « personne ne peut, attendre un changement du monde ».
-- **Progression** : `currentJob.progress += workEffort(world, entityId)` (`src/systems/workEffort.js`) — jamais `progress++`, le moral bas ralentit le travail.
+- **Progression** : `currentJob.progress += workEffort(world, entityId, currentJob.job.type)` (`src/systems/workEffort.js`) — jamais `progress++`. L'effort = malus de moral × bonus d'aptitude (`skills` du nain, catégorie donnée par `SKILL_BY_JOB[type]`), les deux cumulables.
 - **Déplacement** : via `approach()` de `jobMovement.js`, mode `'adjacent'` pour agir sur une case non praticable (mur, arbre), `'onto'` pour se rendre sur une case.
 
 ## Exemples de référence

@@ -1,6 +1,6 @@
 # PRD C11 — Spécialisation et aptitudes
 
-**Lot :** C — Contrôle joueur · **Point :** 11 · **Statut :** À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** C — Contrôle joueur · **Point :** 11 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 
