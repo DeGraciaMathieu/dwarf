@@ -35,7 +35,7 @@ export class BuildSystem {
             const position = world.getComponent(entityId, 'position');
             const material = nearestFreeMaterial(world, position, currentJob);
             if (!material) {
-                this.jobBoard.markUnreachable(currentJob.job);
+                this.jobBoard.markUnreachable(currentJob.job, 'supply');
                 world.removeComponent(entityId, 'currentJob');
                 return;
             }

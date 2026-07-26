@@ -33,7 +33,7 @@ export class ChopSystem {
                 this.terrain.set(target.x, target.y, 'floor');
                 spawnFromDefinition(world, this.logDefinition, target);
                 this.jobBoard.complete(currentJob.job);
-                this.jobBoard.resetUnreachable();
+                this.jobBoard.resetUnreachable(target);
                 world.removeComponent(entityId, 'currentJob');
                 eventBus.emit(EVENTS.TREE_CHOPPED, { entityId, x: target.x, y: target.y });
             }

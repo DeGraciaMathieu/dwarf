@@ -36,7 +36,7 @@ export class DigSystem {
                 const dropped = dug === 'ore' ? this.oreDefinition : this.stoneDefinition;
                 spawnFromDefinition(world, dropped, target);
                 this.jobBoard.complete(currentJob.job);
-                this.jobBoard.resetUnreachable();
+                this.jobBoard.resetUnreachable(target);
                 world.removeComponent(entityId, 'currentJob');
                 eventBus.emit(EVENTS.WALL_DUG, { entityId, x: target.x, y: target.y });
             }

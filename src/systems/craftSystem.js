@@ -37,7 +37,7 @@ export class CraftSystem {
             ? this.nearestWorkshopPosition(world, entityId, recipe.workshop)
             : currentJob.job.target;
         if (!workshopPosition) {
-            this.abandon(world, entityId, currentJob);
+            this.abandon(world, entityId, currentJob, 'supply');
             return;
         }
         const status = approach(world, this.terrain, entityId, currentJob, workshopPosition, 'onto');
@@ -106,7 +106,7 @@ export class CraftSystem {
         if (recipe.installsTile) {
             world.destroyEntity(job.producedId);
             this.terrain.set(job.target.x, job.target.y, recipe.installsTile);
-            this.jobBoard.resetUnreachable();
+            this.jobBoard.resetUnreachable(job.target);
         } else {
             world.addComponent(job.producedId, 'position', { x: job.target.x, y: job.target.y });
             world.removeComponent(job.producedId, 'item');
@@ -129,7 +129,7 @@ export class CraftSystem {
             const position = world.getComponent(entityId, 'position');
             const material = nearestFreeMaterial(world, position, currentJob, ingredient);
             if (!material) {
-                this.abandon(world, entityId, currentJob);
+                this.abandon(world, entityId, currentJob, 'supply');
                 return;
             }
             currentJob.materialId = material.id;
@@ -184,8 +184,8 @@ export class CraftSystem {
         return productId;
     }
 
-    abandon(world, entityId, currentJob) {
-        this.jobBoard.markUnreachable(currentJob.job);
+    abandon(world, entityId, currentJob, reason = 'access') {
+        this.jobBoard.markUnreachable(currentJob.job, reason);
         world.removeComponent(entityId, 'currentJob');
     }
 }
