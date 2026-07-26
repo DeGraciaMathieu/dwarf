@@ -2,6 +2,14 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Amitiés, rivalités et deuils
+
+- **Les nains se lient enfin** : à force d'être seul, un nain va **discuter** avec un camarade proche ; côte à côte, tous deux comblent leur besoin de compagnie et **tissent une amitié** (« … et … sont devenus amis. »).
+- **Les rixes laissent des rancunes** : se cogner en taverne **fait chuter l'affinité** entre les deux nains, jusqu'à en faire des **rivaux** déclarés (« … et … sont désormais rivaux. »).
+- **La mort d'un ami frappe fort** : quand un nain périt, ses amis proches encaissent un **deuil bien plus lourd** que les simples témoins — de quoi faire vaciller tout un groupe soudé.
+- **La fiche d'inspection** liste désormais les **amis et les rivaux** du nain sélectionné.
+- Technique : besoin `social` (`needsSystem`) + composant `relationships` ; activité `socialize` arbitrée (`socializeSystem`) ; malus de deuil proportionné à l'affinité dans `moraleSystem`.
+
 ## 2026-07-26 — Beuverie et rixes de taverne
 
 - **Trop de bière rend ivre** : à force de boire, un nain finit par être saoul (« … est ivre ! »). Un ivrogne **travaille au ralenti** et **cherche la bagarre** avec un camarade à proximité (« … cherche la bagarre ! »).
