@@ -11,6 +11,13 @@ const INGREDIENT_LABELS = {
     brewable: 'ingrédient brassable',
 };
 
+const WORKSHOP_REQUIRED = {
+    carpentry: 'une menuiserie requise',
+    masonry: 'un atelier de taille requis',
+    brewery: 'une brasserie requise',
+    forge: 'une forge requise',
+};
+
 export class ObjectivesPanel {
     constructor(element, objectives, recipes) {
         this.element = element;
@@ -65,6 +72,10 @@ export class ObjectivesPanel {
     }
 
     blockerNote(status) {
+        if (status?.blocker === 'locked') {
+            const workshop = status.detail.workshop;
+            return `Verrouillé : ${WORKSHOP_REQUIRED[workshop] ?? `${workshop} requis`}`;
+        }
         if (status?.blocker === 'no-workshop') {
             const workshop = status.detail.workshop;
             return `Bloqué : ${WORKSHOP_LABELS[workshop] ?? `${workshop} manquant`}`;

@@ -97,7 +97,8 @@
         "produces": "axe",
         "ingredient": "ore",
         "workshop": "forge",
-        "consumable": true
+        "consumable": true,
+        "requires": { "workshop": "masonry" }
     },
     "spear": {
         "label": "une lance",
@@ -105,7 +106,8 @@
         "produces": "spear",
         "ingredient": "ore",
         "workshop": "forge",
-        "consumable": true
+        "consumable": true,
+        "requires": { "workshop": "masonry" }
     },
     "plate": {
         "label": "une cotte de plates",
@@ -113,7 +115,8 @@
         "produces": "plate",
         "ingredient": "ore",
         "workshop": "forge",
-        "consumable": true
+        "consumable": true,
+        "requires": { "workshop": "masonry" }
     },
     "shield": {
         "label": "un bouclier",
@@ -121,7 +124,8 @@
         "produces": "shield",
         "ingredient": "ore",
         "workshop": "forge",
-        "consumable": true
+        "consumable": true,
+        "requires": { "workshop": "masonry" }
     },
     "beer": {
         "label": "une bière",

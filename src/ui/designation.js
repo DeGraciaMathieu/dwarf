@@ -1,3 +1,5 @@
+import { isRecipeUnlocked } from '../systems/recipeGate.js';
+
 export class DesignationControl {
     constructor({
         canvas,
@@ -106,6 +108,9 @@ export class DesignationControl {
             const recipeName = this.mode.slice('craft:'.length);
             const recipe = this.recipes[recipeName];
             if (!recipe || tile !== (recipe.site ?? 'floor')) {
+                return;
+            }
+            if (!isRecipeUnlocked(this.world, recipe)) {
                 return;
             }
             if (

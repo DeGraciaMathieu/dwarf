@@ -1,3 +1,5 @@
+import { missingRequirement } from './recipeGate.js';
+
 export class StewardSystem {
     constructor(jobBoard, recipes, itemDefinitions, objectives) {
         this.jobBoard = jobBoard;
@@ -23,6 +25,12 @@ export class StewardSystem {
         );
         const gap = objective.target - stock - pending.length;
         // donnée de restitution pour l'UI, réécrite intégralement à chaque tick
+        const locked = gap > 0 ? missingRequirement(world, recipe) : null;
+        if (locked) {
+            // palier non atteint : ni posté ni annulé, on attend le prérequis
+            objective.status = { stock, pending: pending.length, blocker: 'locked', detail: locked };
+            return;
+        }
         const { blocker, detail } = this.findBlocker(world, recipe, gap, pending.length);
         objective.status = {
             stock,
