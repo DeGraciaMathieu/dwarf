@@ -16,7 +16,7 @@ import { MoraleSystem } from './systems/moraleSystem.js';
 import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
 import { SleepSystem } from './systems/sleepSystem.js';
-import { SocializeSystem } from './systems/socializeSystem.js';
+import { SocializeSystem, assignPersonality } from './systems/socializeSystem.js';
 import { RescueSystem } from './systems/rescueSystem.js';
 import { HealSystem } from './systems/healSystem.js';
 import { InjurySystem } from './systems/injurySystem.js';
@@ -162,6 +162,7 @@ async function main() {
         const dwarfId = spawnFromDefinition(world, creatures.dwarf, randomTile());
         world.addComponent(dwarfId, 'identity', { name });
         assignAptitude(world, dwarfId);
+        assignPersonality(world, dwarfId);
     }
     for (let i = 0; i < BREAD_COUNT; i++) {
         spawnFromDefinition(world, items.bread, randomTile());

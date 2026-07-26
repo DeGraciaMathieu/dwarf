@@ -192,6 +192,8 @@ export function addDwarf(world, x, y, overrides = {}) {
         courage = 0.5,
         social = 0,
         socialRate = 0,
+        sociability = 0.5,
+        temper = 0.5,
     } = overrides;
     const id = world.createEntity();
     world.addComponent(id, 'identity', { name });
@@ -217,6 +219,7 @@ export function addDwarf(world, x, y, overrides = {}) {
     });
     world.addComponent(id, 'social', { value: social, rate: socialRate, threshold: 75, max: 100 });
     world.addComponent(id, 'relationships', { affinities: {} });
+    world.addComponent(id, 'personality', { sociability, temper });
     world.addComponent(id, 'thoughts', { list: [] });
     world.addComponent(id, 'wander', {});
     world.addComponent(id, 'worker', {});

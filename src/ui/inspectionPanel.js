@@ -93,9 +93,33 @@ export class InspectionPanel {
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
             ${this.equipment()}
             ${this.aptitudes()}
+            ${this.character()}
             ${this.rest()}
             ${this.relationships()}
         `;
+    }
+
+    // traits de caractère marquants (sociabilité, tempérament)
+    character() {
+        const personality = this.world.getComponent(this.selectedId, 'personality');
+        if (!personality) {
+            return '';
+        }
+        const traits = [];
+        if (personality.sociability >= 0.66) {
+            traits.push('sociable');
+        } else if (personality.sociability <= 0.34) {
+            traits.push('solitaire');
+        }
+        if (personality.temper >= 0.66) {
+            traits.push('colérique');
+        } else if (personality.temper <= 0.34) {
+            traits.push('placide');
+        }
+        if (traits.length === 0) {
+            return '';
+        }
+        return `<p class="character">Caractère : ${traits.join(', ')}</p>`;
     }
 
     // qualité du lieu où se trouve le nain (recalculée en lecture seule)

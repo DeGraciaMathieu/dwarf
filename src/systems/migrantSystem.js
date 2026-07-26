@@ -2,6 +2,7 @@ import { EVENTS } from '../events/events.js';
 import { spawnFromDefinition } from '../core/spawn.js';
 import { randomEdgeTile } from '../core/terrain.js';
 import { assignAptitude } from './workEffort.js';
+import { assignPersonality } from './socializeSystem.js';
 import { isWinter } from './seasonSystem.js';
 
 const FIRST_CHECK_TICK = 900;
@@ -48,6 +49,7 @@ export class MigrantSystem {
             const name = this.pickName(world);
             world.addComponent(migrantId, 'identity', { name });
             assignAptitude(world, migrantId);
+            assignPersonality(world, migrantId);
             eventBus.emit(EVENTS.MIGRANT_ARRIVED, { entityId: migrantId, name });
         }
     }

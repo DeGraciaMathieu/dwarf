@@ -3,6 +3,7 @@ const FLEE_RANGE = 6;
 const PROVOKED_SCORE = 190;
 const DRUNK_BRAWL_SCORE = 90;
 const BRAWL_RANGE = 5;
+const BRAWL_TEMPER_MIN = 0.5; // en dessous, un ivrogne reste pacifique
 const TANTRUM_SCORE = 150;
 const TANTRUM_EXIT_MARGIN = 15;
 const HEAL_SCORE = 62;
@@ -88,13 +89,23 @@ export class ArbiterSystem {
         if (provoked && world.getComponent(provoked.by, 'position')) {
             return PROVOKED_SCORE;
         }
-        if (world.getComponent(entityId, 'drunk') && this.rivalNear(world, entityId)) {
+        if (
+            world.getComponent(entityId, 'drunk') &&
+            this.isHotHeaded(world, entityId) &&
+            this.someoneNear(world, entityId)
+        ) {
             return DRUNK_BRAWL_SCORE;
         }
         return 0;
     }
 
-    rivalNear(world, entityId) {
+    // caractère : seuls les tempéraments assez vifs cherchent la bagarre (défaut neutre)
+    isHotHeaded(world, entityId) {
+        const personality = world.getComponent(entityId, 'personality');
+        return (personality?.temper ?? 0.5) >= BRAWL_TEMPER_MIN;
+    }
+
+    someoneNear(world, entityId) {
         const position = world.getComponent(entityId, 'position');
         return world.query('worker', 'position').some((otherId) => {
             if (otherId === entityId) {

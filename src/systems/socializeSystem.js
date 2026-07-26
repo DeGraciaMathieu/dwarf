@@ -9,6 +9,30 @@ const MAX_AFFINITY = 100;
 const SOCIAL_RECOVERY = 3;
 const BOND_STEP = 2;
 const RIVAL_STEP = 0.5;
+const DISTANCE_WEIGHT = 0.5; // dans le choix du compagnon, l'affinité prime sur la distance
+
+// personnalité : 0,5 = neutre (comportement historique). sociability accélère les
+// liens, temper la formation des rancunes. Absente ⇒ neutre.
+function sociabilityFactor(world, entityId) {
+    const personality = world.getComponent(entityId, 'personality');
+    return 0.5 + (personality?.sociability ?? 0.5);
+}
+
+function temperFactor(world, entityId) {
+    const personality = world.getComponent(entityId, 'personality');
+    return 0.5 + (personality?.temper ?? 0.5);
+}
+
+// tire un caractère au spawn et ajuste la vitesse du besoin social en conséquence
+export function assignPersonality(world, entityId, random = Math.random) {
+    const sociability = random();
+    const temper = random();
+    world.addComponent(entityId, 'personality', { sociability, temper });
+    const social = world.getComponent(entityId, 'social');
+    if (social) {
+        social.rate = social.rate * (0.5 + sociability);
+    }
+}
 
 // exécutant de l'activité 'socialize' : le nain rejoint un camarade proche, tous
 // deux voient leur besoin social remonter et leur affinité mutuelle croître. Tisse
@@ -38,7 +62,7 @@ export class SocializeSystem {
     }
 
     mingle(world, eventBus, entityId) {
-        const companionId = this.nearestCompanion(world, entityId);
+        const companionId = this.pickCompanion(world, entityId);
         if (companionId === null) {
             return;
         }
@@ -76,7 +100,7 @@ export class SocializeSystem {
             return;
         }
         const before = relationships.affinities[otherId] ?? 0;
-        const after = Math.min(MAX_AFFINITY, before + BOND_STEP);
+        const after = Math.min(MAX_AFFINITY, before + BOND_STEP * sociabilityFactor(world, entityId));
         relationships.affinities[otherId] = after;
         // l'affinité est mise à jour dans les deux sens : n'annoncer le palier qu'une fois
         if (before < FRIEND_THRESHOLD && after >= FRIEND_THRESHOLD && entityId < otherId) {
@@ -102,17 +126,20 @@ export class SocializeSystem {
             return;
         }
         const before = relationships.affinities[otherId] ?? 0;
-        const after = Math.max(-MAX_AFFINITY, before - RIVAL_STEP);
+        const after = Math.max(-MAX_AFFINITY, before - RIVAL_STEP * temperFactor(world, entityId));
         relationships.affinities[otherId] = after;
         if (before > -RIVAL_THRESHOLD && after <= -RIVAL_THRESHOLD && entityId < otherId) {
             eventBus.emit(EVENTS.DWARF_FELL_OUT, { entityId, otherId });
         }
     }
 
-    nearestCompanion(world, entityId) {
+    // on recherche de préférence ses amis (les cliques se renforcent) et on évite ses
+    // rivaux : score = affinité − distance pondérée
+    pickCompanion(world, entityId) {
         const position = world.getComponent(entityId, 'position');
-        let nearest = null;
-        let nearestDistance = Infinity;
+        const relationships = world.getComponent(entityId, 'relationships');
+        let best = null;
+        let bestScore = -Infinity;
         for (const otherId of world.query('worker', 'position')) {
             if (otherId === entityId) {
                 continue;
@@ -122,11 +149,13 @@ export class SocializeSystem {
                 Math.abs(other.x - position.x),
                 Math.abs(other.y - position.y)
             );
-            if (distance < nearestDistance) {
-                nearestDistance = distance;
-                nearest = otherId;
+            const affinity = relationships?.affinities[otherId] ?? 0;
+            const score = affinity - distance * DISTANCE_WEIGHT;
+            if (score > bestScore) {
+                bestScore = score;
+                best = otherId;
             }
         }
-        return nearest;
+        return best;
     }
 }

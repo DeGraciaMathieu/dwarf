@@ -1,6 +1,6 @@
 # PRD F19 — Relations sociales entre nains
 
-**Lot :** F — Vie sociale & santé · **Point :** 19 · **Statut :** ✅ Fait (option a — rivalité descriptive) · **Impact / Effort :** Fort / Moyen
+**Lot :** F — Vie sociale & santé · **Point :** 19 · **Statut :** ✅ Fait (option a — rivalité descriptive) · **Extension :** ✅ relations → comportement + personnalités (voir plus bas) · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 Aujourd'hui les nains cohabitent sans se connaître : `arbiterSystem.js` n'arbitre aucune activité sociale et la seule interaction entre nains est la rixe d'ivrogne portée par `brawlSystem.js` (activité `brawl`, composant `provoked`/`brawling`). Les besoins gérés par `needsSystem.js` se limitent à `hunger`, `thirst` et `fatigue` (voir la configuration dans `src/main.js`). Un nain isolé ne souffre de rien, et la mort d'un compagnon (event `dwarf.died`) n'a aucun poids affectif : `moraleSystem.js` applique le même malus de témoin à tous, sans notion de proximité relationnelle.
@@ -56,3 +56,20 @@ La rivalité sociale doit-elle **influencer** l'arbitrage de la rixe (`brawlSyst
 ## Tests
 - Scénario `tests/` (macro de comportement, sur le harnais `tests/helpers.js`) : deux nains dont le besoin `social` est bas, sans danger ni besoin de survie, se rejoignent, remontent leur besoin `social` et voient leur affinité mutuelle augmenter au fil des ticks jusqu'au palier « ami ».
 - Scénario `tests/` : après plusieurs ticks d'affinité positive forte, la mort de l'un (via `kill`/`dwarf.died`) inflige à l'autre un malus de moral supérieur à celui appliqué à un nain témoin non lié.
+
+## Extension — Relations → comportement & personnalités (approfondissement)
+
+Deux directions ajoutées après le lot initial (le PRD gardait volontairement les relations « descriptives ») :
+
+- **Les relations guident le comportement.**
+  - *Cliques* : `socializeSystem.pickCompanion` remplace le choix du plus proche par un score `affinité − distance × 0,5` : on recherche ses amis (les groupes se renforcent) et on évite ses rivaux.
+  - *Querelles* : `brawlSystem.pickRival` fait qu'un ivrogne cible **de préférence un rival proche** (`affinité ≤ −30`), à défaut le nain le plus proche. La rixe érode l'affinité (`brawlResentment`) → les rivalités s'enveniment d'elles-mêmes.
+- **Traits de personnalité.** Composant data pur `personality {sociability, temper}` (0..1, **0,5 = neutre → comportement historique**), tiré au spawn par `assignPersonality` (`main.js` + `migrantSystem`).
+  - `sociability` : ajuste `social.rate` au spawn (solitaire ⇒ rarement seul, sociable ⇒ souvent) et la vitesse des liens (`BOND_STEP × (0,5 + sociability)`).
+  - `temper` : module les rancunes (`RIVAL_STEP × (0,5 + temper)`) et **conditionne la bagarre d'ivrogne** (arbitre : seul `temper ≥ 0,5` cherche la rixe → un ivrogne placide reste en paix).
+  - Affiché dans la fiche d'inspection (« Caractère : sociable, colérique »).
+
+**Non-régression** : à personnalité neutre (0,5) ou absente, tous les barèmes valent 1 → comportement identique à l'avant-extension.
+
+## Tests (extension)
+- `tests/relations.test.js` : un nain rejoint son **ami éloigné** plutôt que l'inconnu voisin ; un nain **sociable** noue des liens plus vite qu'un ordinaire ; un ivrogne **au sang chaud** frappe son **rival** (et épargne le voisin neutre) ; un ivrogne **placide** reste pacifique.

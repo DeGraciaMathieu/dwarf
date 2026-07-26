@@ -24,6 +24,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 |---|---|
 | `hunger`, `thirst`, `fatigue`, `social` | besoins qui montent (`needsSystem`), activités eat/drink/sleep/socialize ; faim et soif au maximum tuent (`attritionSystem`) |
 | `relationships` | affinités par nain `{affinities: {entityId: score}}` ; se tissent en socialisant, chutent en rixe (`socializeSystem`) ; deuil renforcé à la mort d'un ami (`moraleSystem`) |
+| `personality` | `{sociability, temper}` tiré au spawn (`assignPersonality`, 0,5 = neutre) : `sociability` module besoin social + vitesse des liens ; `temper` module les rancunes et conditionne la bagarre d'ivrogne (`arbiterSystem`/`brawlSystem`) |
 | `morale` | humeur, ralentissement, crises (`moraleSystem`, `tantrumSystem`) |
 | `thoughts` | `{list}` de pensées horodatées expirantes déposées par `moraleSystem.remember()` à chaque effet de moral (registre d'affichage lisible dans l'inspection) ; `morale.value` reste l'accumulateur |
 | `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee ; `combat.range` (défaut 1) porte l'attaque à distance (archer) |

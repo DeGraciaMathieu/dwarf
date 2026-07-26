@@ -1,5 +1,6 @@
 import { EVENTS } from '../events/events.js';
 import { findPath } from '../core/pathfinding.js';
+import { RIVAL_THRESHOLD } from './socializeSystem.js';
 
 // exécutant de l'activité 'brawl' : le nain rejoint son rival au corps à corps
 // (les coups eux-mêmes sont portés par combatSystem, à mains nues). Gère aussi la
@@ -56,17 +57,29 @@ export class BrawlSystem {
         }
     }
 
-    // la victime poursuit son agresseur ; l'ivrogne s'en prend au nain le plus proche
+    // la victime poursuit son agresseur ; sinon l'ivrogne s'en prend de préférence à
+    // un rival proche, à défaut au nain le plus proche
     pickRival(world, entityId) {
         const provoked = world.getComponent(entityId, 'provoked');
         if (provoked && world.getComponent(provoked.by, 'position')) {
             return provoked.by;
         }
+        return (
+            this.nearestWorker(world, entityId, true) ??
+            this.nearestWorker(world, entityId, false)
+        );
+    }
+
+    nearestWorker(world, entityId, rivalsOnly) {
         const position = world.getComponent(entityId, 'position');
+        const relationships = world.getComponent(entityId, 'relationships');
         let nearest = null;
         let nearestDistance = Infinity;
         for (const otherId of world.query('worker', 'position')) {
             if (otherId === entityId) {
+                continue;
+            }
+            if (rivalsOnly && (relationships?.affinities[otherId] ?? 0) > -RIVAL_THRESHOLD) {
                 continue;
             }
             const other = world.getComponent(otherId, 'position');
