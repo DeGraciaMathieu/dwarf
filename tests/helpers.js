@@ -41,6 +41,7 @@ import { CombatSystem } from '../src/systems/combatSystem.js';
 import { MovementSystem } from '../src/systems/movementSystem.js';
 import { JobAlertSystem } from '../src/systems/jobAlertSystem.js';
 import { DemolishSystem } from '../src/systems/demolishSystem.js';
+import { ChronicleSystem } from '../src/systems/chronicleSystem.js';
 
 const loadData = (file) =>
     JSON.parse(readFileSync(new URL(`../src/data/${file}`, import.meta.url)));
@@ -153,6 +154,7 @@ export function setupColony(
     world.registerSystem(new InjurySystem(jobBoard, data.items.corpse));
     world.registerSystem(new MovementSystem(terrain));
     world.registerSystem(new JobAlertSystem(jobBoard));
+    world.registerSystem(new ChronicleSystem(bus));
 
     return {
         world,
