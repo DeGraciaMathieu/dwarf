@@ -1,5 +1,6 @@
 import { FRIEND_THRESHOLD, RIVAL_THRESHOLD } from '../systems/socializeSystem.js';
 import { roomQuality } from '../systems/sleepSystem.js';
+import { THOUGHT_LABELS } from '../systems/moraleSystem.js';
 
 const ACTIVITY_LABELS = {
     fight: 'Combat !',
@@ -86,6 +87,7 @@ export class InspectionPanel {
             ${this.injuryNotice()}
             ${this.gauge('Santé', health && { ...health, threshold: health.max * 0.35 }, true)}
             ${this.gauge('Moral', morale && { ...morale, threshold: morale.low }, true)}
+            ${this.moods()}
             ${this.gauge('Faim', this.world.getComponent(this.selectedId, 'hunger'))}
             ${this.gauge('Soif', this.world.getComponent(this.selectedId, 'thirst'))}
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
@@ -141,6 +143,24 @@ export class InspectionPanel {
             parts.push(`Rivaux : ${rivals.join(', ')}`);
         }
         return `<p class="relationships">${parts.join(' · ')}</p>`;
+    }
+
+    // pensées actives qui expliquent l'humeur, les plus marquantes d'abord
+    moods() {
+        const thoughts = this.world.getComponent(this.selectedId, 'thoughts');
+        if (!thoughts || thoughts.list.length === 0) {
+            return '';
+        }
+        const items = [...thoughts.list]
+            .sort((a, b) => Math.abs(b.delta) - Math.abs(a.delta))
+            .slice(0, 5)
+            .map((thought) => {
+                const label = THOUGHT_LABELS[thought.type] ?? thought.type;
+                const sign = thought.delta >= 0 ? 'good' : 'bad';
+                return `<li class="mood-${sign}">${label}</li>`;
+            })
+            .join('');
+        return `<ul class="thoughts">${items}</ul>`;
     }
 
     injuryNotice() {

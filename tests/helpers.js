@@ -212,6 +212,7 @@ export function addDwarf(world, x, y, overrides = {}) {
     });
     world.addComponent(id, 'social', { value: social, rate: socialRate, threshold: 75, max: 100 });
     world.addComponent(id, 'relationships', { affinities: {} });
+    world.addComponent(id, 'thoughts', { list: [] });
     world.addComponent(id, 'wander', {});
     world.addComponent(id, 'worker', {});
     world.addComponent(id, 'equipment', {});

@@ -25,9 +25,56 @@ const EFFECTS = {
     deathHeard: -8,
 };
 
+// durée de vie d'une pensée par type (ticks, 5/s) : une mort marque bien plus
+// longtemps qu'un verre bu. Défaut si absent.
+const DEFAULT_TTL = 300;
+const THOUGHT_TTL = {
+    ate: 300,
+    ateMeal: 400,
+    drank: 200,
+    drankBeer: 300,
+    rested: 400,
+    restedOnGround: 250,
+    restedInRoom: 500,
+    victory: 400,
+    buried: 400,
+    injured: 300,
+    wounded: 500,
+    healed: 300,
+    hungry: 200,
+    thirsty: 200,
+    fled: 250,
+    deathWitnessed: 1500,
+    deathHeard: 800,
+    grief: 2000,
+};
+
+// libellés français des pensées, lus par la fiche d'inspection (UI en lecture seule)
+export const THOUGHT_LABELS = {
+    ate: 'a mangé à sa faim',
+    ateMeal: 'a savouré un bon plat',
+    drank: "s'est désaltéré",
+    drankBeer: 'a bu une bonne bière',
+    rested: 'a bien dormi',
+    restedOnGround: 'a dormi à même le sol',
+    restedInRoom: 'a dormi dans une belle chambre',
+    victory: 'a terrassé un ennemi',
+    buried: 'a rendu hommage à un mort',
+    injured: 'a encaissé des coups',
+    wounded: 'a été grièvement blessé',
+    healed: 'a été soigné',
+    hungry: 'a le ventre vide',
+    thirsty: 'a la gorge sèche',
+    fled: "a fui devant l'ennemi",
+    deathWitnessed: 'a vu quelqu\'un mourir',
+    deathHeard: 'a appris une mort',
+    grief: 'pleure un proche disparu',
+};
+
 export class MoraleSystem {
     constructor(eventBus) {
         this.pending = [];
+        this.tick = 0;
         eventBus.on(EVENTS.DWARF_ATE, ({ entityId, cooked }) =>
             this.pending.push({ type: cooked ? 'ateMeal' : 'ate', entityId })
         );
@@ -70,11 +117,13 @@ export class MoraleSystem {
     }
 
     update(world) {
+        this.tick++;
         for (const event of this.pending) {
             this.apply(world, event);
         }
         this.pending = [];
 
+        this.purgeThoughts(world);
         this.stenchOfDecay(world);
 
         for (const entityId of world.query('morale')) {
@@ -144,12 +193,12 @@ export class MoraleSystem {
                     Math.abs(position.x - event.x),
                     Math.abs(position.y - event.y)
                 );
-                this.adjust(
-                    world,
-                    entityId,
-                    distance <= WITNESS_RANGE ? EFFECTS.deathWitnessed : EFFECTS.deathHeard
-                );
-                this.adjust(world, entityId, this.grief(world, entityId, event.deceasedId));
+                const heardType = distance <= WITNESS_RANGE ? 'deathWitnessed' : 'deathHeard';
+                this.remember(world, entityId, heardType, EFFECTS[heardType]);
+                const griefDelta = this.grief(world, entityId, event.deceasedId);
+                if (griefDelta !== 0) {
+                    this.remember(world, entityId, 'grief', griefDelta);
+                }
             }
             return;
         }
@@ -161,7 +210,7 @@ export class MoraleSystem {
                     Math.abs(position.y - event.y)
                 );
                 if (distance <= WITNESS_RANGE) {
-                    this.adjust(world, entityId, EFFECTS.buried);
+                    this.remember(world, entityId, 'buried', EFFECTS.buried);
                 }
             }
             return;
@@ -173,11 +222,11 @@ export class MoraleSystem {
                 const effect = { ground: 'restedOnGround', bed: 'rested', room: 'restedInRoom' }[
                     quality
                 ];
-                this.adjust(world, event.entityId, EFFECTS[effect]);
+                this.remember(world, event.entityId, effect, EFFECTS[effect]);
             }
             return;
         }
-        this.adjust(world, event.entityId, EFFECTS[event.type]);
+        this.remember(world, event.entityId, event.type, EFFECTS[event.type]);
     }
 
     // deuil : la mort d'un ami proche pèse plus qu'un simple décès aperçu,
@@ -192,6 +241,36 @@ export class MoraleSystem {
             return 0;
         }
         return -Math.round(affinity * GRIEF_FACTOR);
+    }
+
+    // applique le delta au moral ET dépose une pensée horodatée qui explique l'humeur
+    // (barème lu dans EFFECTS, inchangé). La pile est créée à la volée pour les nains
+    // issus d'anciennes sauvegardes sans composant `thoughts`.
+    remember(world, entityId, type, delta) {
+        this.adjust(world, entityId, delta);
+        if (delta === undefined || delta === 0) {
+            return;
+        }
+        let thoughts = world.getComponent(entityId, 'thoughts');
+        if (!thoughts) {
+            thoughts = { list: [] };
+            world.addComponent(entityId, 'thoughts', thoughts);
+        }
+        thoughts.list.push({
+            type,
+            delta,
+            addedAtTick: this.tick,
+            expiresAtTick: this.tick + (THOUGHT_TTL[type] ?? DEFAULT_TTL),
+        });
+    }
+
+    // pile auto-purgeante : on retire les pensées expirées (affichage), le retour du
+    // moral vers la baseline étant assuré par la dérive
+    purgeThoughts(world) {
+        for (const entityId of world.query('thoughts')) {
+            const thoughts = world.getComponent(entityId, 'thoughts');
+            thoughts.list = thoughts.list.filter((thought) => thought.expiresAtTick > this.tick);
+        }
     }
 
     adjust(world, entityId, delta) {

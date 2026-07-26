@@ -1,6 +1,6 @@
 # PRD H26 — Pensées et humeurs stratifiées
 
-**Lot :** H — Environnement & profondeur · **Point :** 26 · **Statut :** 🔲 À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** H — Environnement & profondeur · **Point :** 26 · **Statut :** ✅ Fait (registre d'affichage : `morale.value` reste l'accumulateur — la dérive coexiste, proximité hors pile) · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 Le moral est un scalaire opaque : `moraleSystem.js` applique directement des deltas (`EFFECTS.ate`=10, `deathWitnessed`=-25, `restedOnGround`=3…) sur `morale.value`, borné, avec une dérive lente vers `baseline`. On voit *que* le moral d'un nain baisse, jamais *pourquoi*. Quand `tantrumSystem.js` déclenche une crise de rage (moral ≤ `morale.tantrum`), le joueur ne peut pas diagnostiquer la cause : a-t-il vu un cadavre ? mal dormi ? eu faim ? La fiche d'inspection (`ui/inspectionPanel.js`) ne montre qu'une jauge. Le moral est difficile à déboguer et peu lisible.

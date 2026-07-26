@@ -25,6 +25,7 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 | `hunger`, `thirst`, `fatigue`, `social` | besoins qui montent (`needsSystem`), activités eat/drink/sleep/socialize ; faim et soif au maximum tuent (`attritionSystem`) |
 | `relationships` | affinités par nain `{affinities: {entityId: score}}` ; se tissent en socialisant, chutent en rixe (`socializeSystem`) ; deuil renforcé à la mort d'un ami (`moraleSystem`) |
 | `morale` | humeur, ralentissement, crises (`moraleSystem`, `tantrumSystem`) |
+| `thoughts` | `{list}` de pensées horodatées expirantes déposées par `moraleSystem.remember()` à chaque effet de moral (registre d'affichage lisible dans l'inspection) ; `morale.value` reste l'accumulateur |
 | `health` + `combat` | peut frapper/mourir (`combatSystem`) ; `combat.courage` (nains) départage fight/flee ; `combat.range` (défaut 1) porte l'attaque à distance (archer) |
 | `injury` | posé par `combatSystem` quand un nain tombe sous le seuil de blessure (`{bleeding, incapacitated}`) : incapacité + saignement (`injurySystem`), secours/soin via activités `rescue`/`heal` et Zone `infirmary` |
 | `leader` | aura : tant qu'un porteur vivant existe, les hostiles frappent plus fort (`combatSystem.commandBonus`) |
