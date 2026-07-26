@@ -74,6 +74,7 @@ async function main() {
     const fishingSpots = new Zone();
     const graves = new Zone();
     const infirmary = new Zone();
+    const bedrooms = new Zone();
 
     world.registerSystem(
         new NeedsSystem([
@@ -128,7 +129,7 @@ async function main() {
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
-    world.registerSystem(new SleepSystem(terrain));
+    world.registerSystem(new SleepSystem(terrain, bedrooms));
     world.registerSystem(new SocializeSystem(terrain));
     world.registerSystem(new RescueSystem(terrain, infirmary));
     world.registerSystem(new HealSystem(terrain, infirmary));
@@ -163,9 +164,9 @@ async function main() {
     }
 
     const canvas = document.getElementById('game');
-    const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, TILE_SIZE);
+    const renderer = new Renderer(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, bedrooms, TILE_SIZE);
     const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
-    const inspection = new InspectionPanel(document.getElementById('inspection'), world);
+    const inspection = new InspectionPanel(document.getElementById('inspection'), world, bedrooms);
     const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
     const hud = new Hud(document.getElementById('hud'), world, jobBoard, goblinSpawn);
     new DesignationControl({
@@ -179,6 +180,7 @@ async function main() {
         fishingSpots,
         graves,
         infirmary,
+        bedrooms,
         tileSize: TILE_SIZE,
         recipes,
         onDwarfClick: (x, y) => inspection.selectAt(x, y),
@@ -199,7 +201,7 @@ async function main() {
         },
     });
 
-    const game = { world, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary };
+    const game = { world, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, bedrooms };
     document.getElementById('save-game').addEventListener('click', () => {
         localStorage.setItem('dwarf.save', JSON.stringify(serializeGame(game)));
         eventLog.append('Partie sauvegardée.');

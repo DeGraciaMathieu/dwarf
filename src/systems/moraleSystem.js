@@ -12,6 +12,7 @@ const EFFECTS = {
     drankBeer: 15,
     rested: 10,
     restedOnGround: 3,
+    restedInRoom: 18,
     victory: 15,
     buried: 8,
     injured: -10,
@@ -30,8 +31,8 @@ export class MoraleSystem {
         eventBus.on(EVENTS.DWARF_ATE, ({ entityId, cooked }) =>
             this.pending.push({ type: cooked ? 'ateMeal' : 'ate', entityId })
         );
-        eventBus.on(EVENTS.DWARF_WOKE, ({ entityId, rested, inBed }) =>
-            this.pending.push({ type: 'woke', entityId, rested, inBed })
+        eventBus.on(EVENTS.DWARF_WOKE, ({ entityId, rested, inBed, roomQuality }) =>
+            this.pending.push({ type: 'woke', entityId, rested, inBed, roomQuality })
         );
         eventBus.on(EVENTS.GOBLIN_SLAIN, ({ killerId }) =>
             this.pending.push({ type: 'victory', entityId: killerId })
@@ -167,11 +168,12 @@ export class MoraleSystem {
         }
         if (event.type === 'woke') {
             if (event.rested) {
-                this.adjust(
-                    world,
-                    event.entityId,
-                    event.inBed ? EFFECTS.rested : EFFECTS.restedOnGround
-                );
+                // repli rétrocompatible si l'événement ne porte pas encore la qualité
+                const quality = event.roomQuality ?? (event.inBed ? 'bed' : 'ground');
+                const effect = { ground: 'restedOnGround', bed: 'rested', room: 'restedInRoom' }[
+                    quality
+                ];
+                this.adjust(world, event.entityId, EFFECTS[effect]);
             }
             return;
         }

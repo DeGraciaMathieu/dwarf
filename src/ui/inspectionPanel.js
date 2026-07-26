@@ -1,4 +1,5 @@
 import { FRIEND_THRESHOLD, RIVAL_THRESHOLD } from '../systems/socializeSystem.js';
+import { roomQuality } from '../systems/sleepSystem.js';
 
 const ACTIVITY_LABELS = {
     fight: 'Combat !',
@@ -48,9 +49,10 @@ const EQUIPMENT_LABELS = {
 };
 
 export class InspectionPanel {
-    constructor(element, world) {
+    constructor(element, world, bedrooms) {
         this.element = element;
         this.world = world;
+        this.bedrooms = bedrooms;
         this.selectedId = null;
     }
 
@@ -89,8 +91,24 @@ export class InspectionPanel {
             ${this.gauge('Fatigue', this.world.getComponent(this.selectedId, 'fatigue'))}
             ${this.equipment()}
             ${this.aptitudes()}
+            ${this.rest()}
             ${this.relationships()}
         `;
+    }
+
+    // qualité du lieu où se trouve le nain (recalculée en lecture seule)
+    rest() {
+        const position = this.world.getComponent(this.selectedId, 'position');
+        if (!position) {
+            return '';
+        }
+        const labels = {
+            ground: 'à la dure (sol nu)',
+            bed: 'sur un lit',
+            room: 'en chambre équipée (lit + brasero)',
+        };
+        const quality = roomQuality(this.world, this.bedrooms, position);
+        return `<p class="rest">Couchage : ${labels[quality]}</p>`;
     }
 
     // amis et rivaux marquants ; on ignore les affinités vers un nain disparu

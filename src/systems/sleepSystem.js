@@ -3,9 +3,47 @@ import { approach } from './jobMovement.js';
 
 const GROUND_HEAL = 0.2;
 
+// qualité du lieu de repos, recalculée à chaque réveil (aucun composant stocké) :
+// 'ground' (sol nu) < 'bed' (lit hors chambre) < 'room' (lit en chambre avec brasero).
+export function roomQuality(world, bedrooms, position) {
+    if (!bedAtTile(world, position)) {
+        return 'ground';
+    }
+    if (bedrooms && bedrooms.has(position.x, position.y) && brazierNear(world, position)) {
+        return 'room';
+    }
+    return 'bed';
+}
+
+function bedAtTile(world, position) {
+    for (const bedId of world.query('bed', 'position')) {
+        const bedPosition = world.getComponent(bedId, 'position');
+        if (bedPosition.x === position.x && bedPosition.y === position.y) {
+            return true;
+        }
+    }
+    return false;
+}
+
+function brazierNear(world, position) {
+    for (const sourceId of world.query('comfort', 'position')) {
+        const source = world.getComponent(sourceId, 'position');
+        const comfort = world.getComponent(sourceId, 'comfort');
+        const distance = Math.max(
+            Math.abs(source.x - position.x),
+            Math.abs(source.y - position.y)
+        );
+        if (distance <= comfort.range) {
+            return true;
+        }
+    }
+    return false;
+}
+
 export class SleepSystem {
-    constructor(terrain) {
+    constructor(terrain, bedrooms) {
         this.terrain = terrain;
+        this.bedrooms = bedrooms;
     }
 
     update(world, eventBus) {
@@ -30,11 +68,16 @@ export class SleepSystem {
             this.rest(world, entityId);
             const fatigue = world.getComponent(entityId, 'fatigue');
             if (fatigue.value === 0) {
-                const inBed =
-                    this.bedAt(world, world.getComponent(entityId, 'position')) !== null;
+                const position = world.getComponent(entityId, 'position');
+                const quality = roomQuality(world, this.bedrooms, position);
                 world.removeComponent(entityId, 'sleeping');
                 world.removeComponent(entityId, 'bedTarget');
-                eventBus.emit(EVENTS.DWARF_WOKE, { entityId, rested: true, inBed });
+                eventBus.emit(EVENTS.DWARF_WOKE, {
+                    entityId,
+                    rested: true,
+                    inBed: quality !== 'ground',
+                    roomQuality: quality,
+                });
             }
         }
     }

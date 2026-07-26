@@ -1,6 +1,6 @@
 # PRD H24 — Qualité des pièces et confort
 
-**Lot :** H — Environnement & profondeur · **Point :** 24 · **Statut :** 🔲 À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** H — Environnement & profondeur · **Point :** 24 · **Statut :** ✅ Fait (option a — `moraleSystem` mappe `roomQuality` → `EFFECTS`) · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 Aujourd'hui, dormir dans un coin de couloir vaut autant que dormir dans une vraie chambre. Le repos ne dépend que du lit : `sleepSystem.js` applique `bed.recoveryMultiplier`/`bed.heal` si le nain dort sur une tuile de lit, et `moraleSystem.js` accorde `EFFECTS.rested` (10) en lit contre `EFFECTS.restedOnGround` (3) au sol — mais rien ne distingue un lit posé en plein couloir d'un lit dans une pièce close et meublée. Le seul confort spatial existant est le brasero (`comfort` : `range`, `bonus`) via `comfortOfHome()`. Résultat : le joueur n'a aucune incitation à construire de vraies chambres ; l'aménagement (murs, porte, brasero) n'a pas de récompense mécanique claire.

@@ -79,6 +79,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     const fishingSpots = new Zone();
     const graves = new Zone();
     const infirmary = new Zone();
+    const bedrooms = new Zone();
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
@@ -122,7 +123,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
-    world.registerSystem(new SleepSystem(terrain));
+    world.registerSystem(new SleepSystem(terrain, bedrooms));
     world.registerSystem(new SocializeSystem(terrain));
     world.registerSystem(new RescueSystem(terrain, infirmary));
     world.registerSystem(new HealSystem(terrain, infirmary));
@@ -155,6 +156,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
         fishingSpots,
         graves,
         infirmary,
+        bedrooms,
         terrain,
         run(ticks) {
             for (let i = 0; i < ticks; i++) {
@@ -283,6 +285,13 @@ export function addBed(world, x, y) {
     const id = world.createEntity();
     world.addComponent(id, 'position', { x, y });
     world.addComponent(id, 'bed', { recoveryMultiplier: 1.5, heal: 1 });
+    return id;
+}
+
+export function addBrazier(world, x, y) {
+    const id = world.createEntity();
+    world.addComponent(id, 'position', { x, y });
+    world.addComponent(id, 'comfort', { range: 3, bonus: 0.1 });
     return id;
 }
 

@@ -1,5 +1,5 @@
 export class Renderer {
-    constructor(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, tileSize) {
+    constructor(canvas, terrain, jobBoard, stockpiles, farms, fishingSpots, graves, infirmary, bedrooms, tileSize) {
         this.terrain = terrain;
         this.jobBoard = jobBoard;
         this.stockpiles = stockpiles;
@@ -7,6 +7,7 @@ export class Renderer {
         this.fishingSpots = fishingSpots;
         this.graves = graves;
         this.infirmary = infirmary;
+        this.bedrooms = bedrooms;
         this.tileSize = tileSize;
         this.ctx = canvas.getContext('2d');
         canvas.width = terrain.width * tileSize;
@@ -37,6 +38,10 @@ export class Renderer {
         }
         ctx.fillStyle = '#3c1a1a';
         for (const { x, y } of this.infirmary.list()) {
+            ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
+        }
+        ctx.fillStyle = '#233042';
+        for (const { x, y } of this.bedrooms.list()) {
             ctx.fillRect(x * tileSize, y * tileSize, tileSize, tileSize);
         }
 
