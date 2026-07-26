@@ -1,6 +1,6 @@
 # PRD D13 — resetUnreachable ciblé
 
-**Lot :** D — Robustesse · **Point :** 13 · **Statut :** À faire · **Impact / Effort :** Moyen / Moyen
+**Lot :** D — Robustesse · **Point :** 13 · **Statut :** ✅ Fait · **Impact / Effort :** Moyen / Moyen
 
 ## Problème
 

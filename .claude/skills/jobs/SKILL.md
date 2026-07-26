@@ -16,8 +16,8 @@ File partagée (`src/core/jobBoard.js`) + assignation générique (`src/systems/
 | `claim(entityId, position)` | `JobAssignmentSystem` | le job disponible le plus prioritaire, puis le plus proche (`job.priority`, défaut 0 ; l'outil « Urgent » de `designation.js` pose à 1) ; devient un composant `currentJob {job, path, progress}` sur le nain |
 | `release(job)` | `JobAssignmentSystem` (activité ≠ work), `CombatSystem` (mort) | retour en file, un autre nain le reprendra |
 | `cancel(job)` | `StewardSystem` (cible atteinte ou baissée) | retire un job **non réclamé** de la file ; un job réclamé va à son terme |
-| `markUnreachable(job)` | l'exécutant (cible/matériau/atelier inaccessible) | job en pause, ignoré par `claim` |
-| `resetUnreachable()` | `DigSystem`/`ChopSystem`/`FarmSystem` (récolte) à chaque complétion, `designation.js` à la pose d'un atelier | le monde a changé : tout redevient tentable |
+| `markUnreachable(job, reason)` | l'exécutant | job en pause, ignoré par `claim` ; `reason` = `'access'` (chemin bloqué, défaut) ou `'supply'` (matériau/atelier manquant) |
+| `resetUnreachable(origin)` | Dig/Chop/Craft-tuile passent la case creusée/posée (`origin`) ; Farm (récolte) et Craft-atelier sans origine | les jobs `supply` redeviennent toujours tentables (ressource/atelier apparu) ; les jobs `access` seulement dans un rayon autour d'`origin` (rien sans origine) |
 | `complete(job)` | l'exécutant | retiré de la file |
 
 ## Règles non négociables
