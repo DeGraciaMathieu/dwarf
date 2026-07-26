@@ -12,6 +12,7 @@ import { DrinkSystem } from '../src/systems/drinkSystem.js';
 import { MoraleSystem } from '../src/systems/moraleSystem.js';
 import { GoblinSpawnSystem } from '../src/systems/goblinSpawnSystem.js';
 import { MigrantSystem } from '../src/systems/migrantSystem.js';
+import { RandomEventSystem } from '../src/systems/randomEventSystem.js';
 import { ArbiterSystem } from '../src/systems/arbiterSystem.js';
 import { JobAssignmentSystem } from '../src/systems/jobAssignmentSystem.js';
 import { EatingSystem } from '../src/systems/eatingSystem.js';
@@ -53,7 +54,13 @@ export const data = {
     recipes: loadData('recipes.json'),
     creatures: loadData('creatures.json'),
     embark: loadData('embark.json'),
+    events: loadData('events.json'),
 };
+
+export const eventDefinitions = () => ({
+    creatures: data.creatures,
+    plant: data.plants.mushroom,
+});
 
 export const goblinArchetypes = () => ({
     grunt: data.creatures.goblin,
@@ -76,7 +83,7 @@ export function openTerrain(width, height) {
 
 export function setupColony(
     terrain,
-    { goblinSpawner = false, migrants = false, objectives = null, random = Math.random } = {}
+    { goblinSpawner = false, migrants = false, randomEvents = null, objectives = null, random = Math.random } = {}
 ) {
     const world = new World();
     const bus = new EventBus();
@@ -123,6 +130,11 @@ export function setupColony(
     }
     if (migrants) {
         world.registerSystem(new MigrantSystem(terrain, data.creatures.dwarf));
+    }
+    if (randomEvents) {
+        world.registerSystem(
+            new RandomEventSystem(terrain, randomEvents.table, randomEvents.definitions, random)
+        );
     }
     if (objectives) {
         world.registerSystem(new StewardSystem(jobBoard, data.recipes, data.items, objectives));
