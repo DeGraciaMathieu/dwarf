@@ -2,6 +2,14 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Garde-manger et plats qui se gâtent
+
+- **Les plats préparés ne se conservent plus éternellement** : laissé à traîner, un plat finit par **pourrir et disparaître** (« Un plat s'est gâté faute de garde-manger. »).
+- **Nouveau stockage 🍯 Garde-manger** : les plats rangés dans un garde-manger **restent frais indéfiniment** — de quoi constituer des réserves, notamment pour passer l'hiver.
+- **Les nains y rangent les plats en priorité** : dès qu'un garde-manger existe, les plats préparés y sont acheminés de préférence, même s'il est plus loin qu'un stockage ordinaire.
+- Seuls les **plats cuisinés** se gâtent ; les récoltes crues, elles, se gardent comme avant.
+- Technique : composant `perishable` sur le plat, `perishSystem` gère la décomposition et le garde-manger (`kind: pantry`) la stoppe ; l'acheminement (`haulSystem`) gère un objet convenant à plusieurs types de stockage.
+
 ## 2026-07-26 — Les pensées des nains
 
 - **On voit enfin pourquoi un nain est de bonne ou de mauvaise humeur** : sa fiche d'inspection liste désormais ses **pensées du moment** — « a savouré un bon plat », « a dormi à même le sol », « a vu quelqu'un mourir », « pleure un proche disparu »… en vert pour le positif, en rouge pour le négatif.
