@@ -45,4 +45,5 @@ export const EVENTS = {
     DWARF_BLED_OUT: 'dwarf.bled-out',
     SEASON_CHANGED: 'season.changed',
     FOOD_SPOILED: 'food.spoiled',
+    COLONY_ENDED: 'colony.ended',
 };

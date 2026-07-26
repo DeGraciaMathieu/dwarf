@@ -44,11 +44,13 @@ import { MigrantSystem } from './systems/migrantSystem.js';
 import { HostileSystem } from './systems/hostileSystem.js';
 import { CombatSystem } from './systems/combatSystem.js';
 import { JobAlertSystem } from './systems/jobAlertSystem.js';
+import { ChronicleSystem } from './systems/chronicleSystem.js';
 import { Renderer } from './ui/renderer.js';
 import { EventLog } from './ui/eventLog.js';
 import { DesignationControl } from './ui/designation.js';
 import { InspectionPanel } from './ui/inspectionPanel.js';
 import { ObjectivesPanel } from './ui/objectivesPanel.js';
+import { LegendPanel } from './ui/legendPanel.js';
 import { Hud } from './ui/hud.js';
 
 const GRID = { width: 40, height: 25 };
@@ -156,6 +158,7 @@ async function main() {
     world.registerSystem(new InjurySystem(jobBoard, items.corpse));
     world.registerSystem(new MovementSystem(terrain));
     world.registerSystem(new JobAlertSystem(jobBoard));
+    world.registerSystem(new ChronicleSystem(eventBus));
 
     const randomTile = () => spawnRegion[Math.floor(Math.random() * spawnRegion.length)];
     for (const name of creatures.dwarf.names.slice(0, STARTING_DWARVES)) {
@@ -173,6 +176,7 @@ async function main() {
     const eventLog = new EventLog(document.getElementById('event-log'), eventBus, world);
     const inspection = new InspectionPanel(document.getElementById('inspection'), world, bedrooms);
     const objectivesPanel = new ObjectivesPanel(document.getElementById('objectives'), objectives, recipes);
+    const legendPanel = new LegendPanel(document.getElementById('legend'), world);
     const hud = new Hud(document.getElementById('hud'), world, jobBoard, goblinSpawn);
     new DesignationControl({
         canvas,
@@ -202,6 +206,7 @@ async function main() {
             renderer.render(world);
             inspection.render();
             objectivesPanel.render();
+            legendPanel.render();
             hud.render(tick);
         },
     });
@@ -219,6 +224,12 @@ async function main() {
         }
         restoreGame(game, JSON.parse(raw));
         eventLog.append('Partie chargée.');
+    });
+
+    document.getElementById('show-legend').addEventListener('click', () => legendPanel.toggle());
+    eventBus.on(EVENTS.COLONY_ENDED, () => {
+        eventLog.append('La colonie s\'est éteinte. Voici sa légende…', true);
+        legendPanel.open();
     });
 
     const speedButtons = document.querySelectorAll('#speed button');
