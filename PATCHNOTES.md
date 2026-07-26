@@ -2,6 +2,48 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-26 — Deux journaux : marquant vs quotidien
+
+- **Le journal est désormais scindé en deux** : un panneau **« Événements marquants »** au-dessus, et le **« Journal »** courant en dessous.
+- **Les faits qui comptent ne se noient plus dans le bruit** : morts, blessures, combats et invasions, événements aléatoires, arrivées, changements de saison, amitiés/rivalités et fin de colonie remontent dans les marquants ; le tout-venant (manger, dormir, creuser, transporter, fabriquer…) reste dans le journal courant.
+- Les alertes rouges sont conservées, indépendamment du journal où tombe la ligne.
+
+## 2026-07-26 — Événements aléatoires, bêtes sauvages et dragon
+
+- **Des imprévus viennent secouer la partie** : périodiquement, un événement surgit — **épidémie** (des nains affaiblis), **récolte miraculeuse** ou **nuée qui ravage les champs**, **vagabond** qui rejoint la colonie, **éboulement** qui mure un passage (recreusable).
+- **Des bêtes sauvages rôdent** : loups, sangliers et ours débarquent aux abords, du plus commun au plus rare.
+- **Un dragon, très rare et quasi intuable** : quand il surgit, il fond sur **tout ce qui vit** — nains **comme** gobelins. Un cataclysme à part entière.
+- Chaque événement est annoncé au journal des faits marquants ; sans événement éligible, il ne se passe rien (répit).
+- Technique : `randomEventSystem` piloté par `events.json` (table pondérée, conditions, cooldown) ; roster de bêtes pondéré (rareté par poids) ; marqueur `predator` pour le ciblage universel du dragon ; RNG injectable pour des tests déterministes.
+
+## 2026-07-26 — Écran d'embarquement : profils et difficulté
+
+- **La partie commence par un choix** : un écran d'embarquement permet de sélectionner un **profil de départ** (nombre de nains, aptitudes, vivres) et une **difficulté**.
+- **Trois profils** : « Colonie équilibrée » (le départ classique, 5 nains), « Poignée de pionniers » (3 nains, peu de vivres, un défi) ou « Grande caravane » (7 nains et des provisions, bière comprise).
+- **Trois difficultés** : « Paisible » (gobelins rares, vivres abondants), « Normale » (l'équilibre historique) ou « Rude » (vagues plus fréquentes et grosses, vivres réduits).
+- **Les valeurs par défaut reproduisent la partie historique** : ne rien changer revient au départ à 5 nains et 8 pains.
+- Technique : profils et difficultés décrits dans `embark.json` ; la difficulté module les paramètres de vague (`goblinSpawnSystem`) et les ressources de départ.
+
+## 2026-07-26 — Fin de partie et légende de la colonie
+
+- **La colonie a enfin une fin et une histoire** : quand le dernier nain disparaît, la partie s'achève et la **légende** de la colonie s'affiche.
+- **Nouveau panneau 📜 Légende** : consultable à tout moment, il récapitule durée, hivers traversés, pic de population, gobelins repoussés, chefs-d'œuvre, amitiés/rivalités, défunts (et leurs causes) et un **score final**.
+- **Des jalons** sont franchis en cours de route (premiers hivers survécus, colonie de 10/15 nains, prospérité).
+- Technique : `chronicleSystem` agrège les faits accomplis du bus et l'état du monde sur un composant `chronicle` (sérialisé, survit au save/load) ; émet `colony.ended` une seule fois à l'extinction.
+
+## 2026-07-26 — Confort de lecture des humeurs
+
+- **La fiche d'un nain est réorganisée en sections** : ses jauges vitales sont regroupées, ses **pensées** ont leur propre encadré « Humeur », et ses attributs (équipement, aptitudes, caractère, couchage, relations) sont rassemblés — fini le fouillis.
+- **Fini les humeurs contradictoires** : manger chasse « a le ventre vide », boire chasse « a la gorge sèche » — une pensée de satisfaction efface le manque opposé au lieu de cohabiter avec lui.
+
+## 2026-07-26 — Le social approfondi
+
+- **Les nains ont un caractère** : chacun naît avec une **sociabilité** et un **tempérament** propres (visibles sur sa fiche : « sociable », « solitaire », « colérique », « placide »).
+- **Les affinités guident vraiment le comportement** : un nain **recherche ses amis** pour discuter (les cliques se renforcent) et **évite ses rivaux** ; un ivrogne qui cherche la bagarre **cible de préférence celui qu'il déteste**.
+- **Le caractère module les liens** : les sociables tissent des amitiés plus vite, les colériques se brouillent plus facilement.
+- **Aucune régression** : un nain neutre se comporte exactement comme avant.
+- Technique : composant `personality {sociability, temper}` tiré au spawn ; `socializeSystem`, `arbiterSystem` et `brawlSystem` pondèrent le choix de cible par l'affinité et la personnalité.
+
 ## 2026-07-26 — Le puits
 
 - **Nouveau meuble ⊙ Puits**, taillé à l'**atelier de taille** à partir de pierre : une source d'eau au cœur de la colonie, loin des berges.
