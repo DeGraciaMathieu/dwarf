@@ -1,6 +1,6 @@
 # PRD H25 — Saisons et température
 
-**Lot :** H — Environnement & profondeur · **Point :** 25 · **Statut :** 🔲 À faire · **Impact / Effort :** Moyen / Élevé
+**Lot :** H — Environnement & profondeur · **Point :** 25 · **Statut :** ✅ Fait (entité-composant `season` ; gel logique — suspension des cultures, berges gelées, migration suspendue) · **Impact / Effort :** Moyen / Élevé
 
 ## Problème
 La colonie vit dans un temps homogène : les cultures poussent toujours au même rythme (`farmSystem.growCrops()`), l'eau de surface est toujours accessible (`drinkSystem.reachableBankTarget()` cherche en permanence une berge `water`), et les migrants arrivent selon un simple compteur de ticks (`migrantSystem.js`). Rien ne pousse le joueur à anticiper, à stocker des vivres ou de la boisson, ni à planifier au-delà de l'instant. Il manque une pression cyclique qui donne du poids à la préparation.

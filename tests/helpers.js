@@ -5,6 +5,7 @@ import { Terrain } from '../src/core/terrain.js';
 import { JobBoard } from '../src/core/jobBoard.js';
 import { Zone } from '../src/core/zones.js';
 import { EVENTS } from '../src/events/events.js';
+import { SeasonSystem, SEASON_LENGTH, SEASONS } from '../src/systems/seasonSystem.js';
 import { NeedsSystem } from '../src/systems/needsSystem.js';
 import { AttritionSystem } from '../src/systems/attritionSystem.js';
 import { DrinkSystem } from '../src/systems/drinkSystem.js';
@@ -80,6 +81,7 @@ export function setupColony(terrain, { goblinSpawner = false, migrants = false, 
     const graves = new Zone();
     const infirmary = new Zone();
     const bedrooms = new Zone();
+    world.registerSystem(new SeasonSystem());
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },
@@ -285,6 +287,19 @@ export function addBed(world, x, y) {
     const id = world.createEntity();
     world.addComponent(id, 'position', { x, y });
     world.addComponent(id, 'bed', { recoveryMultiplier: 1.5, heal: 1 });
+    return id;
+}
+
+// positionne le cycle des saisons à un instant donné (l'index découle des ticks)
+export function seasonTicks(world, ticks) {
+    let id = world.query('season')[0];
+    if (id === undefined) {
+        id = world.createEntity();
+        world.addComponent(id, 'season', { ticks: 0, index: 0 });
+    }
+    const season = world.getComponent(id, 'season');
+    season.ticks = ticks;
+    season.index = Math.floor(ticks / SEASON_LENGTH) % SEASONS.length;
     return id;
 }
 

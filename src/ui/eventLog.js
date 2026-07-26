@@ -162,6 +162,14 @@ export class EventLog {
         eventBus.on(EVENTS.DWARF_FELL_OUT, ({ entityId, otherId }) => {
             this.append(`${dwarfName(entityId)} et ${dwarfName(otherId)} sont désormais rivaux.`, true);
         });
+        eventBus.on(EVENTS.SEASON_CHANGED, ({ season, isWinter }) => {
+            this.append(
+                isWinter
+                    ? "L'hiver s'installe : les cultures gèlent et les berges se prennent en glace."
+                    : `Le climat tourne : voici ${season}.`,
+                isWinter
+            );
+        });
         eventBus.on(EVENTS.JOB_UNREACHABLE, ({ job }) => {
             const label = JOB_LABELS[job.type] ?? job.type;
             this.append(`Chantier inaccessible : ${label} (${job.target.x}, ${job.target.y}).`, true);

@@ -2,6 +2,7 @@ import { EVENTS } from '../events/events.js';
 import { spawnFromDefinition } from '../core/spawn.js';
 import { randomEdgeTile } from '../core/terrain.js';
 import { assignAptitude } from './workEffort.js';
+import { isWinter } from './seasonSystem.js';
 
 const FIRST_CHECK_TICK = 900;
 const CHECK_INTERVAL = 600;
@@ -21,6 +22,11 @@ export class MigrantSystem {
             return;
         }
         this.nextCheck = this.ticks + CHECK_INTERVAL;
+
+        // les caravanes ne passent pas l'hiver : aucune arrivée tant qu'il gèle
+        if (isWinter(world)) {
+            return;
+        }
 
         const population = world.query('worker').length;
         if (population === 0 || population >= MAX_POPULATION) {

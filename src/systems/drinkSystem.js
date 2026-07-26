@@ -1,6 +1,7 @@
 import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 import { findPath } from '../core/pathfinding.js';
+import { isWinter } from './seasonSystem.js';
 
 const NO_WATER_RETRY_DELAY = 50;
 const BEER_INTOXICATION = 45;
@@ -79,9 +80,12 @@ export class DrinkSystem {
     }
 
     findDrinkTarget(world, entityId) {
-        return (
-            this.nearestBeerTarget(world, entityId) ?? this.reachableBankTarget(world, entityId)
-        );
+        // en hiver les berges sont gelées : on se rabat uniquement sur la bière stockée
+        const beer = this.nearestBeerTarget(world, entityId);
+        if (beer || isWinter(world)) {
+            return beer;
+        }
+        return this.reachableBankTarget(world, entityId);
     }
 
     itemStillAt(world, drinkTarget) {

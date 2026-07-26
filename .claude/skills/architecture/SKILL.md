@@ -29,9 +29,11 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 
 ## Ordre du tick (déclaré dans `src/main.js` — ne pas réordonner sans raison)
 
-`Needs → Attrition → Morale → Intoxication → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Socialize → Rescue → Heal → Flee → Fight → Brawl → Tantrum → Dig → Chop → Haul → Grave → Equip → Build → Craft → Demolish → Farm → Fish → Hostile → Combat → Injury → Movement → JobAlert`
+`Season → Needs → Attrition → Morale → Intoxication → GoblinSpawn → Migrant → Steward → Arbiter → JobAssignment → Eating → Drink → Sleep → Socialize → Rescue → Heal → Flee → Fight → Brawl → Tantrum → Dig → Chop → Haul → Grave → Equip → Build → Craft → Demolish → Farm → Fish → Hostile → Combat → Injury → Movement → JobAlert`
 
-Logique : les besoins montent, le moral encaisse, l'intendance réconcilie les objectifs de stock (poste/retire les jobs de craft avant l'arbitrage, pour qu'ils soient réclamables au même tick), l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
+Logique : la saison avance, les besoins montent, le moral encaisse, l'intendance réconcilie les objectifs de stock (poste/retire les jobs de craft avant l'arbitrage, pour qu'ils soient réclamables au même tick), l'arbitre décide, les exécutants agissent, les hostiles répliquent, l'errance en dernier.
+
+**Saisons** (`seasonSystem.js`, en tête du tick) : un compteur sur une entité-composant singleton `season {ticks, index}` (sérialisée nativement) cycle printemps→été→automne→hiver (600 ticks chacune) et émet `season.changed`. L'helper `isWinter(world)` (lecture seule) est lu par `farmSystem` (croissance suspendue), `drinkSystem` (berges gelées → bière seule) et `migrantSystem` (arrivées suspendues). Aucun état persistant sur les nains : tout redevient normal au dégel.
 
 ## Où placer du nouveau code
 

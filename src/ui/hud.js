@@ -1,4 +1,7 @@
+import { SEASONS } from '../systems/seasonSystem.js';
+
 const TICKS_PER_SECOND = 5;
+const SEASON_ICONS = ['🌱', '☀', '🍂', '❄'];
 
 export class Hud {
     constructor(element, world, jobBoard, goblinSpawn) {
@@ -18,12 +21,22 @@ export class Hud {
             <span title="Nains vivants">☺ ${population}</span>
             <span title="Prochaine vague">⚔ ${this.clock(countdown)}${wave > 0 ? ` (vague ${wave})` : ''}</span>
             <span title="Jobs disponibles / en cours / inaccessibles">⚒ ${this.jobBoard.countAvailable()} · ${this.jobBoard.countClaimed()} · ${this.jobBoard.countUnreachable()}</span>
+            ${this.season()}
         `;
         if (html === this.renderedHtml) {
             return;
         }
         this.renderedHtml = html;
         this.element.innerHTML = html;
+    }
+
+    season() {
+        const seasonId = this.world.query('season')[0];
+        if (seasonId === undefined) {
+            return '';
+        }
+        const index = this.world.getComponent(seasonId, 'season').index;
+        return `<span title="Saison">${SEASON_ICONS[index]} ${SEASONS[index]}</span>`;
     }
 
     clock(ticks) {

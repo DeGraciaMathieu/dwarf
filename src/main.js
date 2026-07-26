@@ -8,6 +8,7 @@ import { spawnFromDefinition } from './core/spawn.js';
 import { serializeGame, restoreGame } from './save.js';
 import { EVENTS } from './events/events.js';
 import { MovementSystem } from './systems/movementSystem.js';
+import { SeasonSystem } from './systems/seasonSystem.js';
 import { NeedsSystem } from './systems/needsSystem.js';
 import { AttritionSystem } from './systems/attritionSystem.js';
 import { DrinkSystem } from './systems/drinkSystem.js';
@@ -76,6 +77,7 @@ async function main() {
     const infirmary = new Zone();
     const bedrooms = new Zone();
 
+    world.registerSystem(new SeasonSystem());
     world.registerSystem(
         new NeedsSystem([
             { component: 'hunger', event: EVENTS.DWARF_HUNGRY },

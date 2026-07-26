@@ -2,6 +2,7 @@ import { EVENTS } from '../events/events.js';
 import { approach } from './jobMovement.js';
 import { spawnFromDefinition } from '../core/spawn.js';
 import { workEffort } from './workEffort.js';
+import { isWinter } from './seasonSystem.js';
 
 const PLANT_TICKS = 5;
 const HARVEST_TICKS = 5;
@@ -29,6 +30,10 @@ export class FarmSystem {
     }
 
     growCrops(world) {
+        // gel hivernal : la croissance est suspendue, elle reprend au dégel
+        if (isWinter(world)) {
+            return;
+        }
         for (const cropId of world.query('crop', 'renderable')) {
             const crop = world.getComponent(cropId, 'crop');
             if (crop.growth >= crop.matureAt) {
