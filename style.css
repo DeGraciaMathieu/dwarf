@@ -101,18 +101,6 @@ canvas {
     gap: 8px;
 }
 
-#zoom {
-    display: flex;
-    gap: 8px;
-}
-
-#viewport {
-    overflow: auto;
-    max-width: 62vw;
-    max-height: 78vh;
-    border: 1px solid #444;
-}
-
 #session {
     margin-left: auto;
     display: flex;
