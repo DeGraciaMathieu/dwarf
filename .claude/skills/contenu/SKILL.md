@@ -12,12 +12,13 @@ Une définition = `{glyph, color, components: {...}}`. `spawnFromDefinition` (`s
 
 | Fichier | Contient | Chargé par |
 |---|---|---|
-| `creatures.json` | `dwarf` (+ pool `names`, composant `skills` d'aptitudes), archétypes hostiles `goblin`, `brute` (coriace), `archer` (`combat.range`), `chief` (`leader`, aura de dégâts) | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js` |
+| `creatures.json` | `dwarf` (+ pool `names`, composant `skills` d'aptitudes), archétypes hostiles `goblin`, `brute` (coriace), `archer` (`combat.range`), `chief` (`leader`, aura de dégâts) ; bêtes errantes des événements aléatoires : `wolf`, `boar`, `bear`, et `dragon` (`predator` : cible tout être vivant, énorme santé). Les bêtes portent un `label` FR pour le journal | `main.js` (spawn initial), `goblinSpawnSystem.js`, `migrantSystem.js`, `randomEventSystem.js` |
 | `items.json` | `bread`, `log`, `stone`, `ore`, `mushroom`, `fish`, `beer`, `corpse`, `workshop`, `brewery`, `masonry`, `forge`, `bed`, `brazier`, `door`, `bridge`, `stoneBed`, `stoneDoor`, armes `sword`/`axe`/`spear`, armures `mail`/`plate`/`shield` | `main.js`, systèmes producteurs |
 | `tiles.json` | `floor`, `wall`, `ore`, `tree`, `door`, `water`, `bridge` — `{glyph, color, walkable, blocksHostiles?}` | `terrain.js`, `renderer.js` |
 | `plants.json` | `mushroom` — `{young, mature, growthTicks}` | `farmSystem.js` |
 | `recipes.json` | ateliers/meubles/équipements — `{label, ghost?, craftTicks, produces, workshop?, installsTile?, site?, ingredient?, consumable?, requires?}` ; `requires: { workshop }` = palier de progression (`recipeGate.js`, lu par steward et `designation.js`) | `craftSystem.js`, `designation.js`, `stewardSystem.js` |
 | `embark.json` | choix d'embarquement : `profiles` (`{id, label, description, default?, dwarves, items: [{item, count}]}`) et `difficulties` (`{id, label, description, default?, resourceMultiplier, waveParams}`) | `main.js` (via `embarkScreen.js` → `embarkSetup.js` et config de `goblinSpawnSystem`) |
+| `events.json` | événements aléatoires : `{firstCheck, checkInterval, jitter, events: [{id, weight, cooldown, conditions, effect}]}` ; `effect.type` ∈ `plague`/`spawnBeast`/`harvestBoon`/`harvestBlight`/`specialArrival`/`caveIn` | `randomEventSystem.js` |
 
 ## Quel composant déclenche quel système
 
@@ -78,6 +79,8 @@ Les **armes/armures** suivent ce modèle : recettes `consumable: true` (forgées
 **Ajouter un type de tuile** : `tiles.json` (`walkable` correct ; `blocksHostiles: true` pour bloquer les hostiles seulement — `isWalkable(x, y, {hostile})` et `findPath(..., {hostile: true})` en tiennent compte) + le placer dans la génération (`terrain.js`) ou via une recette `installsTile`.
 
 **Ajouter une culture** : `plants.json` + l'aliment produit dans `items.json`. `farmSystem.js` est mono-culture (champignon) — le paramétrer par champ serait l'extension à faire.
+
+**Ajouter un événement aléatoire** : entrée dans `events.json` (`{id, weight, cooldown, conditions, effect}`). Sans code neuf tant que `effect.type` réutilise un effet déjà câblé dans `randomEventSystem.js` (`plague`, `spawnBeast`, `harvestBoon`, `harvestBlight`, `specialArrival`, `caveIn`). `spawnBeast` porte un `roster: [{creature, weight}]` — tirage pondéré parmi des clés de `creatures.json` (poids faible = bête rare, ex. `dragon`). Un nouveau type d'effet = une méthode dans `randomEventSystem.js` + un fait accompli `event.*` dans `events.js` + son annonce dans `eventLog.js`. Les conditions supportées sont `minPopulation`/`maxPopulation`/`minCrops` (en étendre demande une clause dans `conditionsMet`).
 
 **Ajouter un profil / une difficulté d'embarquement** : entrée dans `embark.json`. Un profil = `{id, label, description, dwarves, items: [{item, count}]}` (les `item` réfèrent des clés de `items.json`). Une difficulté = `{id, label, description, resourceMultiplier, waveParams}` où `waveParams` surcharge les constantes de menace de `goblinSpawnSystem` (`firstWaveDelay`, `baseInterval`, `minInterval`, `maxWaveSize`, `populationComfort` ; `{}` = valeurs par défaut). Marquer d'un `default: true` le profil/la difficulté présélectionnés. Aucun code neuf : `embarkScreen.js` liste les choix et `embarkSetup.js` peuple la colonie.
 

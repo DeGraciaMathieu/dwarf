@@ -14,13 +14,14 @@ auto_invoke: true
 
 | Helper | Rôle |
 |---|---|
-| `setupColony(terrain, {goblinSpawner})` | monde complet avec tous les systèmes dans l'ordre de `main.js` ; retourne `{world, bus, jobBoard, stockpiles, farms, terrain, run(ticks), collect(event)}` |
+| `setupColony(terrain, {goblinSpawner, migrants, randomEvents, objectives, random})` | monde complet avec tous les systèmes dans l'ordre de `main.js` ; retourne `{world, bus, jobBoard, stockpiles, farms, terrain, run(ticks), collect(event)}`. Options opt-in : `randomEvents: {table, definitions}` enregistre `RandomEventSystem` (voir `eventDefinitions()`) |
 | `makeTerrain(rows)` | terrain depuis un dessin ASCII : `#` mur, `T` arbre, autre sol |
 | `openTerrain(w, h)` | plaine vide |
 | `addDwarf(world, x, y, overrides)` | nain complet ; overrides : `name, hunger, hungerRate, fatigue, fatigueRate, health, morale, courage` (taux à 0 par défaut → besoins figés, scénarios déterministes) |
 | `addGoblin / addBread / addLog / addBed / addMushroom / addBrewery / addBeer` | entités usuelles |
 | `entitiesAt(world, component, x, y)` | requête positionnelle |
-| `data` | les cinq JSON de `src/data/` chargés |
+| `data` | les JSON de `src/data/` chargés (`tiles`, `items`, `plants`, `recipes`, `creatures`, `embark`, `events`) |
+| `eventDefinitions()` | `{beast, dwarf, plant}` pour `RandomEventSystem` dans les tests |
 | `colony.collect(EVENTS.X)` | tableau vivant des payloads reçus — l'outil principal d'assertion |
 
 **Important** : `setupColony` duplique l'ordre des systèmes de `main.js`. Tout nouveau système enregistré dans `main.js` doit l'être aussi dans `helpers.js`, au même rang.
@@ -41,6 +42,7 @@ auto_invoke: true
 | `tests/invasions.test.js` | vagues de gobelins : rareté/espacement, progression lente, proportionnalité à la population, accalmies, persistance en sauvegarde (spawn aléatoire — `setupColony(terrain, { goblinSpawner: true, random })` injecte un RNG déterministe ; `() => 0.5` neutralise jitter/accalmie/spéciaux) |
 | `tests/bridges.test.js` | ponts : traversée ouverte à tous, réveil des chantiers d'outre-rivière |
 | `tests/fishing.test.js` | pêche : production continue, poisson mangé, annulation par un pont, persistance |
+| `tests/randomEvents.test.js` | événements aléatoires : déclenchement/effet, cooldown (blocage puis relâche), condition non satisfaite, épidémie, reproductibilité (RNG seedé), persistance |
 | `tests/thirst.test.js` | soif : boire à la berge, priorité, renoncement sans eau, mort de soif |
 | `tests/beer.test.js` | bière : brassage à la brasserie, atelier typé, pénurie relancée par la récolte, préférence bière + moral |
 | `tests/eventLog.test.js` | journal : résilience aux entités détruites avant le flux (mort dans le tick de l'annonce) |

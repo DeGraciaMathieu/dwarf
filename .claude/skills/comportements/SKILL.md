@@ -26,7 +26,7 @@ Toute la politique comportementale des nains vit dans `src/systems/arbiterSystem
 | `work` | 10 | `jobAssignmentSystem.js` + systèmes de jobs (dont `equipSystem.js` : s'armer/s'armurer est un job `equip` fait en temps de travail) | a un `currentJob` OU `jobBoard.hasAvailableJobs()` |
 | `wander` | 1 | `movementSystem.js` | toujours (repli) |
 
-Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSystem.js` — mini-arbitre séparé.
+Les gobelins ont aussi une `activity` (`chase`/`wander`), écrite par `hostileSystem.js` — mini-arbitre séparé. Un hostile ordinaire ne cible que les nains ; un hostile porteur du marqueur `predator` (le dragon) traque **tout être vivant** (nains comme hostiles), sauf lui-même et les autres prédateurs — ciblage partagé par `hostileSystem.js` (poursuite) et `combatSystem.js` (frappe).
 
 ## Ce que la bascule d'activité déclenche automatiquement (ne pas recoder)
 

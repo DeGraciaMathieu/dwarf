@@ -1,6 +1,6 @@
 # PRD I30 — Événements aléatoires
 
-**Lot :** I — Rejouabilité · **Point :** 30 · **Statut :** 🔲 À faire · **Impact / Effort :** Fort / Moyen
+**Lot :** I — Rejouabilité · **Point :** 30 · **Statut :** ✅ Fait (caravane reportée vers G23) · **Impact / Effort :** Fort / Moyen
 
 ## Problème
 Hors des vagues de gobelins (`goblinSpawnSystem.js`), rien d'imprévu n'arrive jamais. Le déroulé d'une partie est entièrement dicté par les besoins des nains, la migration régulière (`migrantSystem.js`) et les invasions : deux parties se ressemblent car aucun aléa ponctuel ne vient les secouer. Il manque des surprises — bonnes ou mauvaises — qui obligent le joueur à réagir et donnent à chaque colonie son histoire propre.
