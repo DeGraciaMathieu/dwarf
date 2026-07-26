@@ -1,6 +1,6 @@
 # PRD D14 — Garde-fou pathfinding besoins (eau, nourriture)
 
-**Lot :** D — Robustesse · **Point :** 14 · **Statut :** À faire · **Impact / Effort :** Fort / Faible
+**Lot :** D — Robustesse · **Point :** 14 · **Statut :** ✅ Fait · **Impact / Effort :** Fort / Faible
 
 ## Problème
 

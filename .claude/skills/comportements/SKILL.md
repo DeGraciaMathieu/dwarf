@@ -15,8 +15,8 @@ Toute la politique comportementale des nains vit dans `src/systems/arbiterSystem
 | `fight` | 200 | `fightSystem.js` (+ frappes dans `combatSystem.js`, modulées par l'`equipment` : arme = bonus de dégâts, armure = atténuation `max(1, dégâts − défense)`) | gobelin ≤ 6 cases ET courageux (`health/max >= combat.courage`) |
 | `flee` | 200 | `fleeSystem.js` (fuit vers le refuge sûr le plus proche via une carte de menace BFS — case que les hostiles ne peuvent atteindre, typiquement derrière une porte `blocksHostiles` ; repli sur l'éloignement glouton `stepAway` si aucun refuge) | gobelin ≤ 6 cases ET pas courageux |
 | `tantrum` | 150 | `tantrumSystem.js` | `morale.value <= morale.tantrum` (hystérésis : sort à `tantrum + 15`) |
-| `eat` | valeur de faim (≤ 100) | `eatingSystem.js` | faim ≥ seuil ET nourriture existante (`query('food','position')`) |
-| `drink` | valeur de soif (≤ 100) | `drinkSystem.js` | soif ≥ seuil ET pas de marqueur `noWaterAccess` (renoncement ~50 ticks quand aucune berge n'est atteignable — évite le gel) |
+| `eat` | valeur de faim (≤ 100) | `eatingSystem.js` | faim ≥ seuil ET nourriture existante ET pas de marqueur `noFoodAccess` (posé quand aucune nourriture n'est atteignable — évite le gel, réévalué ~50 ticks, levé dès qu'un chemin réapparaît) |
+| `drink` | valeur de soif (≤ 100) | `drinkSystem.js` | soif ≥ seuil ET pas de marqueur `noWaterAccess` (posé quand aucune berge n'est atteignable — évite le gel, réévalué ~50 ticks, levé dès que l'eau redevient accessible) |
 | `sleep` | `max(fatigue, seuil)` (≤ 120) | `sleepSystem.js` | fatigue ≥ seuil, hystérésis via composant `sleeping` (dort jusqu'à fatigue 0) |
 | `work` | 10 | `jobAssignmentSystem.js` + systèmes de jobs (dont `equipSystem.js` : s'armer/s'armurer est un job `equip` fait en temps de travail) | a un `currentJob` OU `jobBoard.hasAvailableJobs()` |
 | `wander` | 1 | `movementSystem.js` | toujours (repli) |
