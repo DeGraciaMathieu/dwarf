@@ -2,6 +2,13 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-27 — Des grottes à percer dans la montagne
+
+- **La montagne cache désormais des grottes** : des cavités naturelles sont enfouies dans la roche, reliées entre elles par des **couloirs sinueux**.
+- **À découvrir au pic** : elles sont scellées par la pierre, sans accès depuis la surface — il faut creuser jusqu'à elles pour ouvrir le réseau et l'explorer.
+- **Une raison de plus de miner** : au-delà des veines de minerai, tunnels et cavités récompensent enfin l'exploration du massif.
+- Technique : creusées à la génération *après* la validation de jouabilité, avec une marge de roche vis-à-vis du plateau — elles ne fragmentent jamais la surface.
+
 ## 2026-07-27 — Prendre son courage à deux mains
 
 - **La bravoure n'est plus figée** : un nain ne décide plus de combattre ou de fuir sur sa seule santé — il peut trouver le cran de tenir, ou flancher plus tôt, selon la situation.
