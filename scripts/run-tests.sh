@@ -7,7 +7,7 @@ if printf '%s' "$input" | grep -Eq '"stop_hook_active" *: *true'; then
 fi
 cd "${CLAUDE_PROJECT_DIR:-.}" || exit 0
 log=$(mktemp)
-if ! node --test tests/ >"$log" 2>&1; then
+if ! node --test tests/*.test.js >"$log" 2>&1; then
   echo "La suite de tests échoue — corrige avant de terminer la tâche :" >&2
   grep -A 8 "^not ok" "$log" >&2
   grep -E "^# (tests|pass|fail)" "$log" >&2
