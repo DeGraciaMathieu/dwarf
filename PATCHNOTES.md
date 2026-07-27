@@ -2,6 +2,23 @@
 
 Résumé de chaque chantier, du plus récent au plus ancien. Nouvelles features d'abord, équilibrage et corrections ensuite.
 
+## 2026-07-27 — Prendre son courage à deux mains
+
+- **La bravoure n'est plus figée** : un nain ne décide plus de combattre ou de fuir sur sa seule santé — il peut trouver le cran de tenir, ou flancher plus tôt, selon la situation.
+- **Le moral compte** : un nain au moral haut serre les dents et se bat blessé ; démoralisé, il détale bien plus vite.
+- **Chacun a son tempérament face au danger** : les nains naissent **tête brûlée** ou **trouillard** (nouveau trait de caractère), en plus de leur sociabilité et de leur humeur.
+- **La force du nombre** : voir des camarades ferrailler à ses côtés donne du courage — un nain isolé fuit là où un groupe tient bon.
+- **On reprend courage** : un blessé qui fuyait repart au combat une fois **soigné**, **remonté au moral** ou **entouré d'alliés** — la santé reste malgré tout le facteur décisif.
+- Technique : `arbiterSystem.courageThreshold` module le seuil de fuite (base `combat.courage`) par le moral, le trait `personality.bravery` et l'effet de groupe (marqueur `fighting` à portée, lu au tick précédent) ; planché, jamais plafonné.
+
+## 2026-07-27 — Fini de paniquer devant un ennemi hors d'atteinte
+
+- **Plus de panique injustifiée** : un nain ne lâche plus son travail pour fuir (ou charger) un ennemi qui ne peut pas l'atteindre — muré ou coincé derrière une porte qu'il ne peut franchir.
+- **Nouvel état « Aux aguets »** : face à un hostile proche mais bloqué, le nain se met à l'abri puis **tient sa position** sans céder à la panique, au lieu d'errer bêtement vers le danger. Un vrai besoin (faim, soif…) reprend malgré tout le dessus.
+- **Le repli derrière une porte fonctionne à coup sûr** : un nain qui fuit franchit la porte et se fige du bon côté, sans ressortir se faire prendre.
+- **La menace se mesure en chemin réel**, plus à vol d'oiseau : un gobelin à trois cases mais de l'autre côté d'un mur n'affole plus personne.
+- Technique : nouveau service `threatField` (carte BFS de distance-menace partagée par l'arbitre et `fleeSystem`) ; l'état `hold` réutilise le repli de la fuite sans le malus de moral.
+
 ## 2026-07-26 — L'hiver ne gèle plus toute l'eau
 
 - **Le gel hivernal est désormais partiel** : à l'arrivée de l'hiver, une partie seulement des cases d'eau gèle — le reste reste de l'**eau libre** où les nains peuvent encore s'abreuver et pêcher.
