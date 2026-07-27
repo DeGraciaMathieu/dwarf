@@ -15,6 +15,7 @@ import { DrinkSystem } from './systems/drinkSystem.js';
 import { MoraleSystem } from './systems/moraleSystem.js';
 import { TantrumSystem } from './systems/tantrumSystem.js';
 import { ArbiterSystem } from './systems/arbiterSystem.js';
+import { ThreatField } from './systems/threatField.js';
 import { SleepSystem } from './systems/sleepSystem.js';
 import { SocializeSystem } from './systems/socializeSystem.js';
 import { RescueSystem } from './systems/rescueSystem.js';
@@ -144,7 +145,9 @@ async function main() {
         { recipe: 'shield', target: 0 },
     ];
     world.registerSystem(new StewardSystem(jobBoard, recipes, items, objectives));
-    world.registerSystem(new ArbiterSystem(jobBoard, infirmary));
+    const threatField = new ThreatField(terrain);
+    world.registerSystem(threatField);
+    world.registerSystem(new ArbiterSystem(jobBoard, infirmary, threatField));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
@@ -152,7 +155,7 @@ async function main() {
     world.registerSystem(new SocializeSystem(terrain));
     world.registerSystem(new RescueSystem(terrain, infirmary));
     world.registerSystem(new HealSystem(terrain, infirmary));
-    world.registerSystem(new FleeSystem(terrain));
+    world.registerSystem(new FleeSystem(terrain, threatField));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new BrawlSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));

@@ -5,6 +5,7 @@ import { THOUGHT_LABELS } from '../systems/moraleSystem.js';
 const ACTIVITY_LABELS = {
     fight: 'Combat !',
     flee: 'Fuit !',
+    hold: 'Aux aguets',
     tantrum: 'Rage !',
     eat: 'Va manger',
     drink: 'Va boire',

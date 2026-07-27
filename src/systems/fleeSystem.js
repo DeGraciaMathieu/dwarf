@@ -1,28 +1,34 @@
 import { EVENTS } from '../events/events.js';
 
 export class FleeSystem {
-    constructor(terrain) {
+    constructor(terrain, threatField) {
         this.terrain = terrain;
+        this.threatField = threatField;
     }
 
     update(world, eventBus) {
         const hostilePositions = world
             .query('hostile', 'position')
             .map((hostileId) => world.getComponent(hostileId, 'position'));
-        const threat = this.threatMap(hostilePositions);
+        const threat = this.threatField.field;
 
+        // 'flee' (panique) et 'hold' (aux aguets) partagent le même repli vers l'abri ;
+        // seul 'flee' porte la panique (marqueur + événement, malus de moral)
         for (const entityId of world.query('activity', 'worker')) {
             const activity = world.getComponent(entityId, 'activity');
             const fleeing = world.getComponent(entityId, 'fleeing');
-            if (activity.type !== 'flee') {
+            const retreating = activity.type === 'flee' || activity.type === 'hold';
+            if (!retreating) {
                 if (fleeing) {
                     world.removeComponent(entityId, 'fleeing');
                 }
                 continue;
             }
-            if (!fleeing) {
+            if (activity.type === 'flee' && !fleeing) {
                 world.addComponent(entityId, 'fleeing', {});
                 eventBus.emit(EVENTS.DWARF_FLEES, { entityId });
+            } else if (activity.type === 'hold' && fleeing) {
+                world.removeComponent(entityId, 'fleeing');
             }
             this.retreat(world, entityId, hostilePositions, threat);
         }
@@ -41,31 +47,6 @@ export class FleeSystem {
         }
         // aucun refuge atteignable : repli sur l'éloignement glouton
         this.stepAway(world, entityId, hostilePositions);
-    }
-
-    // distance-menace : nombre de pas qu'un hostile doit franchir pour atteindre
-    // chaque case (Infinity si inaccessible — au-delà d'une porte ou d'un mur)
-    threatMap(hostilePositions) {
-        const { width, height } = this.terrain;
-        const dist = Array.from({ length: height }, () => new Array(width).fill(Infinity));
-        const queue = [];
-        let head = 0;
-        for (const { x, y } of hostilePositions) {
-            if (dist[y][x] === Infinity) {
-                dist[y][x] = 0;
-                queue.push({ x, y });
-            }
-        }
-        while (head < queue.length) {
-            const { x, y } = queue[head++];
-            for (const next of this.neighbors(x, y, { hostile: true })) {
-                if (dist[next.y][next.x] === Infinity) {
-                    dist[next.y][next.x] = dist[y][x] + 1;
-                    queue.push(next);
-                }
-            }
-        }
-        return dist;
     }
 
     // refuge = case atteignable la plus proche que les hostiles ne peuvent atteindre
@@ -108,7 +89,7 @@ export class FleeSystem {
         return node;
     }
 
-    neighbors(x, y, movement = {}) {
+    neighbors(x, y) {
         const result = [];
         for (let dy = -1; dy <= 1; dy++) {
             for (let dx = -1; dx <= 1; dx++) {
@@ -117,7 +98,7 @@ export class FleeSystem {
                 }
                 const nx = x + dx;
                 const ny = y + dy;
-                if (this.terrain.isWalkable(nx, ny, movement)) {
+                if (this.terrain.isWalkable(nx, ny)) {
                     result.push({ x: nx, y: ny });
                 }
             }

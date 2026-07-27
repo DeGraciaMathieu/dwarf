@@ -25,6 +25,38 @@ test('fuite : encerclé près d\'une porte, le nain se replie derrière', () => 
     assert.equal(colony.world.query('worker').length, 1, 'le nain a survécu derrière la porte');
 });
 
+test('menace : un ennemi muré (inaccessible) met aux aguets, sans panique ni charge', () => {
+    // deux salles hermétiques, aucune porte : le gobelin est proche à vol d'oiseau
+    // mais n'a aucun chemin vers le nain — la distance de cheminement est infinie
+    const colony = setupColony(
+        makeTerrain([
+            '#######',
+            '#..#..#',
+            '#..#..#',
+            '#######',
+        ])
+    );
+    const brave = addDwarf(colony.world, 1, 1, { courage: 0.5 });
+    const coward = addDwarf(colony.world, 1, 2, { courage: 2 });
+    addGoblin(colony.world, 4, 1);
+
+    const before = [brave, coward].map((dwarf) => ({ ...colony.world.getComponent(dwarf, 'position') }));
+    colony.run(5);
+
+    [brave, coward].forEach((dwarf, i) => {
+        const activity = colony.world.getComponent(dwarf, 'activity');
+        assert.equal(activity.type, 'hold', 'aux aguets, ni combat ni fuite');
+        assert.equal(colony.world.getComponent(dwarf, 'fighting'), undefined);
+        assert.equal(colony.world.getComponent(dwarf, 'fleeing'), undefined);
+        const position = colony.world.getComponent(dwarf, 'position');
+        assert.deepEqual(
+            { x: position.x, y: position.y },
+            before[i],
+            'reste sur place, ne dérive pas vers l\'ennemi'
+        );
+    });
+});
+
 test('fuite : sans refuge, il s\'éloigne comme avant (stepAway)', () => {
     const colony = setupColony(openTerrain(20, 3));
     const dwarf = addDwarf(colony.world, 10, 1, { courage: 2 });

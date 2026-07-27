@@ -15,6 +15,7 @@ import { GoblinSpawnSystem } from '../src/systems/goblinSpawnSystem.js';
 import { MigrantSystem } from '../src/systems/migrantSystem.js';
 import { RandomEventSystem } from '../src/systems/randomEventSystem.js';
 import { ArbiterSystem } from '../src/systems/arbiterSystem.js';
+import { ThreatField } from '../src/systems/threatField.js';
 import { JobAssignmentSystem } from '../src/systems/jobAssignmentSystem.js';
 import { EatingSystem } from '../src/systems/eatingSystem.js';
 import { SleepSystem } from '../src/systems/sleepSystem.js';
@@ -141,7 +142,9 @@ export function setupColony(
     if (objectives) {
         world.registerSystem(new StewardSystem(jobBoard, data.recipes, data.items, objectives));
     }
-    world.registerSystem(new ArbiterSystem(jobBoard, infirmary));
+    const threatField = new ThreatField(terrain);
+    world.registerSystem(threatField);
+    world.registerSystem(new ArbiterSystem(jobBoard, infirmary, threatField));
     world.registerSystem(new JobAssignmentSystem(jobBoard));
     world.registerSystem(new EatingSystem(terrain));
     world.registerSystem(new DrinkSystem(terrain));
@@ -149,7 +152,7 @@ export function setupColony(
     world.registerSystem(new SocializeSystem(terrain));
     world.registerSystem(new RescueSystem(terrain, infirmary));
     world.registerSystem(new HealSystem(terrain, infirmary));
-    world.registerSystem(new FleeSystem(terrain));
+    world.registerSystem(new FleeSystem(terrain, threatField));
     world.registerSystem(new FightSystem(terrain));
     world.registerSystem(new BrawlSystem(terrain));
     world.registerSystem(new TantrumSystem(terrain));
@@ -211,6 +214,7 @@ export function addDwarf(world, x, y, overrides = {}) {
         socialRate = 0,
         sociability = 0.5,
         temper = 0.5,
+        bravery = 0.5,
     } = overrides;
     const id = world.createEntity();
     world.addComponent(id, 'identity', { name });
@@ -236,7 +240,7 @@ export function addDwarf(world, x, y, overrides = {}) {
     });
     world.addComponent(id, 'social', { value: social, rate: socialRate, threshold: 75, max: 100 });
     world.addComponent(id, 'relationships', { affinities: {} });
-    world.addComponent(id, 'personality', { sociability, temper });
+    world.addComponent(id, 'personality', { sociability, temper, bravery });
     world.addComponent(id, 'thoughts', { list: [] });
     world.addComponent(id, 'wander', {});
     world.addComponent(id, 'worker', {});

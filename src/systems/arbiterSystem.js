@@ -9,13 +9,29 @@ const TANTRUM_EXIT_MARGIN = 15;
 const HEAL_SCORE = 62;
 const RESCUE_SCORE = 60;
 const SOCIALIZE_SCORE = 50;
+// aux aguets : un hostile est proche mais ne peut pas m'atteindre — on cesse de
+// travailler/errer (donc on ne dérive pas vers lui) sans pour autant paniquer,
+// mais un vrai besoin (faim, soif…) reprend le dessus
+const HOLD_SCORE = 20;
 const WORK_SCORE = 10;
 const WANDER_SCORE = 1;
 
+// bravoure : le seuil de fuite (santé en deçà de laquelle on fuit) part de
+// `combat.courage` et se module. La santé reste le facteur dominant ; ces termes ne
+// font qu'avancer ou reculer le moment où le nain craque. Seuil planché (on finit
+// toujours par fuir très bas) mais non plafonné (courage énorme = fuit toujours).
+const COURAGE_FLOOR = 0.15;
+const MORALE_COURAGE_INFLUENCE = 0.25; // moral au-dessus/en dessous de la baseline
+const PERSONALITY_COURAGE_INFLUENCE = 0.3; // trait `bravery` (0 = trouillard, 1 = tête brûlée)
+const ALLY_COURAGE_STEP = 0.08; // par allié combattant à portée
+const ALLY_COURAGE_RANGE = 5;
+const ALLY_COURAGE_CAP = 0.24; // effet de groupe plafonné (≈ 3 alliés)
+
 export class ArbiterSystem {
-    constructor(jobBoard, infirmary) {
+    constructor(jobBoard, infirmary, threatField) {
         this.jobBoard = jobBoard;
         this.infirmary = infirmary;
+        this.threatField = threatField;
     }
 
     update(world) {
@@ -40,8 +56,9 @@ export class ArbiterSystem {
             return 'incapacitated';
         }
         const scores = [
-            { type: 'fight', score: this.fightScore(world, entityId, hostilePositions) },
-            { type: 'flee', score: this.fleeScore(world, entityId, hostilePositions) },
+            { type: 'fight', score: this.fightScore(world, entityId) },
+            { type: 'flee', score: this.fleeScore(world, entityId) },
+            { type: 'hold', score: this.holdScore(world, entityId, hostilePositions) },
             { type: 'brawl', score: this.brawlScore(world, entityId) },
             { type: 'tantrum', score: this.tantrumScore(world, entityId) },
             { type: 'eat', score: this.eatScore(world, entityId, foodAvailable) },
@@ -57,18 +74,37 @@ export class ArbiterSystem {
         return scores[0].type;
     }
 
-    fightScore(world, entityId, hostilePositions) {
-        if (!this.dangerNear(world, entityId, hostilePositions)) {
+    fightScore(world, entityId) {
+        if (!this.dangerNear(world, entityId)) {
             return 0;
         }
         return this.isBrave(world, entityId) ? FLEE_SCORE : 0;
     }
 
-    fleeScore(world, entityId, hostilePositions) {
-        if (!this.dangerNear(world, entityId, hostilePositions)) {
+    fleeScore(world, entityId) {
+        if (!this.dangerNear(world, entityId)) {
             return 0;
         }
         return this.isBrave(world, entityId) ? 0 : FLEE_SCORE;
+    }
+
+    // aux aguets : un hostile est proche à vol d'oiseau mais ne peut pas m'atteindre
+    // (muré ou derrière une porte). On ne fuit pas — on n'est pas en danger — mais on
+    // tient sa position au lieu d'errer vers lui.
+    holdScore(world, entityId, hostilePositions) {
+        if (this.dangerNear(world, entityId)) {
+            return 0;
+        }
+        return this.alertNear(world, entityId, hostilePositions) ? HOLD_SCORE : 0;
+    }
+
+    alertNear(world, entityId, hostilePositions) {
+        const position = world.getComponent(entityId, 'position');
+        return hostilePositions.some(
+            (hostile) =>
+                Math.max(Math.abs(hostile.x - position.x), Math.abs(hostile.y - position.y)) <=
+                FLEE_RANGE
+        );
     }
 
     tantrumScore(world, entityId) {
@@ -119,13 +155,11 @@ export class ArbiterSystem {
         });
     }
 
-    dangerNear(world, entityId, hostilePositions) {
+    // danger réel : un hostile est à portée en distance de cheminement — un ennemi
+    // muré ou derrière une porte (distance Infinity) ne provoque ni panique ni charge
+    dangerNear(world, entityId) {
         const position = world.getComponent(entityId, 'position');
-        return hostilePositions.some(
-            (hostile) =>
-                Math.max(Math.abs(hostile.x - position.x), Math.abs(hostile.y - position.y)) <=
-                FLEE_RANGE
-        );
+        return this.threatField.distanceAt(position.x, position.y) <= FLEE_RANGE;
     }
 
     isBrave(world, entityId) {
@@ -134,7 +168,53 @@ export class ArbiterSystem {
         if (!health || !combat || combat.courage === undefined) {
             return false;
         }
-        return health.value / health.max >= combat.courage;
+        return health.value / health.max >= this.courageThreshold(world, entityId, combat.courage);
+    }
+
+    // seuil de fuite effectif : base (data) − ce qui donne du cran (bon moral,
+    // tempérament brave, alliés au combat). Planché pour qu'on finisse toujours par
+    // fuir à l'agonie, jamais plafonné pour préserver un courage volontairement énorme.
+    courageThreshold(world, entityId, base) {
+        return Math.max(
+            COURAGE_FLOOR,
+            base -
+                this.moraleCourage(world, entityId) -
+                this.personalityCourage(world, entityId) -
+                this.allyCourage(world, entityId)
+        );
+    }
+
+    moraleCourage(world, entityId) {
+        const morale = world.getComponent(entityId, 'morale');
+        if (!morale) {
+            return 0;
+        }
+        return (MORALE_COURAGE_INFLUENCE * (morale.value - morale.baseline)) / morale.max;
+    }
+
+    personalityCourage(world, entityId) {
+        const bravery = world.getComponent(entityId, 'personality')?.bravery ?? 0.5;
+        return PERSONALITY_COURAGE_INFLUENCE * (bravery - 0.5);
+    }
+
+    // effet de groupe : chaque camarade qui se bat déjà à portée rassure (marqueur
+    // `fighting`, donc l'état du tick précédent — pas de cascade intra-tick)
+    allyCourage(world, entityId) {
+        const position = world.getComponent(entityId, 'position');
+        let allies = 0;
+        for (const otherId of world.query('worker', 'fighting', 'position')) {
+            if (otherId === entityId) {
+                continue;
+            }
+            const other = world.getComponent(otherId, 'position');
+            if (
+                Math.max(Math.abs(other.x - position.x), Math.abs(other.y - position.y)) <=
+                ALLY_COURAGE_RANGE
+            ) {
+                allies++;
+            }
+        }
+        return Math.min(ALLY_COURAGE_CAP, ALLY_COURAGE_STEP * allies);
     }
 
     eatScore(world, entityId, foodAvailable) {

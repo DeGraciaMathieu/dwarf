@@ -28,7 +28,8 @@ function temperFactor(world, entityId) {
 export function assignPersonality(world, entityId, random = Math.random) {
     const sociability = random();
     const temper = random();
-    world.addComponent(entityId, 'personality', { sociability, temper });
+    const bravery = random();
+    world.addComponent(entityId, 'personality', { sociability, temper, bravery });
     const social = world.getComponent(entityId, 'social');
     if (social) {
         social.rate = social.rate * (0.5 + sociability);
