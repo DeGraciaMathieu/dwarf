@@ -15,7 +15,7 @@ ECS + bus d'événements + services partagés. Un tick = tous les systèmes dans
 | `src/core/world.js` | Registre ECS : entités, composants (`Map` nom → `Map` id → données), `query()`, `tick()` | aucun |
 | `src/core/eventBus.js` | Bus : `emit()` met en file, `flush()` livre en fin de tick | aucun |
 | `src/core/loop.js` | Boucle à pas fixe (5 t/s), retourne `{speed}` pour pause/vitesse | `performance`, `requestAnimationFrame` |
-| `src/core/terrain.js` | Grille 2D hors ECS (`get/set/isWalkable`), génération (montagne, rivière à gués, lacs, bosquets, veines de minerai — avec validation de jouabilité et retirage), `largestWalkableRegion` | `tiles.json` |
+| `src/core/terrain.js` | Grille 2D hors ECS (`get/set/isWalkable`), génération (montagne, rivière à gués, lacs, bosquets, veines de minerai, **grottes scellées + couloirs sinueux** creusés dans la montagne *après* la validation de jouabilité, avec marge de roche pour ne pas fragmenter la surface — à découvrir au pic), `largestWalkableRegion` | `tiles.json` |
 | `src/core/pathfinding.js` | `findPath(terrain, from, to)` — A* 8-directionnel, Chebyshev | terrain |
 | `src/core/jobBoard.js` | File de jobs : `post/claim/release/cancel/markUnreachable/resetUnreachable/complete/hasJobAt/hasAvailableJobs` | aucun |
 | `src/core/zones.js` | `Zone` : ensembles de cases peintes avec étiquette optionnelle `kind` (stockages typés, champs, tombes, infirmerie, chambres) | aucun |

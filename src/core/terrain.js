@@ -37,6 +37,10 @@ const VEIN_DENSITY = 1 / 200;
 const VEIN_FILL = 0.6;
 const LAKE_DENSITY = 1 / 450;
 const LAKE_FILL = 0.8;
+const CAVE_DENSITY = 1 / 300;
+const CAVE_FILL = 0.75;
+const CAVE_MIN_RADIUS = 1;
+const CAVE_MAX_RADIUS = 2;
 const RIVER_START_RATIO = 0.25;
 const RIVER_WIDTH = 2;
 const FORD_COUNT = 2;
@@ -46,12 +50,17 @@ const MIN_CONNECTIVITY = 0.8;
 
 export function generateTerrain(width, height, tileDefinitions) {
     let terrain;
+    let boundary;
     for (let attempt = 0; attempt < GENERATION_ATTEMPTS; attempt++) {
-        terrain = generateCandidate(width, height, tileDefinitions);
+        ({ terrain, boundary } = generateCandidate(width, height, tileDefinitions));
         if (isPlayable(terrain)) {
-            return terrain;
+            break;
         }
     }
+    // Grottes et couloirs creusés APRÈS la validation de jouabilité : gardés à distance
+    // du plateau (marge de roche), ils restent scellés — à découvrir au pic — et ne
+    // peuvent donc pas fragmenter la surface ni faire échouer le test de connectivité.
+    carveCaves(terrain, boundary);
     return terrain;
 }
 
@@ -149,7 +158,7 @@ function generateCandidate(width, height, tileDefinitions) {
         }
     }
 
-    return new Terrain(width, height, tiles, tileDefinitions);
+    return { terrain: new Terrain(width, height, tiles, tileDefinitions), boundary };
 }
 
 function carveRiver(tiles, width, height, boundary) {
@@ -236,6 +245,71 @@ function scatterVeins(tiles, width, height, boundary, { count, minRadius, maxRad
                     tiles[y][x] = 'ore';
                 }
             }
+        }
+    }
+}
+
+// Grottes : des poches de sol creusées dans la roche (wall → floor), reliées entre
+// elles par des couloirs sinueux. Une marge de roche les sépare du plateau : elles
+// restent scellées, à mettre au jour au pic. Le centre est toujours percé (une grotte
+// existe à coup sûr), le reste au hasard pour un contour irrégulier.
+function carveCaves(terrain, boundary) {
+    const { width, height } = terrain;
+    const count = Math.max(1, Math.floor(width * height * CAVE_DENSITY));
+    const centers = [];
+    for (let i = 0; i < count; i++) {
+        const cy = 1 + Math.floor(Math.random() * (height - 2));
+        const minX = boundary[cy] + CAVE_MAX_RADIUS + 1;
+        const space = width - 2 - minX;
+        if (space < 1) {
+            continue;
+        }
+        const cx = minX + Math.floor(Math.random() * space);
+        const radius = CAVE_MIN_RADIUS + Math.floor(Math.random() * (CAVE_MAX_RADIUS - CAVE_MIN_RADIUS + 1));
+        carvePocket(terrain, boundary, cx, cy, radius);
+        centers.push({ x: cx, y: cy });
+    }
+    for (let i = 1; i < centers.length; i++) {
+        carveTunnel(terrain, boundary, centers[i - 1], centers[i]);
+    }
+    return centers;
+}
+
+function carvePocket(terrain, boundary, cx, cy, radius) {
+    const { width, height } = terrain;
+    for (let dy = -radius; dy <= radius; dy++) {
+        for (let dx = -radius; dx <= radius; dx++) {
+            const x = cx + dx;
+            const y = cy + dy;
+            const inMountain =
+                x > 0 && x < width - 1 && y > 0 && y < height - 1 && x >= boundary[y];
+            if (!inMountain || terrain.get(x, y) !== 'wall') {
+                continue;
+            }
+            const isCenter = dx === 0 && dy === 0;
+            if (isCenter || Math.random() < CAVE_FILL) {
+                terrain.set(x, y, 'floor');
+            }
+        }
+    }
+}
+
+// Couloir 1-case entre deux grottes : marche biaisée vers la cible, axe tiré au hasard
+// → tracé sinueux. Ne perce que la roche côté montagne (jamais le plateau).
+function carveTunnel(terrain, boundary, from, to) {
+    const { width, height } = terrain;
+    let { x, y } = from;
+    let guard = 0;
+    while ((x !== to.x || y !== to.y) && guard++ < width * height) {
+        if (x !== to.x && (y === to.y || Math.random() < 0.5)) {
+            x += Math.sign(to.x - x);
+        } else if (y !== to.y) {
+            y += Math.sign(to.y - y);
+        }
+        const inMountain =
+            x > 0 && x < width - 1 && y > 0 && y < height - 1 && x >= boundary[y];
+        if (inMountain && terrain.get(x, y) === 'wall') {
+            terrain.set(x, y, 'floor');
         }
     }
 }

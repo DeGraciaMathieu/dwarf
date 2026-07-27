@@ -79,9 +79,19 @@ test('génération : massif montagneux creusable et forêts en bosquets', () => 
         assert.ok(treeShare > 0.04 && treeShare < 0.3, `part d'arbres: ${treeShare}`);
 
         const region = largestWalkableRegion(terrain);
-        connectivity += region.length / counts.floor;
-
         const regionSet = new Set(region.map((p) => p.y * 40 + p.x));
+        // connectivité de la SURFACE : on exclut les grottes (poches de sol scellées
+        // côté montagne, hors grande région) — elles sont volontairement déconnectées.
+        let caveFloors = 0;
+        for (let y = 0; y < 25; y++) {
+            for (let x = 20; x < 40; x++) {
+                if (terrain.get(x, y) === 'floor' && !regionSet.has(y * 40 + x)) {
+                    caveFloors++;
+                }
+            }
+        }
+        connectivity += region.length / (counts.floor - caveFloors);
+
         let diggableFace = false;
         for (let y = 1; y < 24 && !diggableFace; y++) {
             for (let x = 20; x < 39 && !diggableFace; x++) {
@@ -101,6 +111,28 @@ test('génération : massif montagneux creusable et forêts en bosquets', () => 
         assert.ok(diggableFace, 'le front de montagne doit être atteignable');
     }
     assert.ok(connectivity / 5 > 0.85, `connectivité moyenne: ${connectivity / 5}`);
+});
+
+test('génération : des grottes scellées à découvrir dans la montagne', () => {
+    let withCaves = 0;
+    for (let i = 0; i < 5; i++) {
+        const terrain = generateTerrain(40, 25, data.tiles);
+        const region = new Set(largestWalkableRegion(terrain).map((p) => p.y * 40 + p.x));
+        // du sol praticable, dans la moitié montagne, hors de la grande région = une
+        // cavité scellée par la roche (donc à rejoindre au pic, pas accessible à pied)
+        let sealedMountainFloor = 0;
+        for (let y = 1; y < 24; y++) {
+            for (let x = 20; x < 39; x++) {
+                if (terrain.get(x, y) === 'floor' && !region.has(y * 40 + x)) {
+                    sealedMountainFloor++;
+                }
+            }
+        }
+        if (sealedMountainFloor > 0) {
+            withCaves++;
+        }
+    }
+    assert.ok(withCaves >= 4, `grottes scellées attendues sur la plupart des cartes, ${withCaves}/5`);
 });
 
 test('eau : infranchissable pour tous, sauf par le gué', () => {
